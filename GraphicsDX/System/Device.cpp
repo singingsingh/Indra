@@ -2,7 +2,7 @@
 
 #include <GraphicsDX\System\DXHelpers.h>
 
-#include <d3d11_1.h>
+#include <d3d11.h>
 
 #define CREATE_DEBUG_DEVICE
 

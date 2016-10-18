@@ -5,7 +5,7 @@
 #include <Engine\Core\SmartPtr.h>
 #include <Engine\Core\StringPool.h>
 
-#include <GraphicsDX\Renderer\Sprite\Sprite.h>
+//#include <GraphicsDX\Renderer\Sprite\Sprite.h>
 
 #include <Game\Controllers\PlayerController.h>
 #include <Game\Controllers\MonsterController.h>
@@ -81,17 +81,17 @@ namespace Game
 
 		Engine::SmartPtr< Engine::PhysicsInfo > physicsInfo;
 
-		Engine::SmartPtr<GraphicsDX::Sprite> sprite;
-		if (_luaLoadInfo.hasRenderInfo)
-		{
-			sprite = GraphicsDX::Sprite::CreateSprite(_luaLoadInfo.spriteFileName);
-			sprite->setGameObject(gameObject);
-		}
+		//Engine::SmartPtr<GraphicsDX::Sprite> sprite;
+		//if (_luaLoadInfo.hasRenderInfo)
+		//{
+		//	sprite = GraphicsDX::Sprite::CreateSprite(_luaLoadInfo.spriteFileName);
+		//	sprite->setGameObject(gameObject);
+		//}
 
-		if (_luaLoadInfo.hasPhysicsInfo)
-		{
-			physicsInfo  = new Engine::PhysicsInfo(_luaLoadInfo.mass, _luaLoadInfo.drag, gameObject, sprite->getDimentions());
-		}
+		//if (_luaLoadInfo.hasPhysicsInfo)
+		//{
+		//	physicsInfo  = new Engine::PhysicsInfo(_luaLoadInfo.mass, _luaLoadInfo.drag, gameObject, sprite->getDimentions());
+		//}
 
 		if (_luaLoadInfo.hasController)
 		{
