@@ -1,7 +1,9 @@
+#include <Engine\System\Keyboard.h>
+
 #include <Engine\Util\ConsolePrint.h>
 #include <Engine\Util\Assert.h>
 
-#include <Engine\System\Keyboard.h>
+#include <Engine\System\Window.h>
 
 #include <stdint.h>
 #include <Windows.h>
@@ -42,29 +44,9 @@ namespace Engine
 			}
 		}
 
-		bool Initialize()
+		bool Service(HRAWINPUT i_Input)
 		{
-			Assert(m_pReadBuffer == nullptr);
-
-			ResizeReadBuffer(m_bytesInitReadBuffer);
-
-			RAWINPUTDEVICE keyboard;
-
-			keyboard.usUsagePage = 0x01;		// Generic desktop page
-			keyboard.usUsage = 0x06;			// Keyboard
-			keyboard.dwFlags = RIDEV_NOLEGACY;	// Turn off keyboard input to the Windows message handlers
-			keyboard.hwndTarget = NULL;
-
-			BOOL success = RegisterRawInputDevices(&keyboard, 1, sizeof(keyboard));
-			Assert(success == TRUE);
-
-			memset(m_VKeyStates, sizeof(m_VKeyStates), 0);
-			
-			return true;
-		}
-
-		void Service( HRAWINPUT i_Input)
-		{
+			bool quit = false;
 			UINT bytesData = 0;
 			UINT ret = GetRawInputData(i_Input, RID_INPUT, NULL, &bytesData, sizeof(RAWINPUTHEADER));
 			Assert(ret == 0);
@@ -78,7 +60,7 @@ namespace Engine
 				Assert(ret == bytesData);
 
 				RAWINPUT * pRawInput = reinterpret_cast<RAWINPUT *>(m_pReadBuffer);
-				
+
 				if (pRawInput->header.dwType == RIM_TYPEKEYBOARD)
 				{
 					if (pRawInput->data.keyboard.Flags == RI_KEY_BREAK)
@@ -100,6 +82,12 @@ namespace Engine
 						bool bChanged = m_VKeyStates[pRawInput->data.keyboard.VKey] != 1;
 
 						m_VKeyStates[pRawInput->data.keyboard.VKey] = 1;
+
+						if (m_VKeyStates[VK_ESCAPE] == 1)
+						{
+							quit = true;
+						}
+
 						if (bChanged)
 						{
 							if (m_pKeyStateChangeCallback)
@@ -115,6 +103,74 @@ namespace Engine
 				}
 			}
 
+			return quit;
+		}
+
+		bool KeyboardUpdate()
+		{
+			bool quit = false;
+
+			BOOL				bGotMsg = FALSE;
+
+			do
+			{
+				MSG					msg;
+
+				msg.message = WM_NULL;
+
+				bGotMsg = PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE);
+
+				if (bGotMsg)
+				{
+					if (TranslateAccelerator(System::Window::GetWindwsHangle(), NULL, &msg) == 0)
+					{
+						TranslateMessage(&msg);
+						DispatchMessage(&msg);
+					}
+
+					switch (msg.message)
+					{
+					case WM_QUIT:
+					{
+						quit = true;
+						break;
+					}
+					case WM_INPUT:
+					{
+						quit = Service(HRAWINPUT(msg.lParam));
+						break;
+					}
+					default:
+					{
+						//DEBUG_PRINT("message: 0x%04x\n", msg.message);
+					}
+					}
+				}
+			} while ((bGotMsg == TRUE) && (quit == false));
+			return quit;
+		}
+
+
+
+		bool Initialize()
+		{
+			Assert(m_pReadBuffer == nullptr);
+
+			ResizeReadBuffer(m_bytesInitReadBuffer);
+
+			RAWINPUTDEVICE keyboard;
+
+			keyboard.usUsagePage = 0x01;		// Generic desktop page
+			keyboard.usUsage = 0x06;			// Keyboard
+			keyboard.dwFlags = RIDEV_NOLEGACY;	// Turn off keyboard input to the Windows message handlers
+			keyboard.hwndTarget = NULL;
+
+			BOOL success = RegisterRawInputDevices(&keyboard, 1, sizeof(keyboard));
+			Assert(success == TRUE);
+
+			memset(m_VKeyStates, sizeof(m_VKeyStates), 0);
+			
+			return true;
 		}
 
 		void Shutdown()
