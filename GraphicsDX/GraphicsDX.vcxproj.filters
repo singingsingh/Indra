@@ -145,15 +145,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Shaders\SpritePS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\SpriteVS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Shaders\VSOutput.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\SpritePS.hlsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\SpriteVS.hlsl">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

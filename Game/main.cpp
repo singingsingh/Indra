@@ -5,10 +5,12 @@
 #include <Engine\Engine\PhysicsTickNotifier.h>
 #include <Engine\Engine\AIUpdateNotifier.h>
 #include <Engine\Core\ThreadedFileProcessor.h>
-
-#include <GraphicsDX\Renderer\Sprite\SpriteRenderer.h>
+#include <Engine\System\Keyboard.h>
+#include <Engine\Graphics\Graphics.h>
+#include <Engine\Graphics\Camera.h>
 
 #include <Game\Lua\LuaLoadTask.h>
+#include <Game\Config.h>
 
 #include <stdio.h>
 #include <stdint.h>
@@ -19,24 +21,11 @@
 #include <crtdbg.h>
 #endif // _DEBUG
 
-bool bQuit = false;
-
-void updateKeyboard()
-{
-	GraphicsDX::Service(bQuit);
-}
 
 void updateEngine(double i_deltaTime)
 {
 	Engine::AIUpdateNotifier::UpdateAITick( i_deltaTime );
 	Engine::PhysicsTickNotifier::UpdatePhysicsTick( i_deltaTime );
-}
-
-void updateRenderer()
-{
-	GraphicsDX::BeginRendering();
-	GraphicsDX::SpriteRenderer::Render();
-	GraphicsDX::EndRendering();
 }
 
 void loadCompletedGO()
@@ -70,14 +59,13 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 	//	_CrtSetBreakAlloc(1735);
 	//#endif // _DEBUG
 
-	Engine::Initialize("Data/SaveData.dat");
-	GraphicsDX::Initialize(i_hInstance, i_nCmdShow, "GhostKid ( Escape the ghost )", -1, 800, 600);
+	Engine::Initialize("Data/SaveData.dat", i_hInstance, "WaterSimulation", Game::WINDOW_WIDTH, Game::WINDOW_HEIGHT);
 	Game::Initialize();
 
-	Engine::ThreadedFileProcessor &Processor = Engine::ThreadedFileProcessor::GetInstance();
+	//Engine::ThreadedFileProcessor &Processor = Engine::ThreadedFileProcessor::GetInstance();
 
-	Processor.AddToLoadQueue(*(new Game::LuaLoadTask("data\\luaFiles\\player.lua")));
-	Processor.AddToLoadQueue(*(new Game::LuaLoadTask("data\\luaFiles\\monster.lua")));
+	//Processor.AddToLoadQueue(*(new Game::LuaLoadTask("data\\luaFiles\\player.lua")));
+	//Processor.AddToLoadQueue(*(new Game::LuaLoadTask("data\\luaFiles\\monster.lua")));
 
 	Engine::SmartPtr<Engine::Timer> timer = new Engine::Timer();
 	uint64_t currentTick = timer->getCurrentTick();
@@ -87,11 +75,15 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 	uint64_t nextEngineTick = currentTick;
 	const uint8_t MAX_FRAME_SKIP = 10;
 	uint8_t continuesEngineUpdate = 0;
+	bool bQuit = false;
+	
+	Engine::Graphics::Camera* camera = new Engine::Graphics::Camera(0.1f, 100.0f, (float)D3DX_PI / 4.0f, float (Game::WINDOW_WIDTH)/ Game::WINDOW_HEIGHT);
+	Engine::Graphics::Graphics::SetCamera(camera);
+	camera->setPosition(0.0f, 0.0f, -10.0f);
 
-	// render loop
 	do
 	{
-		loadCompletedGO();
+		//loadCompletedGO();
 		currentTick = timer->getCurrentTick();
 
 		continuesEngineUpdate = 0;
@@ -99,7 +91,7 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 		{
 			continuesEngineUpdate++;
 
-			updateKeyboard();
+			bQuit = Engine::Keyboard::KeyboardUpdate();
 			if (bQuit)
 			{
 				break;
@@ -112,13 +104,12 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 			currentTick = timer->getCurrentTick();
 		}
 
-		updateRenderer();
+		Engine::Graphics::Graphics::Render();
 	} while (bQuit == false);
 
 	Engine::ThreadedFileProcessor::Shutdown();
 
 	Game::Shutdown();
-	GraphicsDX::Shutdown();
 	Engine::Shutdown();
 
 	// dont call _CrtDumpMemoryLeaks here
