@@ -5,6 +5,14 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
     <Filter Include="Source Files\System">
       <UniqueIdentifier>{ba54d005-2b50-4e44-b1c6-b1dda1b83275}</UniqueIdentifier>
     </Filter>
@@ -19,12 +27,6 @@
     </Filter>
     <Filter Include="Source Files\Core\Math">
       <UniqueIdentifier>{3262e763-200b-48bf-aa1c-003776df9f54}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Graphics">
-      <UniqueIdentifier>{ec4cb7ea-9691-4496-958e-23878f0f1a2e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Graphics\shaders">
-      <UniqueIdentifier>{0e734b55-a4a2-4a2c-a871-c053f0668ee9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -51,6 +53,9 @@
     </ClCompile>
     <ClCompile Include="Util\FileUtils.cpp">
       <Filter>Source Files\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Core\StringPool.cpp">
       <Filter>Source Files\Core</Filter>
@@ -121,27 +126,6 @@
     <ClCompile Include="Engine\KeyboardNotifier.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\ColorShader.cpp">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\Camera.cpp">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\Graphics.cpp">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\GraphicsDX.cpp">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\Model.cpp">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="System\Window.cpp">
-      <Filter>Source Files\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\BitArray.h">
@@ -179,6 +163,9 @@
     </ClInclude>
     <ClInclude Include="Util\FileUtils.h">
       <Filter>Source Files\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Core\SmartPtr.h">
       <Filter>Source Files\Core</Filter>
@@ -288,34 +275,5 @@
     <ClInclude Include="Engine\KeyboardNotifier.h">
       <Filter>Source Files\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\ColorShader.h">
-      <Filter>Source Files\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\Camera.h">
-      <Filter>Source Files\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\Graphics.h">
-      <Filter>Source Files\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\GraphicsDX.h">
-      <Filter>Source Files\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\Model.h">
-      <Filter>Source Files\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="System\Window.h">
-      <Filter>Source Files\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Graphics\colorShaderPS.hlsl">
-      <Filter>Source Files\Graphics\shaders</Filter>
-    </None>
-    <None Include="Graphics\colorShaderVS.hlsl">
-      <Filter>Source Files\Graphics\shaders</Filter>
-    </None>
   </ItemGroup>
 </Project>

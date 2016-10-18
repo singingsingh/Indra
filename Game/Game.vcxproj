@@ -27,8 +27,6 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Engine\Engine.h" />
-    <ClInclude Include="Config.h" />
     <ClInclude Include="Controllers\MonsterController.h" />
     <ClInclude Include="Controllers\PlayerController.h" />
     <ClInclude Include="Game.h" />
@@ -45,7 +43,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140_xp</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -120,7 +118,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)GraphicsDX/Binaries/$(PlatformTarget)/$(Configuration)/;$(SolutionDir)Engine/Binaries/$(PlatformTarget)/$(Configuration)/;$(SolutionDir)Game/libs/lua</AdditionalLibraryDirectories>
-      <AdditionalDependencies>d3d11.lib;Engine.lib;$(PlatformShortName)\lua-5.3.2-$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;GraphicsDX.lib;Engine.lib;$(PlatformShortName)\lua-5.3.2-$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

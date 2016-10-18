@@ -10,7 +10,7 @@ namespace Engine
 	namespace Keyboard
 	{
 		bool Initialize();
-		bool KeyboardUpdate();
+		void Service(HRAWINPUT i_Input);
 		void Shutdown();
 	} // namespace Input
 
