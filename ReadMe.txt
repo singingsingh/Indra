@@ -4,4 +4,4 @@ close the window - exit
 
 - sample test push
 
-- Water simulation project
+- This should be only in Water simulation project
