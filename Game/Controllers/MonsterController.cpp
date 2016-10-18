@@ -9,6 +9,8 @@
 
 #include <time.h>
 
+extern bool bQuit;
+
 namespace Game
 {
 	MonsterController* MonsterController::_instance = nullptr;
@@ -130,6 +132,8 @@ namespace Game
 
 		if (_physicsInfo->hitResult->collision)
 		{
+			bQuit = true;
+
 			float m1 = _physicsInfo->mass;
 			float m2 = _physicsInfo->hitResult->other->mass;
 			Engine::Math::Vector2f v1 = _physicsInfo->velocity;

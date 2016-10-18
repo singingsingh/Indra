@@ -2,7 +2,7 @@
 #define __SPRITE_DATA_TYPES_H__
 
 #include <stdint.h>
-//#include <d3dtypes.h>
+#include <d3dtypes.h>
 
 namespace GraphicsDX
 {
@@ -37,7 +37,7 @@ namespace GraphicsDX
 		typedef struct _SpriteVertex
 		{
 			float			Position[3];
-			//D3DCOLOR		Color;
+			D3DCOLOR		Color;
 			float			UV[2];
 		}SpriteVertex;
 	} // namespace Sprites
