@@ -45,8 +45,14 @@
     <ClCompile Include="Engine\PhysicsTickNotifier.cpp" />
     <ClCompile Include="Engine\Serializer.cpp" />
     <ClCompile Include="Engine\World.cpp" />
+    <ClCompile Include="Graphics\Camera.cpp" />
+    <ClCompile Include="Graphics\ColorShader.cpp" />
+    <ClCompile Include="Graphics\Graphics.cpp" />
+    <ClCompile Include="Graphics\GraphicsDX.cpp" />
+    <ClCompile Include="Graphics\Model.cpp" />
     <ClCompile Include="System\Keyboard.cpp" />
     <ClCompile Include="System\Timer.cpp" />
+    <ClCompile Include="System\Window.cpp" />
     <ClCompile Include="Util\Assert.Win32.cpp" />
     <ClCompile Include="Util\ConsolePrint.Win32.cpp" />
     <ClCompile Include="Util\FileUtils.cpp" />
@@ -93,25 +99,40 @@
     <ClInclude Include="Engine\PhysicsTickNotifier.h" />
     <ClInclude Include="Engine\Serializer.h" />
     <ClInclude Include="Engine\World.h" />
+    <ClInclude Include="Graphics\Camera.h" />
+    <ClInclude Include="Graphics\ColorShader.h" />
+    <ClInclude Include="Graphics\Graphics.h" />
+    <ClInclude Include="Graphics\GraphicsDX.h" />
+    <ClInclude Include="Graphics\Model.h" />
     <ClInclude Include="System\Keyboard.h" />
     <ClInclude Include="System\Target.h" />
     <ClInclude Include="System\Target.Win32.h" />
     <ClInclude Include="System\Target.Win64.h" />
     <ClInclude Include="System\Timer.h" />
+    <ClInclude Include="System\Window.h" />
     <ClInclude Include="Util\Assert.h" />
     <ClInclude Include="Util\ConsolePrint.h" />
     <ClInclude Include="Util\FileUtils.h" />
     <ClInclude Include="Util\MathUtils.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphics\colorShaderPS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Graphics\colorShaderVS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{BA598A12-D560-4E96-816C-2D443D6ED6FD}</ProjectGuid>
     <RootNamespace>Engine</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
