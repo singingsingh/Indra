@@ -23,7 +23,7 @@ namespace Engine
 	{
 	}
 
-	bool GraphicsDX::_initialize(int screenWidth, int screenHeight, bool vsync, HWND hwnd, bool fullscreen)
+	bool GraphicsDX::_initialize(int i_screenWidth, int i_screenHeight, bool vsync, HWND hwnd, bool fullscreen)
 	{
 		HRESULT result;
 		IDXGIFactory* factory;
@@ -89,16 +89,23 @@ namespace Engine
 
 		// Now go through all the display modes and find the one that matches the screen width and height.
 		// When a match is found store the numerator and denominator of the refresh rate for that monitor.
+		bool displayMode = false;
 		for (i = 0; i<numModes; i++)
 		{
-			if (displayModeList[i].Width == (unsigned int)screenWidth)
+			if (displayModeList[i].Width == (unsigned int)i_screenWidth)
 			{
-				if (displayModeList[i].Height == (unsigned int)screenHeight)
+				if (displayModeList[i].Height == (unsigned int)i_screenHeight)
 				{
+					displayMode = true;
 					numerator = displayModeList[i].RefreshRate.Numerator;
 					denominator = displayModeList[i].RefreshRate.Denominator;
 				}
 			}
+		}
+
+		if (!displayMode)
+		{
+			return false;
 		}
 
 		// Get the adapter (video card) description.
@@ -120,19 +127,19 @@ namespace Engine
 
 		// Release the display mode list.
 		delete[] displayModeList;
-		displayModeList = 0;
+		displayModeList = nullptr;
 
 		// Release the adapter output.
 		adapterOutput->Release();
-		adapterOutput = 0;
+		adapterOutput = nullptr;
 
 		// Release the adapter.
 		adapter->Release();
-		adapter = 0;
+		adapter = nullptr;
 
 		// Release the factory.
 		factory->Release();
-		factory = 0;
+		factory = nullptr;
 
 		// Initialize the swap chain description.
 		ZeroMemory(&swapChainDesc, sizeof(swapChainDesc));
@@ -141,8 +148,8 @@ namespace Engine
 		swapChainDesc.BufferCount = 1;
 
 		// Set the width and height of the back buffer.
-		swapChainDesc.BufferDesc.Width = screenWidth;
-		swapChainDesc.BufferDesc.Height = screenHeight;
+		swapChainDesc.BufferDesc.Width = i_screenWidth;
+		swapChainDesc.BufferDesc.Height = i_screenHeight;
 
 		// Set regular 32-bit surface for the back buffer.
 		swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -222,8 +229,8 @@ namespace Engine
 		ZeroMemory(&depthBufferDesc, sizeof(depthBufferDesc));
 
 		// Set up the description of the depth buffer.
-		depthBufferDesc.Width = screenWidth;
-		depthBufferDesc.Height = screenHeight;
+		depthBufferDesc.Width = i_screenWidth;
+		depthBufferDesc.Height = i_screenHeight;
 		depthBufferDesc.MipLevels = 1;
 		depthBufferDesc.ArraySize = 1;
 		depthBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -316,8 +323,8 @@ namespace Engine
 		_deviceContext->RSSetState(_rasterState);
 
 		// Setup the viewport for rendering.
-		viewport.Width = (float)screenWidth;
-		viewport.Height = (float)screenHeight;
+		viewport.Width = (float)i_screenWidth;
+		viewport.Height = (float)i_screenHeight;
 		viewport.MinDepth = 0.0f;
 		viewport.MaxDepth = 1.0f;
 		viewport.TopLeftX = 0.0f;
@@ -334,6 +341,8 @@ namespace Engine
 	void GraphicsDX::Shutdown()
 	{
 		_instance->_shutdown();
+		delete _instance;
+		_instance = nullptr;
 	}
 
 	bool GraphicsDX::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hwnd, bool fullscreen)
@@ -341,7 +350,7 @@ namespace Engine
 		if (_instance == nullptr)
 		{
 			_instance = new GraphicsDX();
-			DEBUG_PRINT("Creating Graphics singleton ohject");
+			DEBUG_PRINT("Creating GraphicsDX singleton object\n");
 			return _instance->_initialize(screenWidth, screenHeight, vsync, hwnd, fullscreen);
 		}
 		else
@@ -407,8 +416,6 @@ namespace Engine
 			_swapChain->Release();
 			_swapChain = 0;
 		}
-
-		return;
 	}
 
 	void GraphicsDX::BeginScene(float red, float green, float blue, float alpha)

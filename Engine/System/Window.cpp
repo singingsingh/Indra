@@ -91,7 +91,7 @@ namespace Engine
 
 		bool Window::Destory()
 		{
-			MessagedAssert(_instance == nullptr, "Window instance is nullptr.");
+			MessagedAssert(_instance != nullptr, "Window instance is nullptr.");
 			delete _instance;
 			return true;
 		}
@@ -121,13 +121,13 @@ namespace Engine
 			if (_instance == nullptr)
 			{
 				_instance = new Window();
-				DEBUG_PRINT("Creating Graphics singleton ohject");
+				DEBUG_PRINT("Creating Window singleton object\n");
 				return _instance->_initialize(i_hInstance, i_pWindowName, i_WindowWidth, i_WindowHeight);
 			}
 			else
 			{
 				MessagedAssert(false, "Cannot create second Graphics instance");
-				DEBUG_PRINT("Cannot create second Graphics instance");
+				DEBUG_PRINT("Cannot create second Graphics instance\n");
 				return false;
 			}
 		}
