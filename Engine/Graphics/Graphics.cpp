@@ -24,7 +24,7 @@ namespace Engine
 			if (_instance == nullptr)
 			{
 				_instance = new Graphics();
-				DEBUG_PRINT("Creating Graphics singleton ohject");
+				DEBUG_PRINT("Creating Graphics singleton object\n");
 				return _instance->_initialize(i_hInstance, i_pWindowName, i_WindowWidth, i_WindowHeight);
 			}
 			else
@@ -85,6 +85,8 @@ namespace Engine
 		void Graphics::Shutdown()
 		{
 			_instance->_shutdown();
+			delete _instance;
+			_instance = nullptr;
 		}
 
 		void Graphics::_shutdown()
@@ -106,6 +108,8 @@ namespace Engine
 			}
 
 			GraphicsDX::Shutdown();
+
+			System::Window::Destory();
 		}
 
 		bool Graphics::Render()

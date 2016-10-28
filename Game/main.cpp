@@ -56,7 +56,7 @@ struct AtExit
 int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_lpCmdLine, int i_nCmdShow)
 {
 	//#if defined _DEBUG
-	//	_CrtSetBreakAlloc(1735);
+	//	_CrtSetBreakAlloc(241);
 	//#endif // _DEBUG
 
 	Engine::Initialize("Data/SaveData.dat", i_hInstance, "WaterSimulation", Game::WINDOW_WIDTH, Game::WINDOW_HEIGHT);
@@ -109,6 +109,7 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 
 	Engine::ThreadedFileProcessor::Shutdown();
 
+	delete camera;
 	Game::Shutdown();
 	Engine::Shutdown();
 
