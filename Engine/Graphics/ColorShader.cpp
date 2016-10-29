@@ -221,7 +221,7 @@ namespace Engine
 		void ColorShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, const char * shaderFilename)
 		{
 			char* compileErrors;
-			unsigned long bufferSize, i;
+			size_t bufferSize, i;
 			ofstream fout;
 
 

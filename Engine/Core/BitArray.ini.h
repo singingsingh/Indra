@@ -7,11 +7,11 @@ namespace Engine
 	bool BitArray::isBitSet(unsigned int bitNumber)
 	{
 		MessagedAssert( bitNumber<_numBits, "Invalid bit." );
-		unsigned int wordSize = sizeof(MYUINT) * 8;
-		unsigned int word = bitNumber / wordSize;
-		unsigned int bit = wordSize - (bitNumber % wordSize) - 1;
+		MYUINT wordSize = sizeof(MYUINT) * 8;
+		MYUINT word = bitNumber / wordSize;
+		MYUINT bit = wordSize - (bitNumber % wordSize) - 1;
 
-		return (_base[word] & MYUINT(1 << bit)) != 0;
+		return (_base[word] & MYUINT(MYUINT(1) << bit)) != 0;
 	}
 
 	bool BitArray::isBitClear(unsigned int bitNumber)
@@ -25,20 +25,20 @@ namespace Engine
 	{
 		MessagedAssert(bitNumber<_numBits, "Invalid bit.");
 
-		unsigned int wordSize = sizeof(MYUINT) * 8;
-		unsigned int word = bitNumber / wordSize;
-		unsigned int bit = wordSize - (bitNumber % wordSize) - 1;
+		MYUINT wordSize = sizeof(MYUINT) * 8;
+		MYUINT word = bitNumber / wordSize;
+		MYUINT bit = wordSize - (bitNumber % wordSize) - 1;
 
-		_base[word] |= MYUINT(1 << bit);
+		_base[word] |= MYUINT(MYUINT(1) << bit);
 	}
 
 	void BitArray::clearBit(unsigned int bitNumber)
 	{
 		MessagedAssert(bitNumber<_numBits, "Invalid bit.");
 
-		unsigned int wordSize = sizeof(MYUINT) * 8;
-		unsigned int word = bitNumber / wordSize;
-		unsigned int bit = wordSize - (bitNumber % wordSize) - 1;
+		MYUINT wordSize = sizeof(MYUINT) * 8;
+		MYUINT word = bitNumber / wordSize;
+		MYUINT bit = wordSize - (bitNumber % wordSize) - 1;
 
 		_base[word] &= ~(1 << bit);
 	}
