@@ -29,15 +29,16 @@ namespace Engine
 		IDXGIFactory* factory;
 		IDXGIAdapter* adapter;
 		IDXGIOutput* adapterOutput;
-		unsigned int numModes, i, numerator, denominator, stringLength;
+		unsigned int numModes, i, numerator, denominator;
+		size_t stringLength;
 		DXGI_MODE_DESC* displayModeList;
 		DXGI_ADAPTER_DESC adapterDesc;
 		int error;
 		DXGI_SWAP_CHAIN_DESC swapChainDesc;
 		D3D_FEATURE_LEVEL featureLevel;
 		ID3D11Texture2D* backBufferPtr;
-		D3D11_TEXTURE2D_DESC depthBufferDesc;
-		D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
+		D3D11_TEXTURE2D_DESC depthStencilBufferDesc;
+		D3D11_DEPTH_STENCIL_DESC depthStencilStateDesc;
 		D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 		D3D11_RASTERIZER_DESC rasterDesc;
 		D3D11_VIEWPORT viewport;
@@ -226,54 +227,54 @@ namespace Engine
 		backBufferPtr = 0;
 
 		// Initialize the description of the depth buffer.
-		ZeroMemory(&depthBufferDesc, sizeof(depthBufferDesc));
+		ZeroMemory(&depthStencilBufferDesc, sizeof(depthStencilBufferDesc));
 
 		// Set up the description of the depth buffer.
-		depthBufferDesc.Width = i_screenWidth;
-		depthBufferDesc.Height = i_screenHeight;
-		depthBufferDesc.MipLevels = 1;
-		depthBufferDesc.ArraySize = 1;
-		depthBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-		depthBufferDesc.SampleDesc.Count = 1;
-		depthBufferDesc.SampleDesc.Quality = 0;
-		depthBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-		depthBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-		depthBufferDesc.CPUAccessFlags = 0;
-		depthBufferDesc.MiscFlags = 0;
+		depthStencilBufferDesc.Width = i_screenWidth;
+		depthStencilBufferDesc.Height = i_screenHeight;
+		depthStencilBufferDesc.MipLevels = 1;
+		depthStencilBufferDesc.ArraySize = 1;
+		depthStencilBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		depthStencilBufferDesc.SampleDesc.Count = 1;
+		depthStencilBufferDesc.SampleDesc.Quality = 0;
+		depthStencilBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+		depthStencilBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+		depthStencilBufferDesc.CPUAccessFlags = 0;
+		depthStencilBufferDesc.MiscFlags = 0;
 
 		// Create the texture for the depth buffer using the filled out description.
-		result = _device->CreateTexture2D(&depthBufferDesc, NULL, &_depthStencilBuffer);
+		result = _device->CreateTexture2D(&depthStencilBufferDesc, NULL, &_depthStencilBuffer);
 		if (FAILED(result))
 		{
 			return false;
 		}
 
 		// Initialize the description of the stencil state.
-		ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
+		ZeroMemory(&depthStencilStateDesc, sizeof(depthStencilStateDesc));
 
 		// Set up the description of the stencil state.
-		depthStencilDesc.DepthEnable = true;
-		depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-		depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+		depthStencilStateDesc.DepthEnable = true;
+		depthStencilStateDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+		depthStencilStateDesc.DepthFunc = D3D11_COMPARISON_LESS;
 
-		depthStencilDesc.StencilEnable = true;
-		depthStencilDesc.StencilReadMask = 0xFF;
-		depthStencilDesc.StencilWriteMask = 0xFF;
+		depthStencilStateDesc.StencilEnable = true;
+		depthStencilStateDesc.StencilReadMask = 0xFF;
+		depthStencilStateDesc.StencilWriteMask = 0xFF;
 
 		// Stencil operations if pixel is front-facing.
-		depthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-		depthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
-		depthStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-		depthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+		depthStencilStateDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+		depthStencilStateDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+		depthStencilStateDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+		depthStencilStateDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
 		// Stencil operations if pixel is back-facing.
-		depthStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-		depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
-		depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-		depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+		depthStencilStateDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+		depthStencilStateDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+		depthStencilStateDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+		depthStencilStateDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
 		// Create the depth stencil state.
-		result = _device->CreateDepthStencilState(&depthStencilDesc, &_depthStencilState);
+		result = _device->CreateDepthStencilState(&depthStencilStateDesc, &_depthStencilState);
 		if (FAILED(result))
 		{
 			return false;
