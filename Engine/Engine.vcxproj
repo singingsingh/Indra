@@ -50,6 +50,9 @@
     <ClCompile Include="Graphics\Graphics.cpp" />
     <ClCompile Include="Graphics\GraphicsDX.cpp" />
     <ClCompile Include="Graphics\Model.cpp" />
+    <ClCompile Include="Graphics\Texture.cpp" />
+    <ClCompile Include="Graphics\TextureModel.cpp" />
+    <ClCompile Include="Graphics\TextureShader.cpp" />
     <ClCompile Include="System\Keyboard.cpp" />
     <ClCompile Include="System\Timer.cpp" />
     <ClCompile Include="System\Window.cpp" />
@@ -104,6 +107,9 @@
     <ClInclude Include="Graphics\Graphics.h" />
     <ClInclude Include="Graphics\GraphicsDX.h" />
     <ClInclude Include="Graphics\Model.h" />
+    <ClInclude Include="Graphics\Texture.h" />
+    <ClInclude Include="Graphics\TextureModel.h" />
+    <ClInclude Include="Graphics\TextureShader.h" />
     <ClInclude Include="System\Keyboard.h" />
     <ClInclude Include="System\Target.h" />
     <ClInclude Include="System\Target.Win32.h" />
@@ -116,10 +122,18 @@
     <ClInclude Include="Util\MathUtils.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Graphics\colorShaderPS.hlsl">
+    <None Include="Graphics\Shaders\colorShaderPS.hlsl">
       <FileType>Document</FileType>
     </None>
-    <None Include="Graphics\colorShaderVS.hlsl">
+    <None Include="Graphics\Shaders\colorShaderVS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphics\Shaders\textureShaderPS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Graphics\Shaders\textureShaderVS.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
@@ -196,6 +210,7 @@
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -213,6 +228,7 @@
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -231,6 +247,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -251,6 +268,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

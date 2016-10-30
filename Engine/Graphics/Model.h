@@ -20,20 +20,21 @@ namespace Engine
 		public:
 			Model();
 			Model(const Model&);
-			~Model();
-			bool Initialize(ID3D11Device*);
-			void Shutdown();
-			void Render(ID3D11DeviceContext*);
+			virtual ~Model();
+			bool initialize(ID3D11Device*);
+			void shutdown();
+			void render(ID3D11DeviceContext*);
 
-			int GetIndexCount();
+			int getIndexCount();
 
 		private:
-			bool InitializeBuffers(ID3D11Device*);
-			void ShutdownBuffers();
-			void RenderBuffers(ID3D11DeviceContext*);
-		private:
-			ID3D11Buffer *m_vertexBuffer, *m_indexBuffer;
-			int m_vertexCount, m_indexCount;
+			bool initializeBuffers(ID3D11Device*);
+			void shutdownBuffers();
+			void renderBuffers(ID3D11DeviceContext*);
+
+		protected:
+			ID3D11Buffer *_vertexBuffer, *_indexBuffer;
+			int _vertexCount, _indexCount;
 		};	// class Model
 	}	// namespace Graphics
 }	// namespace Engine
