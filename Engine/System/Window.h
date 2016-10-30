@@ -12,7 +12,7 @@ namespace Engine
 		public:
 			static bool Initialize(HINSTANCE i_hInstance, const char * i_pWindowName, unsigned int i_WindowWidth, unsigned int i_WindowHeight);
 			static bool Destory();
-			static HWND GetWindwsHangle();
+			static HWND GetWindwsHandle();
 			static bool IsFullScreen();
 			static int GetWidth();
 			static int GetHeight();

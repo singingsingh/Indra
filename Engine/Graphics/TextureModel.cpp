@@ -1,27 +1,24 @@
-#include <Engine\Graphics\Model.h>
+#include <Engine\Graphics\TextureModel.h>
 
 namespace Engine
 {
 	namespace Graphics
 	{
-		Model::Model()
+
+		TextureModel::TextureModel()
 		{
 			_vertexBuffer = 0;
 			_indexBuffer = 0;
+			_texture = 0;
 		}
 
-		Model::Model(const Model &other)
+		TextureModel::~TextureModel()
 		{
 		}
 
-		Model::~Model()
-		{
-		}
-
-		bool Model::initialize(ID3D11Device* i_device)
+		bool TextureModel::initialize(ID3D11Device * i_device, const char * i_textureFileName)
 		{
 			bool result;
-
 
 			// Initialize the vertex and index buffer that hold the geometry for the triangle.
 			result = initializeBuffers(i_device);
@@ -30,31 +27,45 @@ namespace Engine
 				return false;
 			}
 
+			// Load the texture for this model.
+			result = loadTexture(i_device, i_textureFileName);
+			if (!result)
+			{
+				return false;
+			}
+
 			return true;
 		}
 
-		void Model::shutdown()
+		void TextureModel::shutdown()
 		{
+			releaseTexture();
 			shutdownBuffers();
 		}
 
-		void Model::render(ID3D11DeviceContext* i_deviceContext)
+		void TextureModel::render(ID3D11DeviceContext* i_deviceContext)
 		{
 			renderBuffers(i_deviceContext);
 		}
 
-		int Model::getIndexCount()
+		int TextureModel::getIndexCount()
 		{
 			return _indexCount;
 		}
 
-		bool Model::initializeBuffers(ID3D11Device* i_device)
+		ID3D11ShaderResourceView * TextureModel::getTexture()
+		{
+			return _texture->getTexture();;
+		}
+
+		bool TextureModel::initializeBuffers(ID3D11Device* i_device)
 		{
 			VertexType* vertices;
 			unsigned long* indices;
 			D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
 			D3D11_SUBRESOURCE_DATA vertexData, indexData;
 			HRESULT result;
+
 
 			// Set the number of vertices in the vertex array.
 			_vertexCount = 3;
@@ -78,20 +89,20 @@ namespace Engine
 
 			// Load the vertex array with data.
 			vertices[0].position = D3DXVECTOR3(-1.0f, -1.0f, 0.0f);  // Bottom left.
-			vertices[0].color = D3DXVECTOR4(1.0f, 0.0f, 0.0f, 0.0f);
+			vertices[0].texture = D3DXVECTOR2(0.0f, 1.0f);
 
 			vertices[1].position = D3DXVECTOR3(0.0f, 1.0f, 0.0f);  // Top middle.
-			vertices[1].color = D3DXVECTOR4(0.0f, 1.0f, 0.0f, 0.0f);
+			vertices[1].texture = D3DXVECTOR2(0.5f, 0.0f);
 
 			vertices[2].position = D3DXVECTOR3(1.0f, -1.0f, 0.0f);  // Bottom right.
-			vertices[2].color = D3DXVECTOR4(0.0f, 0.0f, 1.0f, 0.0f);
+			vertices[2].texture = D3DXVECTOR2(1.0f, 1.0f);
 
 			// Load the index array with data.
 			indices[0] = 0;  // Bottom left.
 			indices[1] = 1;  // Top middle.
 			indices[2] = 2;  // Bottom right.
 
-							 // Set up the description of the static vertex buffer.
+							 // Set up the description of the vertex buffer.
 			vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 			vertexBufferDesc.ByteWidth = sizeof(VertexType) * _vertexCount;
 			vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -121,8 +132,6 @@ namespace Engine
 
 			// Give the subresource structure a pointer to the index data.
 			indexData.pSysMem = indices;
-			indexData.SysMemPitch = 0;
-			indexData.SysMemSlicePitch = 0;
 
 			// Create the index buffer.
 			result = i_device->CreateBuffer(&indexBufferDesc, &indexData, &_indexBuffer);
@@ -141,7 +150,7 @@ namespace Engine
 			return true;
 		}
 
-		void Model::shutdownBuffers()
+		void TextureModel::shutdownBuffers()
 		{
 			// Release the index buffer.
 			if (_indexBuffer)
@@ -156,11 +165,9 @@ namespace Engine
 				_vertexBuffer->Release();
 				_vertexBuffer = 0;
 			}
-
-			return;
 		}
 
-		void Model::renderBuffers(ID3D11DeviceContext* i_deviceContext)
+		void TextureModel::renderBuffers(ID3D11DeviceContext* i_deviceContext)
 		{
 			unsigned int stride;
 			unsigned int offset;
@@ -178,6 +185,39 @@ namespace Engine
 
 			// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
 			i_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		}
+
+		bool TextureModel::loadTexture(ID3D11Device * i_device, const char * i_textureFileName)
+		{
+			bool result;
+
+
+			// Create the texture object.
+			_texture = new Texture;
+			if (!_texture)
+			{
+				return false;
+			}
+
+			// Initialize the texture object.
+			result = _texture->initialize(i_device, i_textureFileName);
+			if (!result)
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+		void TextureModel::releaseTexture()
+		{
+			// Release the texture object.
+			if (_texture)
+			{
+				_texture->shutdown();
+				delete _texture;
+				_texture = nullptr;
+			}
 		}
 	}	// namespace Graphics
 }	// namespace Engine

@@ -96,7 +96,7 @@ namespace Engine
 			return true;
 		}
 
-		HWND Window::GetWindwsHangle()
+		HWND Window::GetWindwsHandle()
 		{
 			return _instance->_windowHandle;
 		}

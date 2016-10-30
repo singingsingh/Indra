@@ -5,6 +5,8 @@
 #include <Engine\Graphics\Camera.h>
 #include <Engine\Graphics\Model.h>
 #include <Engine\Graphics\ColorShader.h>
+#include <Engine\Graphics\TextureShader.h>
+#include <Engine\Graphics\TextureModel.h>
 
 namespace Engine
 {
@@ -27,8 +29,12 @@ namespace Engine
 
 		private:
 			Camera* _currentCamera;
-			Model* _Model;
-			ColorShader* _ColorShader;
+
+			//Model* _Model;
+			//ColorShader* _ColorShader;
+			TextureModel* _textureModel;
+			TextureShader* _textureShader;
+
 			bool VSYNC_ENABLED;
 
 			static Graphics* _instance;

@@ -142,6 +142,15 @@
     <ClCompile Include="Engine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\TextureModel.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Texture.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\TextureShader.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\BitArray.h">
@@ -309,13 +318,28 @@
     <ClInclude Include="Engine.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\TextureModel.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Texture.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\TextureShader.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Graphics\colorShaderPS.hlsl">
+    <FxCompile Include="Graphics\Shaders\colorShaderPS.hlsl">
       <Filter>Source Files\Graphics\shaders</Filter>
-    </None>
-    <None Include="Graphics\colorShaderVS.hlsl">
+    </FxCompile>
+    <FxCompile Include="Graphics\Shaders\colorShaderVS.hlsl">
       <Filter>Source Files\Graphics\shaders</Filter>
-    </None>
+    </FxCompile>
+    <FxCompile Include="Graphics\Shaders\textureShaderPS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Graphics\Shaders\textureShaderVS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
