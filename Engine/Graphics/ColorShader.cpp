@@ -1,5 +1,8 @@
 #include <Engine\Graphics\ColorShader.h>
+
 #include <Engine\System\Window.h>
+
+#include <fstream>
 
 namespace Engine
 {
@@ -221,7 +224,7 @@ namespace Engine
 		{
 			char* compileErrors;
 			size_t bufferSize, i;
-			ofstream fout;
+			std::ofstream fout;
 
 
 			// Get a pointer to the error message text buffer.
