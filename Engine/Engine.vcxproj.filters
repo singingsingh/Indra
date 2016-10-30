@@ -151,6 +151,15 @@
     <ClCompile Include="Graphics\TextureShader.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\DiffuseShader.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\DiffuseModel.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\DiffuseLight.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\BitArray.h">
@@ -327,6 +336,15 @@
     <ClInclude Include="Graphics\TextureShader.h">
       <Filter>Source Files\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\DiffuseShader.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DiffuseModel.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DiffuseLight.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Graphics\Shaders\colorShaderPS.hlsl">
@@ -339,6 +357,12 @@
       <Filter>Source Files\Graphics\shaders</Filter>
     </FxCompile>
     <FxCompile Include="Graphics\Shaders\textureShaderVS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Graphics\Shaders\diffuseLightPS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Graphics\Shaders\diffuseLightVS.hlsl">
       <Filter>Source Files\Graphics\shaders</Filter>
     </FxCompile>
   </ItemGroup>

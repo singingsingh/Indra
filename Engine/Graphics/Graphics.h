@@ -3,10 +3,13 @@
 
 #include <Engine\Graphics\GraphicsDX.h>
 #include <Engine\Graphics\Camera.h>
-#include <Engine\Graphics\Model.h>
-#include <Engine\Graphics\ColorShader.h>
-#include <Engine\Graphics\TextureShader.h>
-#include <Engine\Graphics\TextureModel.h>
+//#include <Engine\Graphics\Model.h>
+//#include <Engine\Graphics\ColorShader.h>
+//#include <Engine\Graphics\TextureShader.h>
+//#include <Engine\Graphics\TextureModel.h>
+#include <Engine\Graphics\DiffuseShader.h>
+#include <Engine\Graphics\DiffuseModel.h>
+#include <Engine\Graphics\DiffuseLight.h>
 
 namespace Engine
 {
@@ -25,15 +28,18 @@ namespace Engine
 			Graphics();
 			bool _initialize(HINSTANCE hInstance, const char * pWindowName, unsigned int WindowWidth, unsigned int WindowHeight);
 			void _shutdown();
-			bool _render();
+			bool _render(float rotation);
 
 		private:
 			Camera* _currentCamera;
 
-			//Model* _Model;
+			//Model* _model;
 			//ColorShader* _ColorShader;
-			TextureModel* _textureModel;
-			TextureShader* _textureShader;
+			//TextureModel* _textureModel;
+			//TextureShader* _textureShader;
+			DiffuseModel* _diffuseModel;
+			DiffuseShader* _diffuseShader;
+			DiffuseLight* _diffuseLight;
 
 			bool VSYNC_ENABLED;
 

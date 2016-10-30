@@ -17,7 +17,11 @@ namespace Engine
 			//_Model = nullptr;
 			//_ColorShader = nullptr;
 			VSYNC_ENABLED = true;
-			_textureShader = nullptr;
+			//_textureShader = nullptr;
+			//_textureModel = nullptr;
+			_diffuseModel = nullptr;
+			_diffuseShader = nullptr;
+			_diffuseLight = nullptr;
 		}
 
 		bool Graphics::Initialize(HINSTANCE i_hInstance, const char * i_pWindowName, unsigned int i_WindowWidth, unsigned int i_WindowHeight)
@@ -50,20 +54,50 @@ namespace Engine
 				return false;
 			}
 
-			// Create the model object.
-			_textureModel = new TextureModel();
-			if (!_textureModel)
-			{
-				return false;
-			}
+			//// Create the model object.
+			//_textureModel = new TextureModel();
+			//if (!_textureModel)
+			//{
+			//	return false;
+			//}
 
-			// Initialize the model object.
-			result = _textureModel->initialize(GraphicsDX::GetDevice(), "Textures/seafloor.dds");
-			if (!result)
-			{
-				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the model object.", "Error", MB_OK);
-				return false;
-			}
+			//// Initialize the model object.
+			//result = _textureModel->initialize(GraphicsDX::GetDevice(), "Textures/seafloor.dds");
+			//if (!result)
+			//{
+			//	MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the model object.", "Error", MB_OK);
+			//	return false;
+			//}
+
+			//// Create the texture shader object.
+			//_textureShader = new TextureShader;
+			//if (!_textureShader)
+			//{
+			//	return false;
+			//}
+
+			//// Initialize the texture shader object.
+			//result = _textureShader->initialize(GraphicsDX::GetDevice());
+			//if (!result)
+			//{
+			//	MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the texture shader object.", "Error", MB_OK);
+			//	return false;
+			//}
+
+			//// Create the model object.
+			//_model = new Model();
+			//if (!_model)
+			//{
+			//	return false;
+			//}
+
+			//// Initialize the model object.
+			//result = _model->initialize(GraphicsDX::GetDevice());
+			//if (!result)
+			//{
+			//	MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the model object.", "Error", MB_OK);
+			//	return false;
+			//}
 
 			//// Create the color shader object.
 			//_ColorShader = new ColorShader();
@@ -80,20 +114,46 @@ namespace Engine
 			//	return false;
 			//}
 
-			// Create the texture shader object.
-			_textureShader = new TextureShader;
-			if (!_textureShader)
+			// Create the model object.
+			_diffuseModel = new DiffuseModel;
+			if (!_diffuseModel)
 			{
 				return false;
 			}
 
-			// Initialize the texture shader object.
-			result = _textureShader->initialize(GraphicsDX::GetDevice());
+			// Initialize the model object.
+			result = _diffuseModel->initialize(GraphicsDX::GetDevice(), "Textures/seafloor.dds");
 			if (!result)
 			{
-				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the texture shader object.", "Error", MB_OK);
+				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the model object.", "Error", MB_OK);
 				return false;
 			}
+
+			// Create the light shader object.
+			_diffuseShader = new DiffuseShader;
+			if (!_diffuseShader)
+			{
+				return false;
+			}
+
+			// Initialize the light shader object.
+			result = _diffuseShader->initialize(GraphicsDX::GetDevice());
+			if (!result)
+			{
+				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the light shader object.", "Error", MB_OK);
+				return false;
+			}
+
+			// Create the light object.
+			_diffuseLight = new DiffuseLight;
+			if (!_diffuseLight)
+			{
+				return false;
+			}
+
+			// Initialize the light object.
+			_diffuseLight->setDiffuseColor(1.0f, 0.0f, 1.0f, 1.0f);
+			_diffuseLight->setDirection(0.0f, 0.0f, 1.0f);
 
 			return true;
 		}
@@ -123,20 +183,42 @@ namespace Engine
 			//	_Model = nullptr;
 			//}
 
-			// Release the color shader object.
-			if (_textureShader)
+			//// Release the color shader object.
+			//if (_textureShader)
+			//{
+			//	_textureShader->shutdown();
+			//	delete _textureShader;
+			//	_textureShader = nullptr;
+			//}
+
+			//// Release the model object.
+			//if (_textureModel)
+			//{
+			//	_textureModel->shutdown();
+			//	delete _textureModel;
+			//	_textureModel = nullptr;
+			//}
+
+			// Release the light object.
+			if (_diffuseLight)
 			{
-				_textureShader->shutdown();
-				delete _textureShader;
-				_textureShader = nullptr;
+				delete _diffuseLight;
+				_diffuseLight = 0;
 			}
 
-			// Release the model object.
-			if (_textureModel)
+			// Release the light shader object.
+			if (_diffuseShader)
 			{
-				_textureModel->shutdown();
-				delete _textureModel;
-				_textureModel = nullptr;
+				_diffuseShader->shutdown();
+				delete _diffuseShader;
+				_diffuseShader = 0;
+			}
+
+			if (_diffuseModel)
+			{
+				_diffuseModel->shutdown();
+				delete _diffuseModel;
+				_diffuseModel = nullptr;
 			}
 
 			GraphicsDX::Shutdown();
@@ -146,10 +228,20 @@ namespace Engine
 
 		bool Graphics::Render()
 		{
-			return _instance->_render();
+			static float rotation = 0.0f;
+
+
+			// Update the rotation variable each frame.
+			rotation += (float)D3DX_PI * 0.01f;
+			if (rotation > 360.0f)
+			{
+				rotation -= 360.0f;
+			}
+
+			return _instance->_render(rotation);
 		}
 
-		bool Graphics::_render()
+		bool Graphics::_render( float i_rotation )
 		{
 			D3DXMATRIX viewMatrix, projectionMatrix, worldMatrix;
 			bool result;
@@ -166,11 +258,15 @@ namespace Engine
 			viewMatrix = _currentCamera->getViewMatrix();
 			projectionMatrix = _currentCamera->getProjectionMatrix();
 
+			// Rotate the world matrix by the rotation value so that the triangle will spin.
+			D3DXMatrixRotationY(&worldMatrix, i_rotation);
+
 			// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
-			_textureModel->render(GraphicsDX::GetDeviceContext());
+			_diffuseModel->render(GraphicsDX::GetDeviceContext());
 
 			// Render the model using the color shader.
-			result = _textureShader->render(GraphicsDX::GetDeviceContext(), _textureModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix, _textureModel->getTexture());
+			result = _diffuseShader->render(GraphicsDX::GetDeviceContext(), _diffuseModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix, 
+				_diffuseModel->getTexture(), _diffuseLight->getDirection(), _diffuseLight->getDiffuseColor());
 			if (!result)
 			{
 				return false;
