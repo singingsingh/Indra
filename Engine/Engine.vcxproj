@@ -53,6 +53,9 @@
     <ClCompile Include="Graphics\Graphics.cpp" />
     <ClCompile Include="Graphics\GraphicsDX.cpp" />
     <ClCompile Include="Graphics\Model.cpp" />
+    <ClCompile Include="Graphics\SpecularLight.cpp" />
+    <ClCompile Include="Graphics\SpecularModel.cpp" />
+    <ClCompile Include="Graphics\SpecularShader.cpp" />
     <ClCompile Include="Graphics\Texture.cpp" />
     <ClCompile Include="Graphics\TextureModel.cpp" />
     <ClCompile Include="Graphics\TextureShader.cpp" />
@@ -113,6 +116,9 @@
     <ClInclude Include="Graphics\Graphics.h" />
     <ClInclude Include="Graphics\GraphicsDX.h" />
     <ClInclude Include="Graphics\Model.h" />
+    <ClInclude Include="Graphics\SpecularLight.h" />
+    <ClInclude Include="Graphics\SpecularModel.h" />
+    <ClInclude Include="Graphics\SpecularShader.h" />
     <ClInclude Include="Graphics\Texture.h" />
     <ClInclude Include="Graphics\TextureModel.h" />
     <ClInclude Include="Graphics\TextureShader.h" />
@@ -148,6 +154,14 @@
       <FileType>Document</FileType>
     </None>
     <None Include="Graphics\Shaders\diffuseLightVS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphics\Shaders\specularLightPS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Graphics\Shaders\specularLightVS.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
@@ -230,7 +244,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>winmm.lib</AdditionalDependencies>
+      <AdditionalDependencies>assimp.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)External\Assimp\lib\x86\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -248,7 +263,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>winmm.lib</AdditionalDependencies>
+      <AdditionalDependencies>assimp.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)External\Assimp\lib\x64\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -269,7 +285,8 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>winmm.lib</AdditionalDependencies>
+      <AdditionalDependencies>assimp.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)External\Assimp\lib\x86\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -290,7 +307,8 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>winmm.lib</AdditionalDependencies>
+      <AdditionalDependencies>assimp.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)External\Assimp\lib\x64\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

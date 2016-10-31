@@ -160,6 +160,15 @@
     <ClCompile Include="Graphics\DiffuseLight.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\SpecularShader.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\SpecularLight.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\SpecularModel.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\BitArray.h">
@@ -345,6 +354,15 @@
     <ClInclude Include="Graphics\DiffuseLight.h">
       <Filter>Source Files\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\SpecularShader.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\SpecularLight.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\SpecularModel.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Graphics\Shaders\colorShaderPS.hlsl">
@@ -363,6 +381,12 @@
       <Filter>Source Files\Graphics\shaders</Filter>
     </FxCompile>
     <FxCompile Include="Graphics\Shaders\diffuseLightVS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Graphics\Shaders\specularLightPS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Graphics\Shaders\specularLightVS.hlsl">
       <Filter>Source Files\Graphics\shaders</Filter>
     </FxCompile>
   </ItemGroup>
