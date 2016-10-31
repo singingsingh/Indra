@@ -13,7 +13,7 @@ namespace Engine
 		{
 		}
 
-		bool Window::_initialize(HINSTANCE i_hInstance, const char * i_pWindowName, unsigned int i_WindowWidth, unsigned int i_WindowHeight)
+		bool Window::_initialize(HINSTANCE i_hInstance, const char * i_pWindowName, unsigned int i_WindowWidth, unsigned int i_WindowHeight, const WORD* i_icon)
 		{
 			_requestedWidth = i_WindowWidth;
 			_requestedHeight = i_WindowHeight;
@@ -31,6 +31,7 @@ namespace Engine
 			wc.cbWndExtra = 0;
 			wc.hInstance = i_hInstance;
 			wc.hIcon = LoadIcon(NULL, IDI_WINLOGO);
+			wc.hIcon = LoadIcon(i_hInstance, MAKEINTRESOURCE(*i_icon));
 			wc.hIconSm = wc.hIcon;
 			wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 			wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
@@ -116,13 +117,13 @@ namespace Engine
 			return _instance->_currentHeight;
 		}
 
-		bool Window::Initialize(HINSTANCE i_hInstance, const char * i_pWindowName, unsigned int i_WindowWidth, unsigned int i_WindowHeight)
+		bool Window::Initialize(HINSTANCE i_hInstance, const char * i_pWindowName, unsigned int i_WindowWidth, unsigned int i_WindowHeight, const WORD* i_icon)
 		{
 			if (_instance == nullptr)
 			{
 				_instance = new Window();
 				DEBUG_PRINT("Creating Window singleton object\n");
-				return _instance->_initialize(i_hInstance, i_pWindowName, i_WindowWidth, i_WindowHeight);
+				return _instance->_initialize(i_hInstance, i_pWindowName, i_WindowWidth, i_WindowHeight, i_icon);
 			}
 			else
 			{

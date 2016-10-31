@@ -10,7 +10,7 @@ namespace Engine
 		class Window
 		{
 		public:
-			static bool Initialize(HINSTANCE i_hInstance, const char * i_pWindowName, unsigned int i_WindowWidth, unsigned int i_WindowHeight);
+			static bool Initialize(HINSTANCE i_hInstance, const char * i_pWindowName, unsigned int i_WindowWidth, unsigned int i_WindowHeight, const WORD* icon);
 			static bool Destory();
 			static HWND GetWindwsHandle();
 			static bool IsFullScreen();
@@ -21,8 +21,7 @@ namespace Engine
 
 			Window();
 
-			bool _initialize(HINSTANCE i_hInstance, const char * i_pWindowName, unsigned int i_WindowWidth, unsigned int i_WindowHeight);
-
+			bool _initialize(HINSTANCE i_hInstance, const char * i_pWindowName, unsigned int i_WindowWidth, unsigned int i_WindowHeight, const WORD* icon);
 			int _requestedWidth, _requestedHeight;
 			int _currentWidth, _currentHeight;
 			HWND _windowHandle;
