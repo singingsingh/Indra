@@ -35,6 +35,9 @@
     <ClInclude Include="Lua\Lua.h" />
     <ClInclude Include="Lua\LuaLoadTask.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\ReadMe.txt" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{19CB0891-1CF3-4BA4-99DC-E7EA719BD6A8}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
