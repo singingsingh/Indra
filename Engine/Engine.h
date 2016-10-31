@@ -5,7 +5,7 @@
 
 namespace Engine
 {
-	void Initialize( const char* saveDataFile, HINSTANCE hInstance, const char * pWindowName, unsigned int WindowWidth, unsigned int WindowHeight);
+	void Initialize( const char* saveDataFile, HINSTANCE hInstance, const char * pWindowName, unsigned int WindowWidth, unsigned int WindowHeight, const WORD* icon);
 	void Shutdown();
 }
 

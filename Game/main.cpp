@@ -11,6 +11,7 @@
 
 #include <Game\Lua\LuaLoadTask.h>
 #include <Game\Config.h>
+#include <Game\resource.h>
 
 #include <stdio.h>
 #include <stdint.h>
@@ -56,10 +57,11 @@ struct AtExit
 int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_lpCmdLine, int i_nCmdShow)
 {
 	//#if defined _DEBUG
-	//	_CrtSetBreakAlloc(241);
+	//	_CrtSetBreakAlloc(252);
 	//#endif // _DEBUG
 
-	Engine::Initialize("Data/SaveData.dat", i_hInstance, "WaterSimulation", Game::WINDOW_WIDTH, Game::WINDOW_HEIGHT);
+	const WORD icon = IDI_EAEGAMEPAD;
+	Engine::Initialize("Data/SaveData.dat", i_hInstance, "WaterSimulation", Game::WINDOW_WIDTH, Game::WINDOW_HEIGHT, &icon);
 	Game::Initialize();
 
 	//Engine::ThreadedFileProcessor &Processor = Engine::ThreadedFileProcessor::GetInstance();

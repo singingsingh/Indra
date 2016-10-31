@@ -22,14 +22,14 @@ namespace Engine
 		{
 		public:
 
-			static bool Initialize(HINSTANCE hInstance, const char * pWindowName, unsigned int WindowWidth, unsigned int WindowHeight);
+			static bool Initialize(HINSTANCE hInstance, const char * pWindowName, unsigned int WindowWidth, unsigned int WindowHeight, const WORD* icon);
 			static void Shutdown();
 			static bool Render();
 			static void SetCamera(Camera* currentCamera);
 
 		private:
 			Graphics();
-			bool _initialize(HINSTANCE hInstance, const char * pWindowName, unsigned int WindowWidth, unsigned int WindowHeight);
+			bool _initialize(HINSTANCE hInstance, const char * pWindowName, unsigned int WindowWidth, unsigned int WindowHeight, const WORD* icon);
 			void _shutdown();
 			bool _render(float rotation);
 

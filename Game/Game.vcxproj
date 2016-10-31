@@ -34,9 +34,16 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Lua\Lua.h" />
     <ClInclude Include="Lua\LuaLoadTask.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Game.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="eaeGamePad.ico" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{19CB0891-1CF3-4BA4-99DC-E7EA719BD6A8}</ProjectGuid>

@@ -11,7 +11,7 @@
 
 namespace Engine
 {
-	void Initialize(const char* i_saveDataFile, HINSTANCE i_hInstance, const char * i_pWindowName, unsigned int i_WindowWidth, unsigned int i_WindowHeight)
+	void Initialize(const char* i_saveDataFile, HINSTANCE i_hInstance, const char * i_pWindowName, unsigned int i_WindowWidth, unsigned int i_WindowHeight, const WORD* i_icon)
 	{
 		// Engine initialization
 		MemoryMgr::CreateMemoryMgr();
@@ -22,7 +22,7 @@ namespace Engine
 		KeyboardNotifier::CreateKeyboardNotifier();
 		Serializer::CreateSerializer(i_saveDataFile);
 		Keyboard::Initialize();
-		Graphics::Graphics::Initialize(i_hInstance, i_pWindowName, i_WindowWidth, i_WindowHeight);
+		Graphics::Graphics::Initialize(i_hInstance, i_pWindowName, i_WindowWidth, i_WindowHeight, i_icon);
 	}
 
 	void Shutdown()

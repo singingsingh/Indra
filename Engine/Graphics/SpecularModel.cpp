@@ -97,7 +97,7 @@ namespace Engine
 			}
 
 			// Load the vertex array and index array with data.
-			for (int i = 0; i<_vertexCount; i++)
+			for (int i = 0; i < _vertexCount; i++)
 			{
 				vertices[i].position = D3DXVECTOR3(_assimpData[i].x, _assimpData[i].y, _assimpData[i].z);
 				vertices[i].texture = D3DXVECTOR2(_assimpData[i].tu, _assimpData[i].tv);
@@ -250,7 +250,7 @@ namespace Engine
 			}
 
 			// Read in the vertex data.
-			for (int i = 0; i<_vertexCount; i++)
+			for (int i = 0; i < _vertexCount; i++)
 			{
 				memcpy(&_assimpData[i].x, &scene->mMeshes[0]->mVertices[i], sizeof(float) * 3);
 				memcpy(&_assimpData[i].nx, &scene->mMeshes[0]->mNormals[i], sizeof(float) * 3);
@@ -263,11 +263,11 @@ namespace Engine
 
 		void SpecularModel::releaseModel()
 		{
-			if (_assimpData)
-			{
-				delete[] _assimpData;
-				_assimpData = 0;
-			}
+			delete[] _assimpData;
+			_assimpData = nullptr;
+
+			delete[] _index;
+			_index = nullptr;
 
 			return;
 		}

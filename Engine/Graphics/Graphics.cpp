@@ -27,13 +27,13 @@ namespace Engine
 			_specularLight = nullptr;
 		}
 
-		bool Graphics::Initialize(HINSTANCE i_hInstance, const char * i_windowName, unsigned int i_windowWidth, unsigned int i_windowHeight)
+		bool Graphics::Initialize(HINSTANCE i_hInstance, const char * i_windowName, unsigned int i_windowWidth, unsigned int i_windowHeight, const WORD* i_icon)
 		{
 			if (_instance == nullptr)
 			{
 				_instance = new Graphics();
 				DEBUG_PRINT("Creating Graphics singleton object\n");
-				return _instance->_initialize(i_hInstance, i_windowName, i_windowWidth, i_windowHeight);
+				return _instance->_initialize(i_hInstance, i_windowName, i_windowWidth, i_windowHeight, i_icon);
 			}
 			else
 			{
@@ -43,11 +43,11 @@ namespace Engine
 			}
 		}
 
-		bool Graphics::_initialize(HINSTANCE i_hInstance, const char * i_pWindowName, unsigned int i_WindowWidth, unsigned int i_WindowHeight)
+		bool Graphics::_initialize(HINSTANCE i_hInstance, const char * i_pWindowName, unsigned int i_WindowWidth, unsigned int i_WindowHeight, const WORD* i_icon)
 		{
 			bool result;
 
-			result = System::Window::Initialize(i_hInstance, i_pWindowName, i_WindowWidth, i_WindowHeight);
+			result = System::Window::Initialize(i_hInstance, i_pWindowName, i_WindowWidth, i_WindowHeight, i_icon);
 
 			// Initialize the Direct3D object.
 			result = GraphicsDX::Initialize(i_WindowWidth, i_WindowHeight, VSYNC_ENABLED, System::Window::GetWindwsHandle(), System::Window::IsFullScreen());
