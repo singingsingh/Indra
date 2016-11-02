@@ -45,6 +45,7 @@
     <ClCompile Include="Engine\PhysicsTickNotifier.cpp" />
     <ClCompile Include="Engine\Serializer.cpp" />
     <ClCompile Include="Engine\World.cpp" />
+    <ClCompile Include="Graphics\Bitmap.cpp" />
     <ClCompile Include="Graphics\Camera.cpp" />
     <ClCompile Include="Graphics\ColorShader.cpp" />
     <ClCompile Include="Graphics\DiffuseLight.cpp" />
@@ -108,6 +109,7 @@
     <ClInclude Include="Engine\PhysicsTickNotifier.h" />
     <ClInclude Include="Engine\Serializer.h" />
     <ClInclude Include="Engine\World.h" />
+    <ClInclude Include="Graphics\Bitmap.h" />
     <ClInclude Include="Graphics\Camera.h" />
     <ClInclude Include="Graphics\ColorShader.h" />
     <ClInclude Include="Graphics\DiffuseLight.h" />

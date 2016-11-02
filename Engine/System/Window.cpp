@@ -140,20 +140,22 @@ LRESULT CALLBACK WndProc(HWND i_hWnd, UINT i_Message, WPARAM i_wParam, LPARAM i_
 {
 	switch (i_Message)
 	{
-	case WM_PAINT:
-	{
-		PAINTSTRUCT			ps;
-
-		HDC hdc = BeginPaint(i_hWnd, &ps);
-		EndPaint(i_hWnd, &ps);
+		//case WM_SETCURSOR:
+		//{
+		//	//		LoadCursor(NULL, IDC_UPARROW);
+		//}
 		break;
-	}
-	case WM_DESTROY:
-		PostQuitMessage(0);
-		break;
+		case WM_PAINT:
+		{
+			PAINTSTRUCT			ps;
 
-	default:
-		return DefWindowProc(i_hWnd, i_Message, i_wParam, i_lParam);
+			HDC hdc = BeginPaint(i_hWnd, &ps);
+			EndPaint(i_hWnd, &ps);
+			break;
+		}
+		case WM_DESTROY:
+			PostQuitMessage(0);
+			break;
 	}
-	return 0;
+	return DefWindowProc(i_hWnd, i_Message, i_wParam, i_lParam);
 }

@@ -5,7 +5,7 @@
 #include <Engine\Graphics\Camera.h>
 //#include <Engine\Graphics\Model.h>
 //#include <Engine\Graphics\ColorShader.h>
-//#include <Engine\Graphics\TextureShader.h>
+#include <Engine\Graphics\TextureShader.h>
 //#include <Engine\Graphics\TextureModel.h>
 //#include <Engine\Graphics\DiffuseShader.h>
 //#include <Engine\Graphics\DiffuseModel.h>
@@ -13,6 +13,7 @@
 #include <Engine\Graphics\SpecularShader.h>
 #include <Engine\Graphics\SpecularModel.h>
 #include <Engine\Graphics\SpecularLight.h>
+#include <Engine\Graphics\Bitmap.h>
 
 namespace Engine
 {
@@ -33,20 +34,19 @@ namespace Engine
 			void _shutdown();
 			bool _render(float rotation);
 
-		private:
 			Camera* _currentCamera;
 
 			//Model* _model;
 			//ColorShader* _ColorShader;
 			//TextureModel* _textureModel;
-			//TextureShader* _textureShader;
+			TextureShader* _textureShader;
 			//DiffuseModel* _diffuseModel;
 			//DiffuseShader* _diffuseShader;
 			//DiffuseLight* _diffuseLight;
 			SpecularModel* _specularModel;
 			SpecularShader* _specularShader;
 			SpecularLight* _specularLight;
-
+			Bitmap* _bitmap;
 			bool VSYNC_ENABLED;
 
 			static Graphics* _instance;

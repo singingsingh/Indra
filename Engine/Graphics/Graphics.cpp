@@ -17,7 +17,7 @@ namespace Engine
 			//_Model = nullptr;
 			//_ColorShader = nullptr;
 			VSYNC_ENABLED = true;
-			//_textureShader = nullptr;
+			_textureShader = nullptr;
 			//_textureModel = nullptr;
 			//_diffuseModel = nullptr;
 			//_diffuseShader = nullptr;
@@ -25,6 +25,7 @@ namespace Engine
 			_specularModel = nullptr;
 			_specularShader = nullptr;
 			_specularLight = nullptr;
+			_bitmap = nullptr;
 		}
 
 		bool Graphics::Initialize(HINSTANCE i_hInstance, const char * i_windowName, unsigned int i_windowWidth, unsigned int i_windowHeight, const WORD* i_icon)
@@ -72,20 +73,20 @@ namespace Engine
 			//	return false;
 			//}
 
-			//// Create the texture shader object.
-			//_textureShader = new TextureShader;
-			//if (!_textureShader)
-			//{
-			//	return false;
-			//}
+			// Create the texture shader object.
+			_textureShader = new TextureShader;
+			if (!_textureShader)
+			{
+				return false;
+			}
 
-			//// Initialize the texture shader object.
-			//result = _textureShader->initialize(GraphicsDX::GetDevice());
-			//if (!result)
-			//{
-			//	MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the texture shader object.", "Error", MB_OK);
-			//	return false;
-			//}
+			// Initialize the texture shader object.
+			result = _textureShader->initialize(GraphicsDX::GetDevice());
+			if (!result)
+			{
+				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the texture shader object.", "Error", MB_OK);
+				return false;
+			}
 
 			//// Create the model object.
 			//_model = new Model();
@@ -196,6 +197,21 @@ namespace Engine
 			_specularLight->setSpecularColor(1.0f, 1.0f, 1.0f, 1.0f);
 			_specularLight->setSpecularPower(32.0f);
 
+			// Create the bitmap object.
+			_bitmap = new Bitmap;
+			if (!_bitmap)
+			{
+				return false;
+			}
+
+			// Initialize the bitmap object.
+			result = _bitmap->initialize(GraphicsDX::GetDevice(), System::Window::GetWidth(), System::Window::GetHeight(), "Assets/Textures/seafloor.dds", 256, 256);
+			if (!result)
+			{
+				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the bitmap object.", "Error", MB_OK);
+				return false;
+			}
+
 			return true;
 		}
 
@@ -224,13 +240,13 @@ namespace Engine
 			//	_Model = nullptr;
 			//}
 
-			//// Release the color shader object.
-			//if (_textureShader)
-			//{
-			//	_textureShader->shutdown();
-			//	delete _textureShader;
-			//	_textureShader = nullptr;
-			//}
+			// Release the color shader object.
+			if (_textureShader)
+			{
+				_textureShader->shutdown();
+				delete _textureShader;
+				_textureShader = nullptr;
+			}
 
 			//// Release the model object.
 			//if (_textureModel)
@@ -261,6 +277,13 @@ namespace Engine
 			//	delete _diffuseModel;
 			//	_diffuseModel = nullptr;
 			//}
+			// Release the bitmap object.
+			if (_bitmap)
+			{
+				_bitmap->shutdown();
+				delete _bitmap;
+				_bitmap = nullptr;
+			}
 
 			delete _specularLight;
 			_specularLight = nullptr;
@@ -295,37 +318,54 @@ namespace Engine
 
 		bool Graphics::_render( float i_rotation )
 		{
-			D3DXMATRIX viewMatrix, projectionMatrix, worldMatrix;
-			bool result;
-
-
-			// Clear the buffers to begin the scene.
 			GraphicsDX::BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 
-			// Generate the view matrix based on the camera's position.
-			_currentCamera->update();
+			D3DXMATRIX viewMatrix, projectionMatrix, worldMatrix, orthoMatrix;
+			bool result;
 
-			// Get the world, view, and projection matrices from the camera and d3d objects.
-			worldMatrix = GraphicsDX::GetWorldMatrix();
-			viewMatrix = _currentCamera->getViewMatrix();
-			projectionMatrix = _currentCamera->getProjectionMatrix();
-
-			// Rotate the world matrix by the rotation value so that the triangle will spin.
-			D3DXMatrixRotationY(&worldMatrix, i_rotation);
-
-			// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
-			_specularModel->render(GraphicsDX::GetDeviceContext());
-
-			// Render the model using the color shader.
-			result = _specularShader->render(GraphicsDX::GetDeviceContext(), _specularModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
-				_specularModel->getTexture(), _specularLight->getDirection(), _specularLight->getAmbientColor(), _specularLight->getDiffuseColor(), _currentCamera->getPosition(),
-				_specularLight->getSpecularColor(), _specularLight->getSpecularPower());
-			if (!result)
+			// render 3D stuff
 			{
-				return false;
+				_currentCamera->update();
+
+				worldMatrix = GraphicsDX::GetWorldMatrix();
+				viewMatrix = _currentCamera->getViewMatrix();
+				projectionMatrix = _currentCamera->getProjectionMatrix();
+
+				D3DXMatrixRotationY(&worldMatrix, i_rotation);
+
+				_specularModel->render(GraphicsDX::GetDeviceContext());
+
+				result = _specularShader->render(GraphicsDX::GetDeviceContext(), _specularModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+					_specularModel->getTexture(), _specularLight->getDirection(), _specularLight->getAmbientColor(), _specularLight->getDiffuseColor(), _currentCamera->getPosition(),
+					_specularLight->getSpecularColor(), _specularLight->getSpecularPower());
+				if (!result)
+				{
+					Assert(false);
+				}
 			}
 
-			// Present the rendered scene to the screen.
+			// render 2D stuff
+			{
+				GraphicsDX::TurnZBufferOff();
+				
+				worldMatrix = GraphicsDX::GetWorldMatrix();
+				orthoMatrix = _currentCamera->getOrthogonalMatrix();
+				// Put the bitmap vertex and index buffers on the graphics pipeline to prepare them for drawing.
+				result = _bitmap->render(GraphicsDX::GetDeviceContext(), 10, 10);
+				if (!result)
+				{
+					return false;
+				}
+
+				// Render the bitmap with the texture shader.
+				result = _textureShader->render(GraphicsDX::GetDeviceContext(), _bitmap->getIndexCount(), worldMatrix, viewMatrix, orthoMatrix, _bitmap->getTexture());
+				if (!result)
+				{
+					return false;
+				}
+				GraphicsDX::TurnZBufferOn();
+			}
+
 			GraphicsDX::EndScene();
 			return true;
 		}
