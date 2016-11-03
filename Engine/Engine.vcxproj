@@ -45,20 +45,26 @@
     <ClCompile Include="Engine\PhysicsTickNotifier.cpp" />
     <ClCompile Include="Engine\Serializer.cpp" />
     <ClCompile Include="Engine\World.cpp" />
+    <ClCompile Include="Graphics\Bitmap.cpp" />
     <ClCompile Include="Graphics\Camera.cpp" />
     <ClCompile Include="Graphics\ColorShader.cpp" />
     <ClCompile Include="Graphics\DiffuseLight.cpp" />
     <ClCompile Include="Graphics\DiffuseModel.cpp" />
     <ClCompile Include="Graphics\DiffuseShader.cpp" />
+    <ClCompile Include="Graphics\Font.cpp" />
+    <ClCompile Include="Graphics\FontShader.cpp" />
     <ClCompile Include="Graphics\Graphics.cpp" />
     <ClCompile Include="Graphics\GraphicsDX.cpp" />
     <ClCompile Include="Graphics\Model.cpp" />
     <ClCompile Include="Graphics\SpecularLight.cpp" />
     <ClCompile Include="Graphics\SpecularModel.cpp" />
     <ClCompile Include="Graphics\SpecularShader.cpp" />
+    <ClCompile Include="Graphics\Text.cpp" />
     <ClCompile Include="Graphics\Texture.cpp" />
     <ClCompile Include="Graphics\TextureModel.cpp" />
     <ClCompile Include="Graphics\TextureShader.cpp" />
+    <ClCompile Include="System\CPU.cpp" />
+    <ClCompile Include="System\FPS.cpp" />
     <ClCompile Include="System\Keyboard.cpp" />
     <ClCompile Include="System\Timer.cpp" />
     <ClCompile Include="System\Window.cpp" />
@@ -108,20 +114,26 @@
     <ClInclude Include="Engine\PhysicsTickNotifier.h" />
     <ClInclude Include="Engine\Serializer.h" />
     <ClInclude Include="Engine\World.h" />
+    <ClInclude Include="Graphics\Bitmap.h" />
     <ClInclude Include="Graphics\Camera.h" />
     <ClInclude Include="Graphics\ColorShader.h" />
     <ClInclude Include="Graphics\DiffuseLight.h" />
     <ClInclude Include="Graphics\DiffuseModel.h" />
     <ClInclude Include="Graphics\DiffuseShader.h" />
+    <ClInclude Include="Graphics\Font.h" />
+    <ClInclude Include="Graphics\FontShader.h" />
     <ClInclude Include="Graphics\Graphics.h" />
     <ClInclude Include="Graphics\GraphicsDX.h" />
     <ClInclude Include="Graphics\Model.h" />
     <ClInclude Include="Graphics\SpecularLight.h" />
     <ClInclude Include="Graphics\SpecularModel.h" />
     <ClInclude Include="Graphics\SpecularShader.h" />
+    <ClInclude Include="Graphics\Text.h" />
     <ClInclude Include="Graphics\Texture.h" />
     <ClInclude Include="Graphics\TextureModel.h" />
     <ClInclude Include="Graphics\TextureShader.h" />
+    <ClInclude Include="System\CPU.h" />
+    <ClInclude Include="System\FPS.h" />
     <ClInclude Include="System\Keyboard.h" />
     <ClInclude Include="System\Target.h" />
     <ClInclude Include="System\Target.Win32.h" />
@@ -162,6 +174,14 @@
       <FileType>Document</FileType>
     </None>
     <None Include="Graphics\Shaders\specularLightVS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphics\Shaders\fontPS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Graphics\Shaders\fontVS.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

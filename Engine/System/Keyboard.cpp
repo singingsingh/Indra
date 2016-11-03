@@ -122,7 +122,7 @@ namespace Engine
 
 				if (bGotMsg)
 				{
-					if (TranslateAccelerator(System::Window::GetWindwsHandle(), NULL, &msg) == 0)
+					//if (TranslateAccelerator(System::Window::GetWindwsHandle(), NULL, &msg) == 0)
 					{
 						TranslateMessage(&msg);
 						DispatchMessage(&msg);

@@ -4,6 +4,7 @@
 #include <Engine\Util\ConsolePrint.h>
 #include <Engine\Util\Assert.h>
 #include <Engine\System\Window.h>
+#include <Engine\Graphics\Camera.h>
 
 namespace Engine
 {
@@ -16,8 +17,8 @@ namespace Engine
 			_currentCamera = nullptr;
 			//_Model = nullptr;
 			//_ColorShader = nullptr;
-			VSYNC_ENABLED = true;
-			//_textureShader = nullptr;
+			VSYNC_ENABLED = false;
+			_textureShader = nullptr;
 			//_textureModel = nullptr;
 			//_diffuseModel = nullptr;
 			//_diffuseShader = nullptr;
@@ -25,6 +26,10 @@ namespace Engine
 			_specularModel = nullptr;
 			_specularShader = nullptr;
 			_specularLight = nullptr;
+			_bitmap = nullptr;
+			_text = nullptr;
+			_cpuUsage = nullptr;
+			_fps = nullptr;
 		}
 
 		bool Graphics::Initialize(HINSTANCE i_hInstance, const char * i_windowName, unsigned int i_windowWidth, unsigned int i_windowHeight, const WORD* i_icon)
@@ -72,20 +77,20 @@ namespace Engine
 			//	return false;
 			//}
 
-			//// Create the texture shader object.
-			//_textureShader = new TextureShader;
-			//if (!_textureShader)
-			//{
-			//	return false;
-			//}
+			// Create the texture shader object.
+			_textureShader = new TextureShader;
+			if (!_textureShader)
+			{
+				return false;
+			}
 
-			//// Initialize the texture shader object.
-			//result = _textureShader->initialize(GraphicsDX::GetDevice());
-			//if (!result)
-			//{
-			//	MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the texture shader object.", "Error", MB_OK);
-			//	return false;
-			//}
+			// Initialize the texture shader object.
+			result = _textureShader->initialize(GraphicsDX::GetDevice());
+			if (!result)
+			{
+				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the texture shader object.", "Error", MB_OK);
+				return false;
+			}
 
 			//// Create the model object.
 			//_model = new Model();
@@ -196,6 +201,48 @@ namespace Engine
 			_specularLight->setSpecularColor(1.0f, 1.0f, 1.0f, 1.0f);
 			_specularLight->setSpecularPower(32.0f);
 
+			// Create the bitmap object.
+			_bitmap = new Bitmap;
+			if (!_bitmap)
+			{
+				return false;
+			}
+
+			// Initialize the bitmap object.
+			result = _bitmap->initialize(GraphicsDX::GetDevice(), System::Window::GetWidth(), System::Window::GetHeight(), "Assets/Textures/seafloor.dds", 256, 256);
+			if (!result)
+			{
+				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the bitmap object.", "Error", MB_OK);
+				return false;
+			}
+
+			//// Initialize a base view matrix with the camera for 2D user interface rendering.
+			//Camera *camera = new Camera();
+			//camera->SetPosition(0.0f, 0.0f, -1.0f);
+			//camera->Render();
+			//camera->GetViewMatrix(baseViewMatrix);
+
+			// Create the text object.
+			_text = new Text;
+			if (!_text)
+			{
+				return false;
+			}
+
+			// Initialize the text object.
+			result = _text->initialize(GraphicsDX::GetDevice(), GraphicsDX::GetDeviceContext(), i_WindowWidth, i_WindowHeight);
+			if (!result)
+			{
+				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the text object.", "Error", MB_OK);
+				return false;
+			}
+
+			_fps = new System::FPS();
+			_fps->initialize();
+
+			_cpuUsage = new System::CPU();
+			_cpuUsage->initialize();
+
 			return true;
 		}
 
@@ -208,6 +255,19 @@ namespace Engine
 
 		void Graphics::_shutdown()
 		{
+			if (_cpuUsage)
+			{
+				_cpuUsage->shutdown();
+				delete _cpuUsage;
+				_cpuUsage = nullptr;
+			}
+
+			if (_fps)
+			{
+				delete _fps;
+				_fps = nullptr;
+			}
+
 			//// Release the color shader object.
 			//if (_ColorShader)
 			//{
@@ -224,13 +284,13 @@ namespace Engine
 			//	_Model = nullptr;
 			//}
 
-			//// Release the color shader object.
-			//if (_textureShader)
-			//{
-			//	_textureShader->shutdown();
-			//	delete _textureShader;
-			//	_textureShader = nullptr;
-			//}
+			// Release the color shader object.
+			if (_textureShader)
+			{
+				_textureShader->shutdown();
+				delete _textureShader;
+				_textureShader = nullptr;
+			}
 
 			//// Release the model object.
 			//if (_textureModel)
@@ -261,6 +321,13 @@ namespace Engine
 			//	delete _diffuseModel;
 			//	_diffuseModel = nullptr;
 			//}
+			// Release the bitmap object.
+			if (_bitmap)
+			{
+				_bitmap->shutdown();
+				delete _bitmap;
+				_bitmap = nullptr;
+			}
 
 			delete _specularLight;
 			_specularLight = nullptr;
@@ -273,6 +340,13 @@ namespace Engine
 			delete _specularShader;
 			_specularShader = nullptr;
 
+			if (_text)
+			{
+				_text->shutdown();
+				delete _text;
+				_text = nullptr;
+			}
+
 			GraphicsDX::Shutdown();
 
 			System::Window::Destory();
@@ -284,10 +358,16 @@ namespace Engine
 
 
 			// Update the rotation variable each frame.
-			rotation += (float)D3DX_PI * 0.01f;
+			rotation += (float)D3DX_PI * 0.001f;
 			if (rotation > 360.0f)
 			{
 				rotation -= 360.0f;
+			}
+
+			// set the fps and cpu usage
+			{
+				_instance->_cpuUsage->frame();
+				_instance->_fps->frame();
 			}
 
 			return _instance->_render(rotation);
@@ -295,37 +375,69 @@ namespace Engine
 
 		bool Graphics::_render( float i_rotation )
 		{
-			D3DXMATRIX viewMatrix, projectionMatrix, worldMatrix;
-			bool result;
-
-
-			// Clear the buffers to begin the scene.
 			GraphicsDX::BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 
-			// Generate the view matrix based on the camera's position.
-			_currentCamera->update();
+			D3DXMATRIX viewMatrix, projectionMatrix, worldMatrix, orthoMatrix;
+			bool result;
 
-			// Get the world, view, and projection matrices from the camera and d3d objects.
-			worldMatrix = GraphicsDX::GetWorldMatrix();
-			viewMatrix = _currentCamera->getViewMatrix();
-			projectionMatrix = _currentCamera->getProjectionMatrix();
-
-			// Rotate the world matrix by the rotation value so that the triangle will spin.
-			D3DXMatrixRotationY(&worldMatrix, i_rotation);
-
-			// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
-			_specularModel->render(GraphicsDX::GetDeviceContext());
-
-			// Render the model using the color shader.
-			result = _specularShader->render(GraphicsDX::GetDeviceContext(), _specularModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
-				_specularModel->getTexture(), _specularLight->getDirection(), _specularLight->getAmbientColor(), _specularLight->getDiffuseColor(), _currentCamera->getPosition(),
-				_specularLight->getSpecularColor(), _specularLight->getSpecularPower());
-			if (!result)
+			// render 3D stuff
 			{
-				return false;
+				_currentCamera->update();
+
+				worldMatrix = GraphicsDX::GetWorldMatrix();
+				viewMatrix = _currentCamera->getViewMatrix();
+				projectionMatrix = _currentCamera->getProjectionMatrix();
+
+				D3DXMatrixRotationY(&worldMatrix, i_rotation);
+
+				_specularModel->render(GraphicsDX::GetDeviceContext());
+
+				result = _specularShader->render(GraphicsDX::GetDeviceContext(), _specularModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+					_specularModel->getTexture(), _specularLight->getDirection(), _specularLight->getAmbientColor(), _specularLight->getDiffuseColor(), _currentCamera->getPosition(),
+					_specularLight->getSpecularColor(), _specularLight->getSpecularPower());
+				if (!result)
+				{
+					Assert(false);
+				}
 			}
 
-			// Present the rendered scene to the screen.
+			// render 2D stuff
+			{
+				GraphicsDX::TurnZBufferOff();
+
+				// UI Rendering
+				{
+					worldMatrix = GraphicsDX::GetWorldMatrix();
+					orthoMatrix = _currentCamera->getOrthogonalMatrix();
+					result = _bitmap->render(GraphicsDX::GetDeviceContext(), 10, 10);
+					if (!result)
+					{
+						return false;
+					}
+					result = _textureShader->render(GraphicsDX::GetDeviceContext(), _bitmap->getIndexCount(), worldMatrix, viewMatrix, orthoMatrix, _bitmap->getTexture());
+					if (!result)
+					{
+						return false;
+					}
+				}
+
+				// Font Rendering
+				{
+					GraphicsDX::TurnOnAlphaBlending();
+					_text->setFPS(_fps->getFps());
+					_text->setCPU(_cpuUsage->getCpuPercentage());
+					result = _text->render(GraphicsDX::GetDeviceContext(), worldMatrix, orthoMatrix);
+					if (!result)
+					{
+						return false;
+					}
+
+					GraphicsDX::TurnOffAlphaBlending();
+				}
+
+				GraphicsDX::TurnZBufferOn();
+			}
+
 			GraphicsDX::EndScene();
 			return true;
 		}
@@ -333,6 +445,10 @@ namespace Engine
 		void Graphics::SetCamera(Camera * i_currentCamera)
 		{
 			_instance->_currentCamera = i_currentCamera;
+		}
+		Camera * Graphics::GetCamera()
+		{
+			return _instance->_currentCamera;
 		}
 	}
 }

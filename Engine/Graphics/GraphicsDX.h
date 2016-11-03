@@ -30,6 +30,12 @@ namespace Engine
 		static D3DXMATRIX GetWorldMatrix();
 		static void GetVideoCardInfo(char*, int&);
 
+		static void TurnZBufferOn();
+		static void TurnZBufferOff();
+
+		static void TurnOnAlphaBlending();
+		static void TurnOffAlphaBlending();
+
 	private:
 
 		GraphicsDX();
@@ -52,6 +58,9 @@ namespace Engine
 		ID3D11DepthStencilView* _depthStencilView;
 		ID3D11RasterizerState* _rasterState;
 		D3DXMATRIX _worldMatrix;
+		ID3D11DepthStencilState* _depthDisabledStencilState;
+		ID3D11BlendState* _alphaEnableBlendingState;
+		ID3D11BlendState* _alphaDisableBlendingState;
 
 		static GraphicsDX* _instance;
 	};	// class GraphicsDX
