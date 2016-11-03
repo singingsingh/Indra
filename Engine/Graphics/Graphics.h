@@ -14,6 +14,7 @@
 #include <Engine\Graphics\SpecularModel.h>
 #include <Engine\Graphics\SpecularLight.h>
 #include <Engine\Graphics\Bitmap.h>
+#include <Engine\Graphics\Text.h>
 
 namespace Engine
 {
@@ -27,6 +28,7 @@ namespace Engine
 			static void Shutdown();
 			static bool Render();
 			static void SetCamera(Camera* currentCamera);
+			static Camera* GetCamera();
 
 		private:
 			Graphics();
@@ -48,6 +50,7 @@ namespace Engine
 			SpecularLight* _specularLight;
 			Bitmap* _bitmap;
 			bool VSYNC_ENABLED;
+			Text* _text;
 
 			static Graphics* _instance;
 		};

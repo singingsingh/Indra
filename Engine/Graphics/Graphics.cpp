@@ -4,6 +4,7 @@
 #include <Engine\Util\ConsolePrint.h>
 #include <Engine\Util\Assert.h>
 #include <Engine\System\Window.h>
+#include <Engine\Graphics\Camera.h>
 
 namespace Engine
 {
@@ -26,6 +27,7 @@ namespace Engine
 			_specularShader = nullptr;
 			_specularLight = nullptr;
 			_bitmap = nullptr;
+			_text = nullptr;
 		}
 
 		bool Graphics::Initialize(HINSTANCE i_hInstance, const char * i_windowName, unsigned int i_windowWidth, unsigned int i_windowHeight, const WORD* i_icon)
@@ -212,6 +214,27 @@ namespace Engine
 				return false;
 			}
 
+			//// Initialize a base view matrix with the camera for 2D user interface rendering.
+			//Camera *camera = new Camera();
+			//camera->SetPosition(0.0f, 0.0f, -1.0f);
+			//camera->Render();
+			//camera->GetViewMatrix(baseViewMatrix);
+
+			// Create the text object.
+			_text = new Text;
+			if (!_text)
+			{
+				return false;
+			}
+
+			// Initialize the text object.
+			result = _text->initialize(GraphicsDX::GetDevice(), GraphicsDX::GetDeviceContext(), i_WindowWidth, i_WindowHeight);
+			if (!result)
+			{
+				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the text object.", "Error", MB_OK);
+				return false;
+			}
+
 			return true;
 		}
 
@@ -296,6 +319,13 @@ namespace Engine
 			delete _specularShader;
 			_specularShader = nullptr;
 
+			if (_text)
+			{
+				_text->shutdown();
+				delete _text;
+				_text = nullptr;
+			}
+
 			GraphicsDX::Shutdown();
 
 			System::Window::Destory();
@@ -347,22 +377,36 @@ namespace Engine
 			// render 2D stuff
 			{
 				GraphicsDX::TurnZBufferOff();
-				
-				worldMatrix = GraphicsDX::GetWorldMatrix();
-				orthoMatrix = _currentCamera->getOrthogonalMatrix();
-				// Put the bitmap vertex and index buffers on the graphics pipeline to prepare them for drawing.
-				result = _bitmap->render(GraphicsDX::GetDeviceContext(), 10, 10);
-				if (!result)
+
+				// UI Rendering
 				{
-					return false;
+					worldMatrix = GraphicsDX::GetWorldMatrix();
+					orthoMatrix = _currentCamera->getOrthogonalMatrix();
+					result = _bitmap->render(GraphicsDX::GetDeviceContext(), 10, 10);
+					if (!result)
+					{
+						return false;
+					}
+					result = _textureShader->render(GraphicsDX::GetDeviceContext(), _bitmap->getIndexCount(), worldMatrix, viewMatrix, orthoMatrix, _bitmap->getTexture());
+					if (!result)
+					{
+						return false;
+					}
 				}
 
-				// Render the bitmap with the texture shader.
-				result = _textureShader->render(GraphicsDX::GetDeviceContext(), _bitmap->getIndexCount(), worldMatrix, viewMatrix, orthoMatrix, _bitmap->getTexture());
-				if (!result)
+				// Font Rendering
 				{
-					return false;
+					GraphicsDX::TurnOnAlphaBlending();
+
+					result = _text->render(GraphicsDX::GetDeviceContext(), worldMatrix, orthoMatrix);
+					if (!result)
+					{
+						return false;
+					}
+
+					GraphicsDX::TurnOffAlphaBlending();
 				}
+
 				GraphicsDX::TurnZBufferOn();
 			}
 
@@ -373,6 +417,10 @@ namespace Engine
 		void Graphics::SetCamera(Camera * i_currentCamera)
 		{
 			_instance->_currentCamera = i_currentCamera;
+		}
+		Camera * Graphics::GetCamera()
+		{
+			return _instance->_currentCamera;
 		}
 	}
 }

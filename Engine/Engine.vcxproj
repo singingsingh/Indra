@@ -51,12 +51,15 @@
     <ClCompile Include="Graphics\DiffuseLight.cpp" />
     <ClCompile Include="Graphics\DiffuseModel.cpp" />
     <ClCompile Include="Graphics\DiffuseShader.cpp" />
+    <ClCompile Include="Graphics\Font.cpp" />
+    <ClCompile Include="Graphics\FontShader.cpp" />
     <ClCompile Include="Graphics\Graphics.cpp" />
     <ClCompile Include="Graphics\GraphicsDX.cpp" />
     <ClCompile Include="Graphics\Model.cpp" />
     <ClCompile Include="Graphics\SpecularLight.cpp" />
     <ClCompile Include="Graphics\SpecularModel.cpp" />
     <ClCompile Include="Graphics\SpecularShader.cpp" />
+    <ClCompile Include="Graphics\Text.cpp" />
     <ClCompile Include="Graphics\Texture.cpp" />
     <ClCompile Include="Graphics\TextureModel.cpp" />
     <ClCompile Include="Graphics\TextureShader.cpp" />
@@ -115,12 +118,15 @@
     <ClInclude Include="Graphics\DiffuseLight.h" />
     <ClInclude Include="Graphics\DiffuseModel.h" />
     <ClInclude Include="Graphics\DiffuseShader.h" />
+    <ClInclude Include="Graphics\Font.h" />
+    <ClInclude Include="Graphics\FontShader.h" />
     <ClInclude Include="Graphics\Graphics.h" />
     <ClInclude Include="Graphics\GraphicsDX.h" />
     <ClInclude Include="Graphics\Model.h" />
     <ClInclude Include="Graphics\SpecularLight.h" />
     <ClInclude Include="Graphics\SpecularModel.h" />
     <ClInclude Include="Graphics\SpecularShader.h" />
+    <ClInclude Include="Graphics\Text.h" />
     <ClInclude Include="Graphics\Texture.h" />
     <ClInclude Include="Graphics\TextureModel.h" />
     <ClInclude Include="Graphics\TextureShader.h" />
@@ -164,6 +170,14 @@
       <FileType>Document</FileType>
     </None>
     <None Include="Graphics\Shaders\specularLightVS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphics\Shaders\fontPS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Graphics\Shaders\fontVS.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

@@ -18,6 +18,9 @@ namespace Engine
 		_depthStencilView = nullptr;
 		_rasterState = nullptr;
 		_depthDisabledStencilState = nullptr;
+
+		_alphaEnableBlendingState = nullptr;
+		_alphaDisableBlendingState = nullptr;
 	}
 
 	GraphicsDX::~GraphicsDX()
@@ -43,9 +46,9 @@ namespace Engine
 		D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 		D3D11_RASTERIZER_DESC rasterDesc;
 		D3D11_VIEWPORT viewport;
-
 		D3D11_DEPTH_STENCIL_DESC depthDisabledStencilDesc;
 
+		D3D11_BLEND_DESC blendStateDescription;
 
 		// Store the vsync setting.
 		_vsyncEnabled = vsync;
@@ -367,6 +370,35 @@ namespace Engine
 			return false;
 		}
 
+		// Clear the blend state description.
+		ZeroMemory(&blendStateDescription, sizeof(D3D11_BLEND_DESC));
+		// Create an alpha enabled blend state description.
+		blendStateDescription.RenderTarget[0].BlendEnable = TRUE;
+		blendStateDescription.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+		blendStateDescription.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+		blendStateDescription.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+		blendStateDescription.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+		blendStateDescription.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+		blendStateDescription.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+		blendStateDescription.RenderTarget[0].RenderTargetWriteMask = 0x0f;
+
+		// Create the blend state using the description.
+		result = GetDevice()->CreateBlendState(&blendStateDescription, &_alphaEnableBlendingState);
+		if (FAILED(result))
+		{
+			return false;
+		}
+
+		// Modify the description to create an alpha disabled blend state description.
+		blendStateDescription.RenderTarget[0].BlendEnable = FALSE;
+
+		// Create the blend state using the description.
+		result = GetDevice()->CreateBlendState(&blendStateDescription, &_alphaDisableBlendingState);
+		if (FAILED(result))
+		{
+			return false;
+		}
+
 		return true;
 	}
 
@@ -405,6 +437,18 @@ namespace Engine
 		{
 			_depthDisabledStencilState->Release();
 			_depthDisabledStencilState = nullptr;
+		}
+
+		if (_alphaEnableBlendingState)
+		{
+			_alphaEnableBlendingState->Release();
+			_alphaEnableBlendingState = 0;
+		}
+
+		if (_alphaDisableBlendingState)
+		{
+			_alphaDisableBlendingState->Release();
+			_alphaDisableBlendingState = 0;
 		}
 
 		if (_rasterState)
@@ -465,6 +509,36 @@ namespace Engine
 	void GraphicsDX::TurnZBufferOff()
 	{
 		_instance->_deviceContext->OMSetDepthStencilState(_instance->_depthDisabledStencilState, 1);
+	}
+
+	void GraphicsDX::TurnOnAlphaBlending()
+	{
+		float blendFactor[4];
+
+
+		// Setup the blend factor.
+		blendFactor[0] = 0.0f;
+		blendFactor[1] = 0.0f;
+		blendFactor[2] = 0.0f;
+		blendFactor[3] = 0.0f;
+
+		// Turn on the alpha blending.
+		_instance->_deviceContext->OMSetBlendState(_instance->_alphaEnableBlendingState, blendFactor, 0xffffffff);
+	}
+
+	void GraphicsDX::TurnOffAlphaBlending()
+	{
+		float blendFactor[4];
+
+
+		// Setup the blend factor.
+		blendFactor[0] = 0.0f;
+		blendFactor[1] = 0.0f;
+		blendFactor[2] = 0.0f;
+		blendFactor[3] = 0.0f;
+
+		// Turn off the alpha blending.
+		_instance->_deviceContext->OMSetBlendState(_instance->_alphaDisableBlendingState, blendFactor, 0xffffffff);
 	}
 
 	void GraphicsDX::BeginScene(float red, float green, float blue, float alpha)
