@@ -16,6 +16,9 @@
 #include <Engine\Graphics\Bitmap.h>
 #include <Engine\Graphics\Text.h>
 
+#include <Engine\System\CPU.h>
+#include <Engine\System\FPS.h>
+
 namespace Engine
 {
 	namespace Graphics
@@ -51,6 +54,8 @@ namespace Engine
 			Bitmap* _bitmap;
 			bool VSYNC_ENABLED;
 			Text* _text;
+			System::FPS* _fps;
+			System::CPU* _cpuUsage;
 
 			static Graphics* _instance;
 		};

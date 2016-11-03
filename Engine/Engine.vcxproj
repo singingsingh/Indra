@@ -63,6 +63,8 @@
     <ClCompile Include="Graphics\Texture.cpp" />
     <ClCompile Include="Graphics\TextureModel.cpp" />
     <ClCompile Include="Graphics\TextureShader.cpp" />
+    <ClCompile Include="System\CPU.cpp" />
+    <ClCompile Include="System\FPS.cpp" />
     <ClCompile Include="System\Keyboard.cpp" />
     <ClCompile Include="System\Timer.cpp" />
     <ClCompile Include="System\Window.cpp" />
@@ -130,6 +132,8 @@
     <ClInclude Include="Graphics\Texture.h" />
     <ClInclude Include="Graphics\TextureModel.h" />
     <ClInclude Include="Graphics\TextureShader.h" />
+    <ClInclude Include="System\CPU.h" />
+    <ClInclude Include="System\FPS.h" />
     <ClInclude Include="System\Keyboard.h" />
     <ClInclude Include="System\Target.h" />
     <ClInclude Include="System\Target.Win32.h" />

@@ -17,7 +17,7 @@ namespace Engine
 			_currentCamera = nullptr;
 			//_Model = nullptr;
 			//_ColorShader = nullptr;
-			VSYNC_ENABLED = true;
+			VSYNC_ENABLED = false;
 			_textureShader = nullptr;
 			//_textureModel = nullptr;
 			//_diffuseModel = nullptr;
@@ -28,6 +28,8 @@ namespace Engine
 			_specularLight = nullptr;
 			_bitmap = nullptr;
 			_text = nullptr;
+			_cpuUsage = nullptr;
+			_fps = nullptr;
 		}
 
 		bool Graphics::Initialize(HINSTANCE i_hInstance, const char * i_windowName, unsigned int i_windowWidth, unsigned int i_windowHeight, const WORD* i_icon)
@@ -235,6 +237,12 @@ namespace Engine
 				return false;
 			}
 
+			_fps = new System::FPS();
+			_fps->initialize();
+
+			_cpuUsage = new System::CPU();
+			_cpuUsage->initialize();
+
 			return true;
 		}
 
@@ -247,6 +255,19 @@ namespace Engine
 
 		void Graphics::_shutdown()
 		{
+			if (_cpuUsage)
+			{
+				_cpuUsage->shutdown();
+				delete _cpuUsage;
+				_cpuUsage = nullptr;
+			}
+
+			if (_fps)
+			{
+				delete _fps;
+				_fps = nullptr;
+			}
+
 			//// Release the color shader object.
 			//if (_ColorShader)
 			//{
@@ -337,10 +358,16 @@ namespace Engine
 
 
 			// Update the rotation variable each frame.
-			rotation += (float)D3DX_PI * 0.01f;
+			rotation += (float)D3DX_PI * 0.001f;
 			if (rotation > 360.0f)
 			{
 				rotation -= 360.0f;
+			}
+
+			// set the fps and cpu usage
+			{
+				_instance->_cpuUsage->frame();
+				_instance->_fps->frame();
 			}
 
 			return _instance->_render(rotation);
@@ -397,7 +424,8 @@ namespace Engine
 				// Font Rendering
 				{
 					GraphicsDX::TurnOnAlphaBlending();
-
+					_text->setFPS(_fps->getFps());
+					_text->setCPU(_cpuUsage->getCpuPercentage());
 					result = _text->render(GraphicsDX::GetDeviceContext(), worldMatrix, orthoMatrix);
 					if (!result)
 					{

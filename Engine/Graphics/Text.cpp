@@ -133,6 +133,74 @@ namespace Engine
 			return true;
 		}
 
+		void Text::setFPS(int fps)
+		{
+			char tempString[16];
+			char fpsString[16];
+			float red, green, blue;
+			bool result;
+
+
+			// Truncate the fps to below 10,000.
+			if (fps > 9999)
+			{
+				fps = 9999;
+			}
+
+			// Convert the fps integer to string format.
+			_itoa_s(fps, tempString, 10);
+
+			// Setup the fps string.
+			strcpy_s(fpsString, "Fps: ");
+			strcat_s(fpsString, tempString);
+
+			// If fps is 60 or above set the fps color to green.
+			if (fps >= 60)
+			{
+				red = 0.0f;
+				green = 1.0f;
+				blue = 0.0f;
+			}
+
+			// If fps is below 60 set the fps color to yellow.
+			if (fps < 60)
+			{
+				red = 1.0f;
+				green = 1.0f;
+				blue = 0.0f;
+			}
+
+			// If fps is below 30 set the fps color to red.
+			if (fps < 30)
+			{
+				red = 1.0f;
+				green = 0.0f;
+				blue = 0.0f;
+			}
+
+			// Update the sentence vertex buffer with the new string information.
+			result = updateSentence(_sentence1, fpsString, 720, 20, red, green, blue, GraphicsDX::GetDeviceContext());
+		}
+
+		void Text::setCPU(int cpu)
+		{
+			char tempString[16];
+			char cpuString[16];
+			bool result;
+
+
+			// Convert the cpu integer to string format.
+			_itoa_s(cpu, tempString, 10);
+
+			// Setup the cpu string.
+			strcpy_s(cpuString, "Cpu: ");
+			strcat_s(cpuString, tempString);
+			strcat_s(cpuString, "%");
+
+			// Update the sentence vertex buffer with the new string information.
+			result = updateSentence(_sentence2, cpuString, 720, 40, 0.0f, 1.0f, 0.0f, GraphicsDX::GetDeviceContext());
+		}
+
 		bool Text::initializeSentence(SentenceType** i_sentence, int i_maxLength, ID3D11Device* i_device)
 		{
 			VertexType* vertices;

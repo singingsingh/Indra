@@ -17,6 +17,8 @@ namespace Engine
 			bool initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int screenWidth, int screenHeight);
 			void shutdown();
 			bool render(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX orthoMatrix);
+			void setFPS( int fps );
+			void setCPU( int cpu );
 
 		private:
 			struct SentenceType
