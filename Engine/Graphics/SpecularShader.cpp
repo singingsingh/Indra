@@ -345,6 +345,7 @@ namespace Engine
 			CameraBufferType* dataPtr3;
 
 			// Transpose the matrices to prepare them for the shader.
+			D3DXMatrixRotationY(&i_worldMatrix, 2.0f);
 			D3DXMatrixTranspose(&i_worldMatrix, &i_worldMatrix);
 			D3DXMatrixTranspose(&i_viewMatrix, &i_viewMatrix);
 			D3DXMatrixTranspose(&i_projectionMatrix, &i_projectionMatrix);
@@ -435,6 +436,8 @@ namespace Engine
 
 			// Set the vertex and pixel shaders that will be used to render this triangle.
 			i_deviceContext->VSSetShader(_vertexShader, NULL, 0);
+			i_deviceContext->HSSetShader(nullptr, NULL, 0);
+			i_deviceContext->DSSetShader(nullptr, NULL, 0);
 			i_deviceContext->PSSetShader(_pixelShader, NULL, 0);
 
 			// Set the sampler state in the pixel shader.
