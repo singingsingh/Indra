@@ -3,7 +3,7 @@
 #include <Engine\Util\Assert.h>
 #include <Engine\Util\FileUtils.h>
 
-#include <Game\libs\lua\lua.hpp>
+#include <External\Lua\lua.hpp>
 
 namespace Game
 {
