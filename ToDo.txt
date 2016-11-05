@@ -1,0 +1,4 @@
+Architechture clean up
+
+Memory pooling
+Memory display manager

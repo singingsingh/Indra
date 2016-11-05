@@ -59,6 +59,7 @@
     <ClCompile Include="Graphics\SpecularLight.cpp" />
     <ClCompile Include="Graphics\SpecularModel.cpp" />
     <ClCompile Include="Graphics\SpecularShader.cpp" />
+    <ClCompile Include="Graphics\TessellationShader.cpp" />
     <ClCompile Include="Graphics\Text.cpp" />
     <ClCompile Include="Graphics\Texture.cpp" />
     <ClCompile Include="Graphics\TextureModel.cpp" />
@@ -128,6 +129,7 @@
     <ClInclude Include="Graphics\SpecularLight.h" />
     <ClInclude Include="Graphics\SpecularModel.h" />
     <ClInclude Include="Graphics\SpecularShader.h" />
+    <ClInclude Include="Graphics\TessellationShader.h" />
     <ClInclude Include="Graphics\Text.h" />
     <ClInclude Include="Graphics\Texture.h" />
     <ClInclude Include="Graphics\TextureModel.h" />
@@ -182,6 +184,24 @@
       <FileType>Document</FileType>
     </None>
     <None Include="Graphics\Shaders\fontVS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphics\Shaders\tessellationPS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Graphics\Shaders\tessellationVS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphics\Shaders\tessellationHS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphics\Shaders\tessellationDS.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

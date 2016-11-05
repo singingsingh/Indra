@@ -417,7 +417,8 @@ namespace Engine
 			pixelColor = D3DXVECTOR4(i_sentence->red, i_sentence->green, i_sentence->blue, 1.0f);
 
 			// Render the text using the font shader.
-			result = _fontShader->render(i_deviceContext, i_sentence->indexCount, i_worldMatrix, Graphics::GetCamera()->getViewMatrix(), i_orthoMatrix, _font->getTexture(), pixelColor);
+			result = _fontShader->render(i_deviceContext, i_sentence->indexCount, i_worldMatrix,
+				Graphics::GetCamera()->getViewMatrix(), i_orthoMatrix, _font->getTexture(), pixelColor);
 			if (!result)
 			{
 				false;
