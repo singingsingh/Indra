@@ -25,19 +25,21 @@ namespace Engine
 			LPCSTR m_applicationName = i_pWindowName;
 
 			// Setup the windows class with default settings.
+			wc.cbSize = sizeof(WNDCLASSEX);
+			wc.hInstance = i_hInstance;
 			wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
 			wc.lpfnWndProc = WndProc;
 			wc.cbClsExtra = 0;
 			wc.cbWndExtra = 0;
-			wc.hInstance = i_hInstance;
-			wc.hIcon = LoadIcon(NULL, IDI_WINLOGO);
+			
+			//wc.hIcon = LoadIcon(NULL, IDI_WINLOGO);
 			wc.hIcon = LoadIcon(i_hInstance, MAKEINTRESOURCE(*i_icon));
 			wc.hIconSm = wc.hIcon;
 			wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 			wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
 			wc.lpszMenuName = NULL;
 			wc.lpszClassName = m_applicationName;
-			wc.cbSize = sizeof(WNDCLASSEX);
+			
 
 			// Register the window class.
 			RegisterClassEx(&wc);
@@ -85,7 +87,7 @@ namespace Engine
 			SetFocus(_windowHandle);
 
 			// Hide the mouse cursor.
-			ShowCursor(false);
+			ShowCursor(true);
 
 			return true;
 		}
@@ -144,17 +146,17 @@ LRESULT CALLBACK WndProc(HWND i_hWnd, UINT i_Message, WPARAM i_wParam, LPARAM i_
 		//{
 		//	//		LoadCursor(NULL, IDC_UPARROW);
 		//}
-		break;
-		case WM_PAINT:
-		{
-			PAINTSTRUCT			ps;
-
-			HDC hdc = BeginPaint(i_hWnd, &ps);
-			EndPaint(i_hWnd, &ps);
-			break;
-		}
+		//break;
+		//case WM_PAINT:
+		//{
+		//	PAINTSTRUCT			ps;
+		//	HDC hdc = BeginPaint(i_hWnd, &ps);
+		//	EndPaint(i_hWnd, &ps);
+		//	break;
+		//}
 		case WM_DESTROY:
-			PostQuitMessage(0);
+			PostQuitMessage(EXIT_SUCCESS);
+			return 0;
 			break;
 	}
 	return DefWindowProc(i_hWnd, i_Message, i_wParam, i_lParam);

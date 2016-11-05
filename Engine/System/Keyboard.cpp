@@ -146,7 +146,7 @@ namespace Engine
 					}
 					}
 				}
-			} while ((bGotMsg == TRUE) && (quit == false));
+			} while ((bGotMsg == TRUE) && (!quit));
 			return quit;
 		}
 
