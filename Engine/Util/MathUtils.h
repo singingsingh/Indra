@@ -23,7 +23,6 @@ namespace Engine
 
 		private:
 			MathUtils();
-			~MathUtils();
 	};
 }
 

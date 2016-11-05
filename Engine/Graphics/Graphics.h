@@ -13,7 +13,7 @@
 #include <Engine\Graphics\SpecularShader.h>
 #include <Engine\Graphics\SpecularModel.h>
 #include <Engine\Graphics\SpecularLight.h>
-//#include <Engine\Graphics\Bitmap.h>
+#include <Engine\Graphics\Bitmap.h>
 #include <Engine\Graphics\Text.h>
 
 #include <Engine\System\CPU.h>

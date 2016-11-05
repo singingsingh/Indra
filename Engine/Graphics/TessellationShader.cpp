@@ -14,9 +14,9 @@ namespace Engine
 			_pixelShader = 0;
 			_layout = 0;
 			_matrixBuffer = 0;
-			m_hullShader = 0;
-			m_domainShader = 0;
-			m_tessellationBuffer = 0;
+			_hullShader = 0;
+			_domainShader = 0;
+			_tessellationBuffer = 0;
 		}
 
 		TessellationShader::~TessellationShader()
@@ -171,14 +171,14 @@ namespace Engine
 			}
 
 			// Create the hull shader from the buffer.
-			result = i_device->CreateHullShader(hullShaderBuffer->GetBufferPointer(), hullShaderBuffer->GetBufferSize(), NULL, &m_hullShader);
+			result = i_device->CreateHullShader(hullShaderBuffer->GetBufferPointer(), hullShaderBuffer->GetBufferSize(), NULL, &_hullShader);
 			if (FAILED(result))
 			{
 				return false;
 			}
 
 			// Create the domain shader from the buffer.
-			result = i_device->CreateDomainShader(domainShaderBuffer->GetBufferPointer(), domainShaderBuffer->GetBufferSize(), NULL, &m_domainShader);
+			result = i_device->CreateDomainShader(domainShaderBuffer->GetBufferPointer(), domainShaderBuffer->GetBufferSize(), NULL, &_domainShader);
 			if (FAILED(result))
 			{
 				return false;
@@ -257,7 +257,7 @@ namespace Engine
 			tessellationBufferDesc.StructureByteStride = 0;
 
 			// Create the constant buffer pointer so we can access the hull shader constant buffer from within this class.
-			result = i_device->CreateBuffer(&tessellationBufferDesc, NULL, &m_tessellationBuffer);
+			result = i_device->CreateBuffer(&tessellationBufferDesc, NULL, &_tessellationBuffer);
 			if (FAILED(result))
 			{
 				return false;
@@ -269,10 +269,10 @@ namespace Engine
 		void TessellationShader::ShutdownShader()
 		{
 			// Release the tessellation constant buffer.
-			if (m_tessellationBuffer)
+			if (_tessellationBuffer)
 			{
-				m_tessellationBuffer->Release();
-				m_tessellationBuffer = 0;
+				_tessellationBuffer->Release();
+				_tessellationBuffer = 0;
 			}
 
 			// Release the matrix constant buffer.
@@ -297,17 +297,17 @@ namespace Engine
 			}
 
 			// Release the domain shader.
-			if (m_domainShader)
+			if (_domainShader)
 			{
-				m_domainShader->Release();
-				m_domainShader = 0;
+				_domainShader->Release();
+				_domainShader = 0;
 			}
 
 			// Release the hull shader.
-			if (m_hullShader)
+			if (_hullShader)
 			{
-				m_hullShader->Release();
-				m_hullShader = 0;
+				_hullShader->Release();
+				_hullShader = 0;
 			}
 
 			// Release the vertex shader.
@@ -396,7 +396,7 @@ namespace Engine
 			i_deviceContext->DSSetConstantBuffers(bufferNumber, 1, &_matrixBuffer);
 
 			// Lock the tessellation constant buffer so it can be written to.
-			result = i_deviceContext->Map(m_tessellationBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+			result = i_deviceContext->Map(_tessellationBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 			if (FAILED(result))
 			{
 				return false;
@@ -410,13 +410,13 @@ namespace Engine
 			dataPtr2->padding = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
 			// Unlock the tessellation constant buffer.
-			i_deviceContext->Unmap(m_tessellationBuffer, 0);
+			i_deviceContext->Unmap(_tessellationBuffer, 0);
 
 			// Set the position of the tessellation constant buffer in the hull shader.
 			bufferNumber = 0;
 
 			// Now set the tessellation constant buffer in the hull shader with the updated values.
-			i_deviceContext->HSSetConstantBuffers(bufferNumber, 1, &m_tessellationBuffer);
+			i_deviceContext->HSSetConstantBuffers(bufferNumber, 1, &_tessellationBuffer);
 
 			return true;
 		}
@@ -428,8 +428,8 @@ namespace Engine
 
 			// Set the vertex and pixel shaders that will be used to render this triangle.
 			i_deviceContext->VSSetShader(_vertexShader, NULL, 0);
-			i_deviceContext->HSSetShader(m_hullShader, NULL, 0);
-			i_deviceContext->DSSetShader(m_domainShader, NULL, 0);
+			i_deviceContext->HSSetShader(_hullShader, NULL, 0);
+			i_deviceContext->DSSetShader(_domainShader, NULL, 0);
 			i_deviceContext->PSSetShader(_pixelShader, NULL, 0);
 
 			// Render the triangle.

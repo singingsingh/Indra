@@ -7,6 +7,8 @@
 #include <Engine\Graphics\Camera.h>
 #include <Engine\System\Keyboard.h>
 
+#include <Engine\Util\MathUtils.h>
+
 namespace Engine
 {
 	namespace Graphics
@@ -33,7 +35,7 @@ namespace Engine
 			_cpuUsage = nullptr;
 			_fps = nullptr;
 
-			_tessellationAmount = 6;
+			_tessellationAmount = 12;
 			Engine::KeyboardNotifier::RegisterKeyboardUpdate(this);
 		}
 
@@ -380,7 +382,7 @@ namespace Engine
 			//	_diffuseModel = nullptr;
 			//}
 			
-			// Release the bitmap object.
+			// //Release the bitmap object.
 			//if (_bitmap)
 			//{
 			//	_bitmap->shutdown();
@@ -444,19 +446,25 @@ namespace Engine
 				_currentCamera->update();
 
 				worldMatrix = GraphicsDX::GetWorldMatrix();
+				D3DXMatrixRotationX(&worldMatrix, MathUtils::ToRadians(70.0f));
 				viewMatrix = _currentCamera->getViewMatrix();
 				projectionMatrix = _currentCamera->getProjectionMatrix();
 
-
-				//D3DXMatrixRotationY(&worldMatrix, i_rotation);
-
+				GraphicsDX::RenderWireFrame();
 				_colorModel->render(GraphicsDX::GetDeviceContext());
 				result = _tessellationShader->Render(GraphicsDX::GetDeviceContext(), _colorModel->getIndexCount(),
 					worldMatrix, viewMatrix, projectionMatrix, (float)_tessellationAmount);
+				GraphicsDX::RenderSolidFill();
+
+
+				worldMatrix = GraphicsDX::GetWorldMatrix();
+				D3DXMatrixRotationY(&worldMatrix, MathUtils::ToRadians(90.0f));
+				D3DXMATRIX temp, out;
+				D3DXMatrixRotationX(&temp, MathUtils::ToRadians(270.0f));
+				D3DXMatrixMultiply(&out, &temp, &worldMatrix);
 
 				_specularModel->render(GraphicsDX::GetDeviceContext());
-
-				result = _specularShader->render(GraphicsDX::GetDeviceContext(), _specularModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+				result = _specularShader->render(GraphicsDX::GetDeviceContext(), _specularModel->getIndexCount(), out, viewMatrix, projectionMatrix,
 					_specularModel->getTexture(), _specularLight->getDirection(), _specularLight->getAmbientColor(), _specularLight->getDiffuseColor(), _currentCamera->getPosition(),
 					_specularLight->getSpecularColor(), _specularLight->getSpecularPower());
 
@@ -472,7 +480,7 @@ namespace Engine
 
 				// UI Rendering
 				{
-					//worldMatrix = GraphicsDX::GetWorldMatrix();
+					worldMatrix = GraphicsDX::GetWorldMatrix();
 					orthoMatrix = _currentCamera->getOrthogonalMatrix();
 					//result = _bitmap->render(GraphicsDX::GetDeviceContext(), 10, 10);
 					//if (!result)
@@ -489,13 +497,14 @@ namespace Engine
 				// Font Rendering
 				{
 					GraphicsDX::TurnOnAlphaBlending();
-					//_text->setFPS(_fps->getFps());
-					//_text->setCPU(_cpuUsage->getCpuPercentage());
-					//result = _text->render(GraphicsDX::GetDeviceContext(), worldMatrix, orthoMatrix);
-					//if (!result)
-					//{
-					//	return false;
-					//}
+
+					_text->setFPS(_fps->getFps());
+					_text->setCPU(_cpuUsage->getCpuPercentage());
+					result = _text->render(GraphicsDX::GetDeviceContext(), worldMatrix, orthoMatrix);
+					if (!result)
+					{
+						return false;
+					}
 
 					GraphicsDX::TurnOffAlphaBlending();
 				}

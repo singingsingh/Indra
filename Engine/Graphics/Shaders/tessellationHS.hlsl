@@ -41,6 +41,7 @@ ConstantOutputType ColorPatchConstantFunction(InputPatch<HullInputType, 3> input
 [outputtopology("triangle_cw")]
 [outputcontrolpoints(3)]
 [patchconstantfunc("ColorPatchConstantFunction")]
+[maxtessfactor(16.0f)]
 
 HullOutputType ColorHullShader(InputPatch<HullInputType, 3> patch, uint pointId : SV_OutputControlPointID, uint patchId : SV_PrimitiveID)
 {

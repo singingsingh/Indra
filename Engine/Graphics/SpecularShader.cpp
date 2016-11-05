@@ -345,7 +345,6 @@ namespace Engine
 			CameraBufferType* dataPtr3;
 
 			// Transpose the matrices to prepare them for the shader.
-			D3DXMatrixRotationY(&i_worldMatrix, 2.0f);
 			D3DXMatrixTranspose(&i_worldMatrix, &i_worldMatrix);
 			D3DXMatrixTranspose(&i_viewMatrix, &i_viewMatrix);
 			D3DXMatrixTranspose(&i_projectionMatrix, &i_projectionMatrix);

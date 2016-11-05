@@ -36,6 +36,9 @@ namespace Engine
 		static void TurnOnAlphaBlending();
 		static void TurnOffAlphaBlending();
 
+		static void RenderSolidFill();
+		static void RenderWireFrame();
+
 	private:
 
 		GraphicsDX();
@@ -54,11 +57,15 @@ namespace Engine
 		ID3D11DeviceContext* _deviceContext;
 		ID3D11RenderTargetView* _renderTargetView;
 		ID3D11Texture2D* _depthStencilBuffer;
-		ID3D11DepthStencilState* _depthStencilState;
 		ID3D11DepthStencilView* _depthStencilView;
-		ID3D11RasterizerState* _rasterState;
 		D3DXMATRIX _worldMatrix;
+
+		ID3D11RasterizerState* _rasterStateFILL_MODE;
+		ID3D11RasterizerState* _rasterStateWIRE_MODE;
+
+		ID3D11DepthStencilState* _depthEnableStencilState;
 		ID3D11DepthStencilState* _depthDisabledStencilState;
+
 		ID3D11BlendState* _alphaEnableBlendingState;
 		ID3D11BlendState* _alphaDisableBlendingState;
 

@@ -14,9 +14,10 @@ namespace Engine
 		_deviceContext = nullptr;
 		_renderTargetView = nullptr;
 		_depthStencilBuffer = nullptr;
-		_depthStencilState = nullptr;
+		_depthEnableStencilState = nullptr;
 		_depthStencilView = nullptr;
-		_rasterState = nullptr;
+		_rasterStateFILL_MODE = nullptr;
+		_rasterStateWIRE_MODE = nullptr;
 		_depthDisabledStencilState = nullptr;
 
 		_alphaEnableBlendingState = nullptr;
@@ -47,7 +48,6 @@ namespace Engine
 		D3D11_RASTERIZER_DESC rasterDesc;
 		D3D11_VIEWPORT viewport;
 		D3D11_DEPTH_STENCIL_DESC depthDisabledStencilDesc;
-
 		D3D11_BLEND_DESC blendStateDescription;
 
 		// Store the vsync setting.
@@ -281,14 +281,14 @@ namespace Engine
 		depthStencilStateDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
 		// Create the depth stencil state.
-		result = _device->CreateDepthStencilState(&depthStencilStateDesc, &_depthStencilState);
+		result = _device->CreateDepthStencilState(&depthStencilStateDesc, &_depthEnableStencilState);
 		if (FAILED(result))
 		{
 			return false;
 		}
 
 		// Set the depth stencil state.
-		_deviceContext->OMSetDepthStencilState(_depthStencilState, 1);
+		_deviceContext->OMSetDepthStencilState(_depthEnableStencilState, 1);
 
 		// Initailze the depth stencil view.
 		ZeroMemory(&depthStencilViewDesc, sizeof(depthStencilViewDesc));
@@ -314,22 +314,27 @@ namespace Engine
 		rasterDesc.DepthBias = 0;
 		rasterDesc.DepthBiasClamp = 0.0f;
 		rasterDesc.DepthClipEnable = true;
-		//rasterDesc.FillMode = D3D11_FILL_SOLID;
-		rasterDesc.FillMode = D3D11_FILL_WIREFRAME;
+		rasterDesc.FillMode = D3D11_FILL_SOLID;
 		rasterDesc.FrontCounterClockwise = false;
 		rasterDesc.MultisampleEnable = false;
 		rasterDesc.ScissorEnable = false;
 		rasterDesc.SlopeScaledDepthBias = 0.0f;
 
 		// Create the rasterizer state from the description we just filled out.
-		result = _device->CreateRasterizerState(&rasterDesc, &_rasterState);
+		result = _device->CreateRasterizerState(&rasterDesc, &_rasterStateFILL_MODE);
 		if (FAILED(result))
 		{
 			return false;
 		}
 
-		// Now set the rasterizer state.
-		_deviceContext->RSSetState(_rasterState);
+		_deviceContext->RSSetState(_rasterStateFILL_MODE);
+
+		rasterDesc.FillMode = D3D11_FILL_WIREFRAME;
+		result = _device->CreateRasterizerState(&rasterDesc, &_rasterStateWIRE_MODE);
+		if (FAILED(result))
+		{
+			return false;
+		}
 
 		// Setup the viewport for rendering.
 		viewport.Width = (float)i_screenWidth;
@@ -452,10 +457,16 @@ namespace Engine
 			_alphaDisableBlendingState = 0;
 		}
 
-		if (_rasterState)
+		if (_rasterStateFILL_MODE)
 		{
-			_rasterState->Release();
-			_rasterState = nullptr;
+			_rasterStateFILL_MODE->Release();
+			_rasterStateFILL_MODE = nullptr;
+		}
+
+		if (_rasterStateWIRE_MODE)
+		{
+			_rasterStateWIRE_MODE->Release();
+			_rasterStateWIRE_MODE = nullptr;
 		}
 
 		if (_depthStencilView)
@@ -464,10 +475,10 @@ namespace Engine
 			_depthStencilView = nullptr;
 		}
 
-		if (_depthStencilState)
+		if (_depthEnableStencilState)
 		{
-			_depthStencilState->Release();
-			_depthStencilState = nullptr;
+			_depthEnableStencilState->Release();
+			_depthEnableStencilState = nullptr;
 		}
 
 		if (_depthStencilBuffer)
@@ -503,7 +514,7 @@ namespace Engine
 
 	void GraphicsDX::TurnZBufferOn()
 	{
-		_instance->_deviceContext->OMSetDepthStencilState(_instance->_depthStencilState, 1);
+		_instance->_deviceContext->OMSetDepthStencilState(_instance->_depthEnableStencilState, 1);
 	}
 
 
@@ -540,6 +551,16 @@ namespace Engine
 
 		// Turn off the alpha blending.
 		_instance->_deviceContext->OMSetBlendState(_instance->_alphaDisableBlendingState, blendFactor, 0xffffffff);
+	}
+
+	void GraphicsDX::RenderSolidFill()
+	{
+		_instance->_deviceContext->RSSetState(_instance->_rasterStateFILL_MODE);
+	}
+
+	void GraphicsDX::RenderWireFrame()
+	{
+		_instance->_deviceContext->RSSetState(_instance->_rasterStateWIRE_MODE);
 	}
 
 	void GraphicsDX::BeginScene(float red, float green, float blue, float alpha)

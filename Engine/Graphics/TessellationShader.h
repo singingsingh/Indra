@@ -41,12 +41,12 @@ namespace Engine
 
 			ID3D11VertexShader* _vertexShader;
 			ID3D11PixelShader* _pixelShader;
-			ID3D11HullShader* m_hullShader;
-			ID3D11DomainShader* m_domainShader;
+			ID3D11HullShader* _hullShader;
+			ID3D11DomainShader* _domainShader;
 			ID3D11InputLayout* _layout;
 			ID3D11Buffer* _matrixBuffer;
 
-			ID3D11Buffer* m_tessellationBuffer;
+			ID3D11Buffer* _tessellationBuffer;
 
 		};
 	}
