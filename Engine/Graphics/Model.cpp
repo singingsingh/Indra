@@ -57,10 +57,10 @@ namespace Engine
 			HRESULT result;
 
 			// Set the number of vertices in the vertex array.
-			_vertexCount = 3;
+			_vertexCount = 4;
 
 			// Set the number of indices in the index array.
-			_indexCount = 3;
+			_indexCount = 4;
 
 			// Create the vertex array.
 			vertices = new VertexType[_vertexCount];
@@ -77,19 +77,22 @@ namespace Engine
 			}
 
 			// Load the vertex array with data.
-			vertices[0].position = D3DXVECTOR3(-1.0f, -1.0f, 0.0f);  // Bottom left.
-			vertices[0].color = D3DXVECTOR4(1.0f, 0.0f, 0.0f, 0.0f);
+			vertices[0].position = D3DXVECTOR3(-1.0f, -1.0f, 0.0f);
+			vertices[0].color = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
 
-			vertices[1].position = D3DXVECTOR3(0.0f, 1.0f, 0.0f);  // Top middle.
-			vertices[1].color = D3DXVECTOR4(0.0f, 1.0f, 0.0f, 0.0f);
+			vertices[1].position = D3DXVECTOR3(-1.0f, 1.0f, 0.0f);
+			vertices[1].color = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
 
-			vertices[2].position = D3DXVECTOR3(1.0f, -1.0f, 0.0f);  // Bottom right.
-			vertices[2].color = D3DXVECTOR4(0.0f, 0.0f, 1.0f, 0.0f);
+			vertices[2].position = D3DXVECTOR3(1.0f, -1.0f, 0.0f);
+			vertices[2].color = D3DXVECTOR4(0.0f, 0.0f, 1.0f, 1.0f);
 
-			// Load the index array with data.
-			indices[0] = 0;  // Bottom left.
-			indices[1] = 1;  // Top middle.
-			indices[2] = 2;  // Bottom right.
+			vertices[3].position = D3DXVECTOR3(1.0f, 1.0f, 0.0f);
+			vertices[3].color = D3DXVECTOR4(1.0f, 0.0f, 0.0f, 1.0f);
+
+			indices[0] = 0;
+			indices[1] = 1;
+			indices[2] = 2;
+			indices[3] = 3;
 
 							 // Set up the description of the static vertex buffer.
 			vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -178,7 +181,7 @@ namespace Engine
 			// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
 			//i_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 			// Set the type of primitive that should be rendered from this vertex buffer.
-			i_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
+			i_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
 		}
 	}	// namespace Graphics
 }	// namespace Engine

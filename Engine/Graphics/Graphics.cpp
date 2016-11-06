@@ -35,7 +35,7 @@ namespace Engine
 			_cpuUsage = nullptr;
 			_fps = nullptr;
 
-			_tessellationAmount = 12;
+			_tessellationAmount = 1;
 			Engine::KeyboardNotifier::RegisterKeyboardUpdate(this);
 		}
 
