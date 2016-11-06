@@ -170,7 +170,6 @@ namespace Engine
 			stride = sizeof(VertexType);
 			offset = 0;
 
-			// Set the vertex buffer to active in the input assembler so it can be rendered.
 			i_deviceContext->IASetVertexBuffers(0, 1, &_vertexBuffer, &stride, &offset);
 
 			// Set the index buffer to active in the input assembler so it can be rendered.

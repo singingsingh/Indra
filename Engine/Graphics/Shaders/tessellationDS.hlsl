@@ -43,7 +43,8 @@ PixelInputType ColorDomainShader(ConstantOutputType input, float3 uvwCoord : SV_
 	output.position = mul(output.position, projectionMatrix);
 
 	// Send the input color into the pixel shader.
-	output.color = patch[0].color;
+	//output.color = patch[0].color;
+	output.color = uvwCoord.x * patch[0].color + uvwCoord.y * patch[1].color + uvwCoord.z * patch[2].color;
 
 	return output;
 }

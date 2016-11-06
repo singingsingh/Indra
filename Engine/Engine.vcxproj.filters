@@ -437,19 +437,17 @@
     <None Include="Graphics\Shaders\tessellationDS.hlsl">
       <Filter>Source Files\Graphics\shaders</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Graphics\Shaders\fontPS.hlsl">
+    <None Include="Graphics\Shaders\fontPS.hlsl">
       <Filter>Source Files\Graphics\shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Graphics\Shaders\fontVS.hlsl">
+    </None>
+    <None Include="Graphics\Shaders\fontVS.hlsl">
       <Filter>Source Files\Graphics\shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Graphics\Shaders\tessellationPS.hlsl">
+    </None>
+    <None Include="Graphics\Shaders\tessellationPS.hlsl">
       <Filter>Source Files\Graphics\shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Graphics\Shaders\tessellationVS.hlsl">
+    </None>
+    <None Include="Graphics\Shaders\tessellationVS.hlsl">
       <Filter>Source Files\Graphics\shaders</Filter>
-    </FxCompile>
+    </None>
   </ItemGroup>
 </Project>

@@ -9,7 +9,8 @@ namespace Engine
 	{
 		Window* Window::_instance = nullptr;
 
-		Window::Window()
+		Window::Window():
+			FULL_SCREEN(false)
 		{
 		}
 

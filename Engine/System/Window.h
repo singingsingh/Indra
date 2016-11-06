@@ -25,7 +25,7 @@ namespace Engine
 			int _requestedWidth, _requestedHeight;
 			int _currentWidth, _currentHeight;
 			HWND _windowHandle;
-			const bool FULL_SCREEN = false;
+			const bool FULL_SCREEN;
 
 			static Window* _instance;
 		};
