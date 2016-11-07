@@ -1,6 +1,7 @@
 #include <Engine\Graphics\Camera.h>
 
 #include <Engine\System\Window.h>
+#include <Engine\Util\ConsolePrint.h>
 
 namespace Engine
 {
@@ -23,14 +24,13 @@ namespace Engine
 			_rotation.x = 0;
 			_rotation.y = 0;
 			_rotation.z = 0;
-		}
 
-		Camera::Camera(const Camera &)
-		{
+			Engine::KeyboardNotifier::RegisterKeyboardUpdate(this);
 		}
 
 		Camera::~Camera()
 		{
+			Engine::KeyboardNotifier::DeRegisterKeyboardUpdate(this);
 		}
 
 		void Camera::setPosition(float i_x, float i_y, float i_z)
@@ -107,6 +107,53 @@ namespace Engine
 		D3DXMATRIX Camera::getOrthogonalMatrix()
 		{
 			return _orthoMatrix;
+		}
+		void Camera::keyboardUpdate(uint8_t i_Key, bool i_down, uint16_t i_x, uint16_t i_y)
+		{
+			DEBUG_PRINT("Key %d state = %d, Mouse Location x = %d, y = %d\n", i_Key, i_down, i_x, i_y);
+			//switch (i_Key)
+			//{
+			//case 0x57:	// w
+			//	if (i_down)
+			//	{
+			//	}
+			//	break;
+			//case 0x53:	// s
+			//	if (i_down)
+			//	{
+			//	}
+			//	break;
+			//case 0x41:	// a
+			//	if (i_down)
+			//	{
+			//	}
+			//	break;
+			//case 0x44:	//d
+			//	if (i_down)
+			//	{
+			//	}
+			//	break;
+			//}
+		}
+
+		void Camera::mouseClickUpdate(uint8_t i_button, bool i_down, uint16_t i_x, uint16_t i_y)
+		{
+			DEBUG_PRINT("Button %d state = %d, Mouse Location x = %d, y = %d\n", i_button, i_down, i_x, i_y);
+		}
+
+		void Camera::mouseMoveUpdate(bool i_leftBt, bool i_rightBt, bool i_middleBt, uint16_t i_x, uint16_t i_y)
+		{
+			DEBUG_PRINT("%d %d %d Mouse Location x = %d, y = %d\n", i_leftBt, i_rightBt, i_middleBt, i_x, i_y);
+		}
+
+		void Camera::mousePassiveMoveUpdate(uint16_t i_x, uint16_t i_y)
+		{
+			DEBUG_PRINT("Mouse Location x = %d, y = %d\n",i_x, i_y);
+		}
+
+		void Camera::mouseWheelUpdate(bool i_direction, uint16_t i_x, uint16_t i_y)
+		{
+			DEBUG_PRINT("Roll %d Mouse Location x = %d, y = %d\n", i_direction, i_x, i_y);
 		}
 	}
 }	// namespace Engine

@@ -21,13 +21,11 @@
 
 #include <Engine\Graphics\TessellationShader.h>
 
-#include <Engine\Engine\KeyboardNotifier.h>
-
 namespace Engine
 {
 	namespace Graphics
 	{
-		class Graphics : public Engine::IKeyboardListener
+		class Graphics
 		{
 		public:
 
@@ -36,10 +34,9 @@ namespace Engine
 			static bool Render();
 			static void SetCamera(Camera* currentCamera);
 			static Camera* GetCamera();
-			virtual void keyboardUpdate(unsigned int i_VKeyID, bool i_bDown);
+
 		private:
 			Graphics();
-			~Graphics();
 			bool _initialize(HINSTANCE hInstance, const char * pWindowName, unsigned int WindowWidth, unsigned int WindowHeight, const WORD* icon);
 			void _shutdown();
 			bool _render(float rotation);

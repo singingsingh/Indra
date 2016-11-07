@@ -5,7 +5,7 @@
 #include <Engine\Engine\PhysicsTickNotifier.h>
 #include <Engine\Engine\AIUpdateNotifier.h>
 #include <Engine\Core\ThreadedFileProcessor.h>
-#include <Engine\System\Keyboard.h>
+#include <Engine\System\Window.h>
 #include <Engine\Graphics\Graphics.h>
 #include <Engine\Graphics\Camera.h>
 #include <Engine\Util\MathUtils.h>
@@ -94,7 +94,7 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 		{
 			continuesEngineUpdate++;
 
-			bQuit = Engine::Keyboard::KeyboardUpdate();
+			bQuit = Engine::KeyboardUpdate();
 			if (bQuit)
 			{
 				break;

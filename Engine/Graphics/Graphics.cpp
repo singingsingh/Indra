@@ -35,38 +35,7 @@ namespace Engine
 			_cpuUsage = nullptr;
 			_fps = nullptr;
 
-			_tessellationAmount = 1;
-			Engine::KeyboardNotifier::RegisterKeyboardUpdate(this);
-		}
-
-		void Graphics::keyboardUpdate(unsigned int i_VKeyID, bool i_bDown)
-		{
-			switch (i_VKeyID)
-			{
-			case 0x57:	// w
-				if (i_bDown)
-				{
-					if (_tessellationAmount < 16.0f)
-					{
-						_tessellationAmount++;
-					}
-				}
-				break;
-			case 0x53:	// s
-				if (i_bDown)
-				{
-					if (_tessellationAmount > 1.0f)
-					{
-						_tessellationAmount--;
-					}
-				}
-				break;
-			}
-		}
-
-		Graphics::~Graphics()
-		{
-			Engine::KeyboardNotifier::DeRegisterKeyboardUpdate(this);
+			_tessellationAmount = 5;
 		}
 
 		bool Graphics::Initialize(HINSTANCE i_hInstance, const char * i_windowName, unsigned int i_windowWidth, unsigned int i_windowHeight, const WORD* i_icon)
