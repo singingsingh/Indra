@@ -7,6 +7,7 @@
 
 namespace Engine
 {
+
 	class KeyboardNotifier
 	{
 		public :
@@ -17,7 +18,11 @@ namespace Engine
 			static void RegisterKeyboardUpdate(IKeyboardListener* keyboardListner);
 			static void DeRegisterKeyboardUpdate(IKeyboardListener* keyboardListner);
 
-			friend void _keyboardUpdate(unsigned int i_VKeyID, bool i_bDown);
+			friend void _keyboardUpdate(uint8_t Key, bool down, uint16_t x, uint16_t y);
+			friend void _mouseClickUpdate(uint8_t button, bool down, uint16_t x, uint16_t y);
+			friend void _mouseMoveUpdate(bool leftBt, bool rightBt, bool middleBt, uint16_t x, uint16_t y);
+			friend void _mousePassiveMoveUpdate(uint16_t x, uint16_t y);
+			friend void _mouseWheelUpdate(bool direction, uint16_t x, uint16_t y);
 
 		private:
 
@@ -26,7 +31,11 @@ namespace Engine
 
 			KeyboardNotifier();
 			~KeyboardNotifier();
-			void notifyKeyboardUpdate(unsigned int i_VKeyID, bool i_bDown);
+			void notifyKeyboardUpdate(uint8_t Key, bool down, uint16_t x, uint16_t y);
+			void notifyMouseClickUpdate(uint8_t button, bool down, uint16_t x, uint16_t y);
+			void notifyMouseMoveUpdate(bool leftBt, bool rightBt, bool middleBt, uint16_t x, uint16_t y);
+			void notifyMousePassiveMoveUpdate(uint16_t x, uint16_t y);
+			void notifyMouseWheelUpdate(bool direction, uint16_t x, uint16_t y);
 	};
 }
 

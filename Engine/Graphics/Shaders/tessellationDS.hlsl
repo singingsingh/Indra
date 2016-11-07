@@ -7,8 +7,8 @@ cbuffer MatrixBuffer
 
 struct ConstantOutputType
 {
-	float edges[3] : SV_TessFactor;
-	float inside : SV_InsideTessFactor;
+	float edges[4] : SV_TessFactor;
+	float inside[2] : SV_InsideTessFactor;
 };
 
 struct HullOutputType
@@ -26,16 +26,17 @@ struct PixelInputType
 ////////////////////////////////////////////////////////////////////////////////
 // Domain Shader
 ////////////////////////////////////////////////////////////////////////////////
-[domain("tri")]
+[domain("quad")]
 
-PixelInputType ColorDomainShader(ConstantOutputType input, float3 uvwCoord : SV_DomainLocation, const OutputPatch<HullOutputType, 3> patch)
+PixelInputType ColorDomainShader(ConstantOutputType input, float2 uvCoord : SV_DomainLocation, const OutputPatch<HullOutputType, 4> patch)
 {
 	float3 vertexPosition;
 	PixelInputType output;
 
-
 	// Determine the position of the new vertex.
-	vertexPosition = uvwCoord.x * patch[0].position + uvwCoord.y * patch[1].position + uvwCoord.z * patch[2].position;
+	float3 v1 = lerp(patch[0].position, patch[1].position, uvCoord.x);
+	float3 v2 = lerp(patch[2].position, patch[3].position, uvCoord.x);
+	vertexPosition = lerp( v1, v2, uvCoord.y );
 
 	// Calculate the position of the new vertex against the world, view, and projection matrices.
 	output.position = mul(float4(vertexPosition, 1.0f), worldMatrix);
@@ -43,7 +44,9 @@ PixelInputType ColorDomainShader(ConstantOutputType input, float3 uvwCoord : SV_
 	output.position = mul(output.position, projectionMatrix);
 
 	// Send the input color into the pixel shader.
-	output.color = patch[0].color;
+	float4 c1 = lerp(patch[0].color, patch[1].color, uvCoord.x);
+	float4 c2 = lerp(patch[2].color, patch[3].color, uvCoord.x);
+	output.color = lerp( c1, c2, uvCoord.y );
 
 	return output;
 }

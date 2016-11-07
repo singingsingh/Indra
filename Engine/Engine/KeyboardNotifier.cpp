@@ -3,24 +3,84 @@
 #include <Engine\Util\ConsolePrint.h>
 #include <Engine\Util\Assert.h>
 
-#include <Engine\System\Keyboard.h>
+#include <Engine\System\Window.h>
 
 namespace Engine
 {
 	KeyboardNotifier* KeyboardNotifier::_instance = nullptr;
 
-	void _keyboardUpdate(unsigned int i_VKeyID, bool i_bDown)
+	void _keyboardUpdate(uint8_t i_Key, bool i_down, uint16_t i_x, uint16_t i_y)
 	{
-		KeyboardNotifier::_instance->notifyKeyboardUpdate(i_VKeyID, i_bDown);
+		KeyboardNotifier::_instance->notifyKeyboardUpdate(i_Key, i_down, i_x, i_y);
 	}
 
-	void KeyboardNotifier::notifyKeyboardUpdate(unsigned int i_VKeyID, bool i_bDown)
+	void _mouseClickUpdate(uint8_t i_button, bool i_down, uint16_t i_x, uint16_t i_y)
+	{
+		KeyboardNotifier::_instance->notifyMouseClickUpdate(i_button, i_down, i_x, i_y);
+	}
+
+	void _mouseMoveUpdate(bool i_leftBt, bool i_rightBt, bool i_middleBt, uint16_t i_x, uint16_t i_y)
+	{
+		KeyboardNotifier::_instance->notifyMouseMoveUpdate(i_leftBt, i_rightBt, i_middleBt, i_x, i_y);
+	}
+
+	void _mousePassiveMoveUpdate(uint16_t i_x, uint16_t i_y)
+	{
+		KeyboardNotifier::_instance->notifyMousePassiveMoveUpdate(i_x, i_y);
+	}
+
+	void _mouseWheelUpdate(bool i_direction, uint16_t i_x, uint16_t i_y)
+	{
+		KeyboardNotifier::_instance->notifyMouseWheelUpdate(i_direction, i_x, i_y);
+	}
+
+	void KeyboardNotifier::notifyKeyboardUpdate(uint8_t i_Key, bool i_down, uint16_t i_x, uint16_t i_y)
 	{
 		std::vector<IKeyboardListener*>::iterator itr = _list.begin();
 
 		for (; itr != _list.end(); itr++)
 		{
-			(*itr)->keyboardUpdate(i_VKeyID, i_bDown);
+			(*itr)->keyboardUpdate(i_Key, i_down, i_x, i_y);
+		}
+	}
+
+	void KeyboardNotifier::notifyMouseClickUpdate(uint8_t i_button, bool i_down, uint16_t i_x, uint16_t i_y)
+	{
+		std::vector<IKeyboardListener*>::iterator itr = _list.begin();
+
+		for (; itr != _list.end(); itr++)
+		{
+			(*itr)->mouseClickUpdate(i_button, i_down, i_x, i_y);
+		}
+	}
+
+	void KeyboardNotifier::notifyMouseMoveUpdate(bool i_leftBt, bool i_rightBt, bool i_middleBt, uint16_t i_x, uint16_t i_y)
+	{
+		std::vector<IKeyboardListener*>::iterator itr = _list.begin();
+
+		for (; itr != _list.end(); itr++)
+		{
+			(*itr)->mouseMoveUpdate(i_leftBt, i_rightBt, i_middleBt, i_x, i_y);
+		}
+	}
+
+	void KeyboardNotifier::notifyMousePassiveMoveUpdate(uint16_t i_x, uint16_t i_y)
+	{
+		std::vector<IKeyboardListener*>::iterator itr = _list.begin();
+
+		for (; itr != _list.end(); itr++)
+		{
+			(*itr)->mousePassiveMoveUpdate(i_x, i_y);
+		}
+	}
+
+	void KeyboardNotifier::notifyMouseWheelUpdate(bool i_direction, uint16_t i_x, uint16_t i_y)
+	{
+		std::vector<IKeyboardListener*>::iterator itr = _list.begin();
+
+		for (; itr != _list.end(); itr++)
+		{
+			(*itr)->mouseWheelUpdate(i_direction, i_x, i_y);
 		}
 	}
 
@@ -69,6 +129,10 @@ namespace Engine
 	KeyboardNotifier::KeyboardNotifier()
 	{
 		SetKeyStateChangeCallback(&_keyboardUpdate);
+		SetMouseClickStateChangeCallback(&_mouseClickUpdate);
+		SetMouseMoveStateChangeCallback(&_mouseMoveUpdate);
+		SetMousePassiveMoveStateChangeCallback(&_mousePassiveMoveUpdate);
+		SetMouseWheelMoveStateChangeCallback(&_mouseWheelUpdate);
 	}
 
 	KeyboardNotifier::~KeyboardNotifier()

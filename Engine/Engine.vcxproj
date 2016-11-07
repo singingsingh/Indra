@@ -66,7 +66,6 @@
     <ClCompile Include="Graphics\TextureShader.cpp" />
     <ClCompile Include="System\CPU.cpp" />
     <ClCompile Include="System\FPS.cpp" />
-    <ClCompile Include="System\Keyboard.cpp" />
     <ClCompile Include="System\Timer.cpp" />
     <ClCompile Include="System\Window.cpp" />
     <ClCompile Include="Util\Assert.Win32.cpp" />
@@ -136,7 +135,6 @@
     <ClInclude Include="Graphics\TextureShader.h" />
     <ClInclude Include="System\CPU.h" />
     <ClInclude Include="System\FPS.h" />
-    <ClInclude Include="System\Keyboard.h" />
     <ClInclude Include="System\Target.h" />
     <ClInclude Include="System\Target.Win32.h" />
     <ClInclude Include="System\Target.Win64.h" />

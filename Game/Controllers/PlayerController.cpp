@@ -54,45 +54,60 @@ namespace Game
 		_physicsInfo = i_physicsInfo;
 	}
 
-	void PlayerController::keyboardUpdate(unsigned int i_VKeyID, bool i_bDown)
+	void PlayerController::keyboardUpdate(uint8_t i_key, bool i_down, uint16_t i_x, uint16_t i_y)
 	{
-		MessagedAssert(_physicsInfo != nullptr, "No PhysicsInfo in player controller.\n" );
+		//MessagedAssert(_physicsInfo != nullptr, "No PhysicsInfo in player controller.\n");
 
-		switch (i_VKeyID)
-		{
-			case 0x57:	// w
-				if (i_bDown)
-				{
-					Engine::Math::Vector2f force(0.0f, 0.05f);
-					applyForce(force);
-				}
-				break;
+		//switch (i_key)
+		//{
+		//	case 0x57:	// w
+		//		if (i_down)
+		//		{
+		//			Engine::Math::Vector2f force(0.0f, 0.05f);
+		//			applyForce(force);
+		//			break;
+		//		}
 
+		//	case 0x41:	// a
+		//		if (i_down)
+		//		{
+		//			Engine::Math::Vector2f force(-0.05f, 0.0f);
+		//			applyForce(force);
+		//			break;
+		//		}
 
-			case 0x41:	// a
-				if (i_bDown)
-				{
-					Engine::Math::Vector2f force(-0.05f, 0.0f);
-					applyForce(force);
-				}
-				break;
+		//	case 0x44:	// d
+		//		if (i_down)
+		//		{
+		//			Engine::Math::Vector2f force(0.05f, 0.0f);
+		//			applyForce(force);
+		//			break;
+		//		}
 
-			case 0x44:	// d
-				if (i_bDown)
-				{
-					Engine::Math::Vector2f force(0.05f, 0.0f);
-					applyForce(force);
-				}
-				break;
+		//	case 0x53:	// s
+		//		if (i_down)
+		//		{
+		//			Engine::Math::Vector2f force(0.0f, -0.05f);
+		//			applyForce(force);
+		//			break;
+		//		}
+		//}
+	}
 
-			case 0x53:	// s
-				if (i_bDown)
-				{
-					Engine::Math::Vector2f force(0.0f, -0.05f);
-					applyForce(force);
-				}
-				break;
-		}
+	void PlayerController::mouseClickUpdate(uint8_t i_button, bool i_down, uint16_t i_x, uint16_t i_y)
+	{
+	}
+
+	void PlayerController::mouseMoveUpdate(bool i_leftBt, bool i_rightBt, bool i_middleBt, uint16_t i_x, uint16_t i_y)
+	{
+	}
+
+	void PlayerController::mousePassiveMoveUpdate(uint16_t i_x, uint16_t i_y)
+	{
+	}
+
+	void PlayerController::mouseWheelUpdate(bool i_direction, uint16_t i_x, uint16_t i_y)
+	{
 	}
 
 	void PlayerController::preCollisionPhysicsTick(double i_deltaTime)

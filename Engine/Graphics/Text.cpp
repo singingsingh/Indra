@@ -37,7 +37,7 @@ namespace Engine
 			}
 
 			// Initialize the font object.
-			result = _font->initialize(i_device, "Assets/Font/fontdata1.txt", "Assets/Font/font1.dds");
+			result = _font->initialize(i_device, "Assets/Fonts/fontdata1.txt", "Assets/Fonts/font1.dds");
 			if (!result)
 			{
 				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the font object.", "Error", MB_OK);

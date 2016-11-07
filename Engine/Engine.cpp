@@ -6,7 +6,6 @@
 #include <Engine\Core\StringPool.h>
 #include <Engine\Engine\Serializer.h>
 #include <Engine\Engine\KeyboardNotifier.h>
-#include <Engine\System\Keyboard.h>
 #include <Engine\Graphics\Graphics.h>
 
 namespace Engine
@@ -21,14 +20,12 @@ namespace Engine
 		AIUpdateNotifier::CreateAIUpdateNotifier();
 		KeyboardNotifier::CreateKeyboardNotifier();
 		Serializer::CreateSerializer(i_saveDataFile);
-		Keyboard::Initialize();
 		Graphics::Graphics::Initialize(i_hInstance, i_pWindowName, i_WindowWidth, i_WindowHeight, i_icon);
 	}
 
 	void Shutdown()
 	{
 		Graphics::Graphics::Shutdown();
-		Keyboard::Shutdown();
 		Serializer::DestroySerializer();
 		KeyboardNotifier::DestroyKeyboardNotifier();
 		AIUpdateNotifier::DestroyAIUpdateNotifier();

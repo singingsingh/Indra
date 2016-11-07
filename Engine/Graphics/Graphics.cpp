@@ -27,46 +27,15 @@ namespace Engine
 			//_diffuseModel = nullptr;
 			//_diffuseShader = nullptr;
 			//_diffuseLight = nullptr;
-			_specularModel = nullptr;
-			_specularShader = nullptr;
-			_specularLight = nullptr;
+			//_specularModel = nullptr;
+			//_specularShader = nullptr;
+			//_specularLight = nullptr;
 			//_bitmap = nullptr;
 			_text = nullptr;
 			_cpuUsage = nullptr;
 			_fps = nullptr;
 
-			_tessellationAmount = 12;
-			Engine::KeyboardNotifier::RegisterKeyboardUpdate(this);
-		}
-
-		void Graphics::keyboardUpdate(unsigned int i_VKeyID, bool i_bDown)
-		{
-			switch (i_VKeyID)
-			{
-			case 0x57:	// w
-				if (i_bDown)
-				{
-					if (_tessellationAmount < 16.0f)
-					{
-						_tessellationAmount++;
-					}
-				}
-				break;
-			case 0x53:	// s
-				if (i_bDown)
-				{
-					if (_tessellationAmount > 1.0f)
-					{
-						_tessellationAmount--;
-					}
-				}
-				break;
-			}
-		}
-
-		Graphics::~Graphics()
-		{
-			Engine::KeyboardNotifier::DeRegisterKeyboardUpdate(this);
+			_tessellationAmount = 5;
 		}
 
 		bool Graphics::Initialize(HINSTANCE i_hInstance, const char * i_windowName, unsigned int i_windowWidth, unsigned int i_windowHeight, const WORD* i_icon)
@@ -216,43 +185,43 @@ namespace Engine
 			//_diffuseLight->setDiffuseColor(1.0f, 1.0f, 0.7f, 1.0f);
 			//_diffuseLight->setDirection(0.0f, 0.0f, 1.0f);
 
-			_specularModel = new SpecularModel;
+			//_specularModel = new SpecularModel;
 
-			result = _specularModel->initialize(GraphicsDX::GetDevice(), "Assets/Meshes/ship.ply", "Assets/Textures/161.dds");
-			if (!result)
-			{
-				MessageBox(System::Window::GetWindwsHandle(), "Could not load the assmip the model object.", "Error", MB_OK);
-				return false;
-			}
+			//result = _specularModel->initialize(GraphicsDX::GetDevice(), "Assets/Meshes/neptune.ply", "Assets/Textures/161.dds");
+			//if (!result)
+			//{
+			//	MessageBox(System::Window::GetWindwsHandle(), "Could not load the assmip the model object.", "Error", MB_OK);
+			//	return false;
+			//}
 
-			// Create the light shader object.
-			_specularShader = new SpecularShader;
-			if (!_specularShader)
-			{
-				return false;
-			}
+			//// Create the light shader object.
+			//_specularShader = new SpecularShader;
+			//if (!_specularShader)
+			//{
+			//	return false;
+			//}
 
-			// Initialize the light shader object.
-			result = _specularShader->initialize(GraphicsDX::GetDevice());
-			if (!result)
-			{
-				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the light shader object.", "Error", MB_OK);
-				return false;
-			}
+			//// Initialize the light shader object.
+			//result = _specularShader->initialize(GraphicsDX::GetDevice());
+			//if (!result)
+			//{
+			//	MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the light shader object.", "Error", MB_OK);
+			//	return false;
+			//}
 
-			// Create the light object.
-			_specularLight = new SpecularLight;
-			if (!_specularLight)
-			{
-				return false;
-			}
+			//// Create the light object.
+			//_specularLight = new SpecularLight;
+			//if (!_specularLight)
+			//{
+			//	return false;
+			//}
 
-			// Initialize the light object.
-			_specularLight->setAmbientColor(0.15f, 0.15f, 0.15f, 1.0f);
-			_specularLight->setDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
-			_specularLight->setDirection(0.0f, 0.0f, 1.0f);
-			_specularLight->setSpecularColor(1.0f, 1.0f, 1.0f, 1.0f);
-			_specularLight->setSpecularPower(32.0f);
+			//// Initialize the light object.
+			//_specularLight->setAmbientColor(0.15f, 0.15f, 0.15f, 1.0f);
+			//_specularLight->setDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
+			//_specularLight->setDirection(0.0f, 0.0f, 1.0f);
+			//_specularLight->setSpecularColor(1.0f, 1.0f, 1.0f, 1.0f);
+			//_specularLight->setSpecularPower(32.0f);
 
 			//// Create the bitmap object.
 			//_bitmap = new Bitmap;
@@ -390,16 +359,16 @@ namespace Engine
 			//	_bitmap = nullptr;
 			//}
 
-			delete _specularLight;
-			_specularLight = nullptr;
+			//delete _specularLight;
+			//_specularLight = nullptr;
 
-			_specularModel->shutdown();
-			delete _specularModel;
-			_specularModel = nullptr;
+			//_specularModel->shutdown();
+			//delete _specularModel;
+			//_specularModel = nullptr;
 
-			_specularShader->shutdown();
-			delete _specularShader;
-			_specularShader = nullptr;
+			//_specularShader->shutdown();
+			//delete _specularShader;
+			//_specularShader = nullptr;
 
 			if (_text)
 			{
@@ -446,7 +415,7 @@ namespace Engine
 				_currentCamera->update();
 
 				worldMatrix = GraphicsDX::GetWorldMatrix();
-				D3DXMatrixRotationX(&worldMatrix, MathUtils::ToRadians(70.0f));
+
 				viewMatrix = _currentCamera->getViewMatrix();
 				projectionMatrix = _currentCamera->getProjectionMatrix();
 
@@ -456,17 +425,10 @@ namespace Engine
 					worldMatrix, viewMatrix, projectionMatrix, (float)_tessellationAmount);
 				GraphicsDX::RenderSolidFill();
 
-
-				worldMatrix = GraphicsDX::GetWorldMatrix();
-				D3DXMatrixRotationY(&worldMatrix, MathUtils::ToRadians(90.0f));
-				D3DXMATRIX temp, out;
-				D3DXMatrixRotationX(&temp, MathUtils::ToRadians(270.0f));
-				D3DXMatrixMultiply(&out, &temp, &worldMatrix);
-
-				_specularModel->render(GraphicsDX::GetDeviceContext());
-				result = _specularShader->render(GraphicsDX::GetDeviceContext(), _specularModel->getIndexCount(), out, viewMatrix, projectionMatrix,
-					_specularModel->getTexture(), _specularLight->getDirection(), _specularLight->getAmbientColor(), _specularLight->getDiffuseColor(), _currentCamera->getPosition(),
-					_specularLight->getSpecularColor(), _specularLight->getSpecularPower());
+				//_specularModel->render(GraphicsDX::GetDeviceContext());
+				//result = _specularShader->render(GraphicsDX::GetDeviceContext(), _specularModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+				//	_specularModel->getTexture(), _specularLight->getDirection(), _specularLight->getAmbientColor(), _specularLight->getDiffuseColor(), _currentCamera->getPosition(),
+				//	_specularLight->getSpecularColor(), _specularLight->getSpecularPower());
 
 				if (!result)
 				{

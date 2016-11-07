@@ -5,9 +5,10 @@
 #include <Engine\Engine\PhysicsTickNotifier.h>
 #include <Engine\Engine\AIUpdateNotifier.h>
 #include <Engine\Core\ThreadedFileProcessor.h>
-#include <Engine\System\Keyboard.h>
+#include <Engine\System\Window.h>
 #include <Engine\Graphics\Graphics.h>
 #include <Engine\Graphics\Camera.h>
+#include <Engine\Util\MathUtils.h>
 
 #include <Game\Lua\LuaLoadTask.h>
 #include <Game\Config.h>
@@ -79,7 +80,7 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 	uint8_t continuesEngineUpdate = 0;
 	bool bQuit = false;
 	
-	Engine::Graphics::Camera* camera = new Engine::Graphics::Camera(0.1f, 100.0f, (float)D3DX_PI / 4.0f, float (Game::WINDOW_WIDTH)/ Game::WINDOW_HEIGHT);
+	Engine::Graphics::Camera* camera = new Engine::Graphics::Camera(0.1f, 100.0f, Engine::MathUtils::ToRadians(60.0f), float (Game::WINDOW_WIDTH)/ Game::WINDOW_HEIGHT);
 	Engine::Graphics::Graphics::SetCamera(camera);
 	camera->setPosition(0.0f, 0.0f, -3.0f);
 
@@ -93,7 +94,7 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 		{
 			continuesEngineUpdate++;
 
-			bQuit = Engine::Keyboard::KeyboardUpdate();
+			bQuit = Engine::KeyboardUpdate();
 			if (bQuit)
 			{
 				break;
