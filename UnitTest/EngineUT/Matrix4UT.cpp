@@ -28,7 +28,7 @@ namespace UnitTest
 		std::cout << "Scalar Matrix:\n";
 		printMatrix( scaleMat );
 
-		Engine::Math::Matrix4 rotMat = Engine::Math::Matrix4::CreateXRotationCV(Engine::MathUtils::ToRadians(65.0f));
+		Engine::Math::Matrix4 rotMat = Engine::Math::Matrix4::CreateXRotationCV(Engine::MathUtils::DegToRad * 65.0f);
 		std::cout << "Rotation Matrix for 65 degrees:\n";
 		printMatrix( rotMat );
 

@@ -8,6 +8,8 @@ namespace Engine
 	const float MathUtils::MAX_ABSOLUTE_ERROR = 0.00001f;
 	const float MathUtils::MAX_RELATIVE_ERROR = 0.00001f;
 	const float MathUtils::PI = 3.14159f;
+	const float MathUtils::DegToRad = 0.017453277777778f;
+	const float MathUtils::RadToDeg = 57.29582790879777f;
 
 	bool MathUtils::almostEqual(float lhs, float rhs, float maxRelativeError, float maxAbsoluteError)
 	{
@@ -35,16 +37,6 @@ namespace Engine
 		}
 
 		return false;
-	}
-
-	float MathUtils::ToDegrees(float i_radians)
-	{
-		return i_radians*(180.0f / PI);
-	}
-
-	float MathUtils::ToRadians(float i_degree)
-	{
-		return i_degree*( PI / 180.0f );
 	}
 
 	bool MathUtils::almostEqual(float lhs, float rhs, float maxRelativeError)

@@ -32,6 +32,9 @@ namespace Engine
 			static int GetWidth();
 			static int GetHeight();
 			LRESULT CALLBACK messageHandler(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+			static void SetCursor(uint16_t posX, uint16_t posY);
+			static void SetCursorToCenter();
+			static bool IsActive();
 
 		private:
 
@@ -46,6 +49,7 @@ namespace Engine
 			HINSTANCE _hinstance;
 			HWND _windowHandle;
 			const bool FULL_SCREEN;
+			bool _active;
 
 			const static size_t	_sizeReadTable = 256;
 			bool  _keyStates[_sizeReadTable];

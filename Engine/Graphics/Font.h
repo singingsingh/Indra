@@ -17,7 +17,7 @@ namespace Engine
 			Font();
 			~Font();
 
-			bool initialize(ID3D11Device* device, const char* fontDataFileName, const char * textureFileName);
+			bool initialize(const char* fontDataFileName, const char * textureFileName);
 			void shutdown();
 
 			ID3D11ShaderResourceView* getTexture();
@@ -38,7 +38,7 @@ namespace Engine
 
 			bool loadFontData(const char* fontDataFile);
 			void releaseFontData();
-			bool loadTexture(ID3D11Device* device, const char* fontTextureFileName);
+			bool loadTexture(const char* fontTextureFileName);
 			void releaseTexture();
 
 			FontType* _font;

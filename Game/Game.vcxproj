@@ -27,7 +27,6 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Engine\Engine.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="Controllers\MonsterController.h" />
     <ClInclude Include="Controllers\PlayerController.h" />

@@ -23,8 +23,9 @@ namespace Engine
 
 			void update();
 			D3DXMATRIX getViewMatrix();
-			D3DXMATRIX getProjectionMatrix();
-			D3DXMATRIX getOrthogonalMatrix();
+			D3DXMATRIX getOrthoViewMatrix();
+			D3DXMATRIX getProjMatrix();
+			D3DXMATRIX getOrthoProjMatrix();
 
 			virtual void keyboardUpdate(uint8_t key, bool down, uint16_t x, uint16_t y);
 			virtual void mouseClickUpdate(uint8_t button, bool down, uint16_t x, uint16_t y);
@@ -40,8 +41,8 @@ namespace Engine
 			float _aspectRatio;
 
 			D3DXVECTOR3 _position, _rotation;
-			D3DXMATRIX _viewMatrix;
-			D3DXMATRIX _orthoMatrix;
+			D3DXMATRIX _viewMatrix, _orthoViewMatrix;
+			D3DXMATRIX _orthoProjMatrix;
 			D3DXMATRIX _projectionMatrix;
 		};
 	}

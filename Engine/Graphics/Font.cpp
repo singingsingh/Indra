@@ -12,7 +12,7 @@ namespace Engine
 		{
 		}
 
-		bool Font::initialize(ID3D11Device* i_device, const char* i_fontDataFileName, const char* i_textureFileName)
+		bool Font::initialize(const char* i_fontDataFileName, const char* i_textureFileName)
 		{
 			bool result;
 
@@ -25,7 +25,7 @@ namespace Engine
 			}
 
 			// Load the texture that has the font characters on it.
-			result = loadTexture(i_device, i_textureFileName);
+			result = loadTexture(i_textureFileName);
 			if (!result)
 			{
 				return false;
@@ -147,7 +147,7 @@ namespace Engine
 			}
 		}
 
-		bool Font::loadTexture(ID3D11Device* i_device, const char* i_fontTextureFileName)
+		bool Font::loadTexture(const char* i_fontTextureFileName)
 		{
 			bool result;
 
@@ -160,7 +160,7 @@ namespace Engine
 			}
 
 			// Initialize the texture object.
-			result = _texture->initialize(i_device, i_fontTextureFileName);
+			result = _texture->initialize(i_fontTextureFileName);
 			if (!result)
 			{
 				return false;

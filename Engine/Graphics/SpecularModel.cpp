@@ -5,6 +5,7 @@
 #include <External\Assimp\include\scene.h>
 
 #include <Engine\Util\ConsolePrint.h>
+#include <Engine\Graphics\GraphicsDX.h>
 
 #include <fstream>
 
@@ -24,7 +25,7 @@ namespace Engine
 		{
 		}
 
-		bool SpecularModel::initialize(ID3D11Device* i_device, char* i_modelFilename, const char* i_textureFilename)
+		bool SpecularModel::initialize(char* i_modelFilename, const char* i_textureFilename)
 		{
 			bool result;
 
@@ -36,14 +37,14 @@ namespace Engine
 			}
 
 			// Initialize the vertex and index buffer that hold the geometry for the triangle.
-			result = initializeBuffers(i_device);
+			result = initializeBuffers();
 			if (!result)
 			{
 				return false;
 			}
 
 			// Load the texture for this model.
-			result = loadTexture(i_device, i_textureFilename);
+			result = loadTexture(i_textureFilename);
 			if (!result)
 			{
 				return false;
@@ -59,9 +60,9 @@ namespace Engine
 			releaseModel();
 		}
 
-		void SpecularModel::render(ID3D11DeviceContext* i_deviceContext)
+		void SpecularModel::render()
 		{
-			renderBuffers(i_deviceContext);
+			renderBuffers();
 		}
 
 		int SpecularModel::getIndexCount()
@@ -74,7 +75,7 @@ namespace Engine
 			return _texture->getTexture();
 		}
 
-		bool SpecularModel::initializeBuffers(ID3D11Device* i_device)
+		bool SpecularModel::initializeBuffers()
 		{
 			VertexType* vertices;
 			unsigned long* indices;
@@ -124,8 +125,9 @@ namespace Engine
 			vertexData.SysMemPitch = 0;
 			vertexData.SysMemSlicePitch = 0;
 
+			ID3D11Device* device = GraphicsDX::GetDevice();
 			// Now create the vertex buffer.
-			result = i_device->CreateBuffer(&vertexBufferDesc, &vertexData, &_vertexBuffer);
+			result = device->CreateBuffer(&vertexBufferDesc, &vertexData, &_vertexBuffer);
 			if (FAILED(result))
 			{
 				return false;
@@ -145,7 +147,7 @@ namespace Engine
 			indexData.SysMemSlicePitch = 0;
 
 			// Create the index buffer.
-			result = i_device->CreateBuffer(&indexBufferDesc, &indexData, &_indexBuffer);
+			result = device->CreateBuffer(&indexBufferDesc, &indexData, &_indexBuffer);
 			if (FAILED(result))
 			{
 				return false;
@@ -180,14 +182,14 @@ namespace Engine
 			return;
 		}
 
-		void SpecularModel::renderBuffers(ID3D11DeviceContext* i_deviceContext)
+		void SpecularModel::renderBuffers()
 		{
 			unsigned int stride;
 			unsigned int offset;
 
 			stride = sizeof(VertexType);
 			offset = 0;
-
+			ID3D11DeviceContext* i_deviceContext = GraphicsDX::GetDeviceContext();
 			i_deviceContext->IASetVertexBuffers(0, 1, &_vertexBuffer, &stride, &offset);
 			i_deviceContext->IASetIndexBuffer(_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 			i_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -272,7 +274,7 @@ namespace Engine
 			return;
 		}
 
-		bool SpecularModel::loadTexture(ID3D11Device* i_device, const char* i_textureFileName)
+		bool SpecularModel::loadTexture(const char* i_textureFileName)
 		{
 			bool result;
 
@@ -284,7 +286,7 @@ namespace Engine
 			}
 
 			// Initialize the texture object.
-			result = _texture->initialize(i_device, i_textureFileName);
+			result = _texture->initialize(i_textureFileName);
 			if (!result)
 			{
 				return false;

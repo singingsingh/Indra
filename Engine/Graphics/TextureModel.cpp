@@ -1,5 +1,7 @@
 #include <Engine\Graphics\TextureModel.h>
 
+#include <Engine\Graphics\GraphicsDX.h>
+
 namespace Engine
 {
 	namespace Graphics
@@ -16,19 +18,19 @@ namespace Engine
 		{
 		}
 
-		bool TextureModel::initialize(ID3D11Device * i_device, const char * i_textureFileName)
+		bool TextureModel::initialize(const char * i_textureFileName)
 		{
 			bool result;
 
 			// Initialize the vertex and index buffer that hold the geometry for the triangle.
-			result = initializeBuffers(i_device);
+			result = initializeBuffers();
 			if (!result)
 			{
 				return false;
 			}
 
 			// Load the texture for this model.
-			result = loadTexture(i_device, i_textureFileName);
+			result = loadTexture(i_textureFileName);
 			if (!result)
 			{
 				return false;
@@ -43,9 +45,9 @@ namespace Engine
 			shutdownBuffers();
 		}
 
-		void TextureModel::render(ID3D11DeviceContext* i_deviceContext)
+		void TextureModel::render()
 		{
-			renderBuffers(i_deviceContext);
+			renderBuffers();
 		}
 
 		int TextureModel::getIndexCount()
@@ -58,7 +60,7 @@ namespace Engine
 			return _texture->getTexture();;
 		}
 
-		bool TextureModel::initializeBuffers(ID3D11Device* i_device)
+		bool TextureModel::initializeBuffers()
 		{
 			VertexType* vertices;
 			unsigned long* indices;
@@ -66,7 +68,7 @@ namespace Engine
 			D3D11_SUBRESOURCE_DATA vertexData, indexData;
 			HRESULT result;
 
-
+			ID3D11Device* device = GraphicsDX::GetDevice();
 			// Set the number of vertices in the vertex array.
 			_vertexCount = 3;
 
@@ -116,7 +118,7 @@ namespace Engine
 			vertexData.SysMemSlicePitch = 0;
 
 			// Now create the vertex buffer.
-			result = i_device->CreateBuffer(&vertexBufferDesc, &vertexData, &_vertexBuffer);
+			result = device->CreateBuffer(&vertexBufferDesc, &vertexData, &_vertexBuffer);
 			if (FAILED(result))
 			{
 				return false;
@@ -134,7 +136,7 @@ namespace Engine
 			indexData.pSysMem = indices;
 
 			// Create the index buffer.
-			result = i_device->CreateBuffer(&indexBufferDesc, &indexData, &_indexBuffer);
+			result = device->CreateBuffer(&indexBufferDesc, &indexData, &_indexBuffer);
 			if (FAILED(result))
 			{
 				return false;
@@ -167,27 +169,21 @@ namespace Engine
 			}
 		}
 
-		void TextureModel::renderBuffers(ID3D11DeviceContext* i_deviceContext)
+		void TextureModel::renderBuffers()
 		{
 			unsigned int stride;
 			unsigned int offset;
 
-
-			// Set vertex buffer stride and offset.
 			stride = sizeof(VertexType);
 			offset = 0;
 
-			// Set the vertex buffer to active in the input assembler so it can be rendered.
-			i_deviceContext->IASetVertexBuffers(0, 1, &_vertexBuffer, &stride, &offset);
-
-			// Set the index buffer to active in the input assembler so it can be rendered.
-			i_deviceContext->IASetIndexBuffer(_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-
-			// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
-			i_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			ID3D11DeviceContext* deviceContext = GraphicsDX::GetDeviceContext();
+			deviceContext->IASetVertexBuffers(0, 1, &_vertexBuffer, &stride, &offset);
+			deviceContext->IASetIndexBuffer(_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+			deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		}
 
-		bool TextureModel::loadTexture(ID3D11Device * i_device, const char * i_textureFileName)
+		bool TextureModel::loadTexture(const char * i_textureFileName)
 		{
 			bool result;
 
@@ -200,7 +196,7 @@ namespace Engine
 			}
 
 			// Initialize the texture object.
-			result = _texture->initialize(i_device, i_textureFileName);
+			result = _texture->initialize(i_textureFileName);
 			if (!result)
 			{
 				return false;

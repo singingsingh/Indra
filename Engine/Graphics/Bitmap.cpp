@@ -1,4 +1,5 @@
 #include <Engine\Graphics\Bitmap.h>
+#include <Engine\Graphics\GraphicsDX.h>
 
 namespace Engine
 {
@@ -15,7 +16,7 @@ namespace Engine
 		{
 		}
 
-		bool Bitmap::initialize(ID3D11Device* i_device, int i_screenWidth, int i_screenHeight, const char* i_textureFilename, int i_bitmapWidth, int i_bitmapHeight)
+		bool Bitmap::initialize(int i_screenWidth, int i_screenHeight, const char* i_textureFilename, int i_bitmapWidth, int i_bitmapHeight)
 		{
 			bool result;
 
@@ -32,14 +33,14 @@ namespace Engine
 			_previousPosY = -1;
 
 			// Initialize the vertex and index buffers.
-			result = initializeBuffers(i_device);
+			result = initializeBuffers();
 			if (!result)
 			{
 				return false;
 			}
 
 			// Load the texture for this model.
-			result = loadTexture(i_device, i_textureFilename);
+			result = loadTexture(i_textureFilename);
 			if (!result)
 			{
 				return false;
@@ -54,19 +55,19 @@ namespace Engine
 			shutdownBuffers();
 		}
 
-		bool Bitmap::render(ID3D11DeviceContext* i_deviceContext, int i_positionX, int i_positionY)
+		bool Bitmap::render(int i_positionX, int i_positionY)
 		{
 			bool result;
 
 			// Re-build the dynamic vertex buffer for rendering to possibly a different location on the screen.
-			result = updateBuffers(i_deviceContext, i_positionX, i_positionY);
+			result = updateBuffers(i_positionX, i_positionY);
 			if (!result)
 			{
 				return false;
 			}
 
 			// Put the vertex and index buffers on the graphics pipeline to prepare them for drawing.
-			renderBuffers(i_deviceContext);
+			renderBuffers();
 
 			return true;
 		}
@@ -81,7 +82,7 @@ namespace Engine
 			return _texture->getTexture();
 		}
 
-		bool Bitmap::initializeBuffers(ID3D11Device* i_device)
+		bool Bitmap::initializeBuffers()
 		{
 			VertexType* vertices;
 			unsigned long* indices;
@@ -133,7 +134,8 @@ namespace Engine
 			vertexData.SysMemSlicePitch = 0;
 
 			// Now create the vertex buffer.
-			result = i_device->CreateBuffer(&vertexBufferDesc, &vertexData, &_vertexBuffer);
+			ID3D11Device* device = GraphicsDX::GetDevice();
+			result = device->CreateBuffer(&vertexBufferDesc, &vertexData, &_vertexBuffer);
 			if (FAILED(result))
 			{
 				return false;
@@ -153,7 +155,7 @@ namespace Engine
 			indexData.SysMemSlicePitch = 0;
 
 			// Create the index buffer.
-			result = i_device->CreateBuffer(&indexBufferDesc, &indexData, &_indexBuffer);
+			result = device->CreateBuffer(&indexBufferDesc, &indexData, &_indexBuffer);
 			if (FAILED(result))
 			{
 				return false;
@@ -178,7 +180,7 @@ namespace Engine
 			_vertexBuffer = nullptr;
 		}
 
-		bool Bitmap::updateBuffers(ID3D11DeviceContext* i_deviceContext, int i_positionX, int i_positionY)
+		bool Bitmap::updateBuffers(int i_positionX, int i_positionY)
 		{
 			float left, right, top, bottom;
 			VertexType* vertices;
@@ -238,7 +240,8 @@ namespace Engine
 			vertices[5].texture = D3DXVECTOR2(1.0f, 1.0f);
 
 			// Lock the vertex buffer so it can be written to.
-			result = i_deviceContext->Map(_vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+			ID3D11DeviceContext* deviceContext = GraphicsDX::GetDeviceContext();
+			result = deviceContext->Map(_vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 			if (FAILED(result))
 			{
 				return false;
@@ -251,7 +254,7 @@ namespace Engine
 			memcpy(verticesPtr, (void*)vertices, (sizeof(VertexType) * _vertexCount));
 
 			// Unlock the vertex buffer.
-			i_deviceContext->Unmap(_vertexBuffer, 0);
+			deviceContext->Unmap(_vertexBuffer, 0);
 
 			// Release the vertex array as it is no longer needed.
 			delete[] vertices;
@@ -260,27 +263,21 @@ namespace Engine
 			return true;
 		}
 
-		void Bitmap::renderBuffers(ID3D11DeviceContext* i_deviceContext)
+		void Bitmap::renderBuffers()
 		{
 			unsigned int stride;
 			unsigned int offset;
 
-
-			// Set vertex buffer stride and offset.
 			stride = sizeof(VertexType);
 			offset = 0;
 
-			// Set the vertex buffer to active in the input assembler so it can be rendered.
+			ID3D11DeviceContext* i_deviceContext = GraphicsDX::GetDeviceContext();
 			i_deviceContext->IASetVertexBuffers(0, 1, &_vertexBuffer, &stride, &offset);
-
-			// Set the index buffer to active in the input assembler so it can be rendered.
 			i_deviceContext->IASetIndexBuffer(_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-
-			// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
 			i_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		}
 
-		bool Bitmap::loadTexture(ID3D11Device* i_device, const char* i_textureFileName)
+		bool Bitmap::loadTexture(const char* i_textureFileName)
 		{
 			bool result;
 
@@ -291,7 +288,7 @@ namespace Engine
 			}
 
 			// Initialize the texture object.
-			result = _texture->initialize(i_device, i_textureFileName);
+			result = _texture->initialize(i_textureFileName);
 			if (!result)
 			{
 				return false;

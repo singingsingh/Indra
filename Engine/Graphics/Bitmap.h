@@ -23,20 +23,20 @@ namespace Engine
 			Bitmap();
 			~Bitmap();
 
-			bool initialize(ID3D11Device* device, int screenWidth, int screenHeight, const char* textureFileName, int bitmapWidth, int bitmapHeight);
+			bool initialize(int screenWidth, int screenHeight, const char* textureFileName, int bitmapWidth, int bitmapHeight);
 			void shutdown();
-			bool render(ID3D11DeviceContext* deviceContext, int positionX, int positionY);
+			bool render(int positionX, int positionY);
 
 			int getIndexCount();
 			ID3D11ShaderResourceView* getTexture();
 
 		private:
-			bool initializeBuffers(ID3D11Device* device);
+			bool initializeBuffers();
 			void shutdownBuffers();
-			bool updateBuffers(ID3D11DeviceContext* deviceContext, int positionX, int positionY);
-			void renderBuffers(ID3D11DeviceContext* deviceContext);
+			bool updateBuffers(int positionX, int positionY);
+			void renderBuffers();
 
-			bool loadTexture(ID3D11Device* device, const char* textureFileName);
+			bool loadTexture(const char* textureFileName);
 			void releaseTexture();
 
 		private:
