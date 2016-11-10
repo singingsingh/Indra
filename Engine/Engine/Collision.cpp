@@ -19,8 +19,8 @@ namespace Engine
 			// calculate edge normal
 			std::vector<Math::Vector2f>::iterator itr = meBB.begin();
 			Math::Vector2f startEdge, endEdge, edge, normalEdge;
-			float cos90 = cosf(MathUtils::ToRadians(90));
-			float sin90 = sinf(MathUtils::ToRadians(90));
+			float cos90 = cosf(MathUtils::DegToRad * 90);
+			float sin90 = sinf(MathUtils::DegToRad * 90);
 
 			for (; itr != meBB.end() && collision; itr++)
 			{
@@ -129,7 +129,7 @@ namespace Engine
 			mePos.y(i_me->_physicsInfo->_gameObject->pos.y);
 			mePos.z(0.0f);
 			Math::Matrix4 meModelTrans = Math::Matrix4::CreateTranslationCV(mePos);
-			Math::Matrix4 meModelRot = Math::Matrix4::CreateZRotationCV( MathUtils::ToRadians(i_me->_physicsInfo->_gameObject->rotDegree) );
+			Math::Matrix4 meModelRot = Math::Matrix4::CreateZRotationCV( MathUtils::DegToRad * i_me->_physicsInfo->_gameObject->rotDegree );
 			Math::Matrix4 meModel = meModelTrans*meModelRot;
 
 			Math::Vector3 otherPos;
@@ -137,7 +137,7 @@ namespace Engine
 			otherPos.y(i_other->_physicsInfo->_gameObject->pos.y);
 			otherPos.z(0.0f);
 			Math::Matrix4 otherModelTrans = Math::Matrix4::CreateTranslationCV(otherPos);
-			Math::Matrix4 otherModelRot = Math::Matrix4::CreateZRotationCV( MathUtils::ToRadians( i_other->_physicsInfo->_gameObject->rotDegree ) );
+			Math::Matrix4 otherModelRot = Math::Matrix4::CreateZRotationCV( MathUtils::DegToRad * i_other->_physicsInfo->_gameObject->rotDegree );
 			Math::Matrix4 otherModel = otherModelTrans*otherModelRot;
 
 			std::vector<Math::Vector2f> meBB = i_me->_physicsInfo->boundingBox;

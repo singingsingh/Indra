@@ -3,6 +3,7 @@
 #include <Engine\System\Window.h>
 #include <Engine\Util\Assert.h>
 #include <Engine\Graphics\Graphics.h>
+#include <Engine\Graphics\Camera.h>
 
 namespace Engine
 {
@@ -37,7 +38,7 @@ namespace Engine
 			}
 
 			// Initialize the font object.
-			result = _font->initialize(i_device, "Assets/Fonts/fontdata1.txt", "Assets/Fonts/font1.dds");
+			result = _font->initialize("Assets/Fonts/fontdata1.txt", "Assets/Fonts/font1.dds");
 			if (!result)
 			{
 				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the font object.", "Error", MB_OK);
@@ -52,7 +53,7 @@ namespace Engine
 			}
 
 			// Initialize the font shader object.
-			result = _fontShader->initialize(i_device);
+			result = _fontShader->initialize();
 			if (!result)
 			{
 				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the font shader object.", "Error", MB_OK);
@@ -67,7 +68,7 @@ namespace Engine
 			}
 
 			// Now update the sentence vertex buffer with the new string information.
-			result = updateSentence(_sentence1, "vikram singh", 700, 10, 1.0f, 1.0f, 1.0f, i_deviceContext);
+			result = updateSentence(_sentence1, "vikram singh", 700, 10, 1.0f, 1.0f, 1.0f);
 			if (!result)
 			{
 				return false;
@@ -81,7 +82,7 @@ namespace Engine
 			}
 
 			// Now update the sentence vertex buffer with the new string information.
-			result = updateSentence(_sentence2, "Raj", 700, 30, 1.0f, 1.0f, 0.0f, i_deviceContext);
+			result = updateSentence(_sentence2, "Raj", 700, 30, 1.0f, 1.0f, 0.0f);
 			if (!result)
 			{
 				return false;
@@ -114,17 +115,17 @@ namespace Engine
 			}
 		}
 
-		bool Text::render(ID3D11DeviceContext* i_deviceContext, D3DXMATRIX i_worldMatrix, D3DXMATRIX i_orthoMatrix)
+		bool Text::render()
 		{
 			bool result;
 
-			result = renderSentence(i_deviceContext, _sentence1, i_worldMatrix, i_orthoMatrix);
+			result = renderSentence(_sentence1);
 			if (!result)
 			{
 				return false;
 			}
 
-			result = renderSentence(i_deviceContext, _sentence2, i_worldMatrix, i_orthoMatrix);
+			result = renderSentence(_sentence2);
 			if (!result)
 			{
 				return false;
@@ -179,7 +180,7 @@ namespace Engine
 			}
 
 			// Update the sentence vertex buffer with the new string information.
-			result = updateSentence(_sentence1, fpsString, 720, 20, red, green, blue, GraphicsDX::GetDeviceContext());
+			result = updateSentence(_sentence1, fpsString, 720, 20, red, green, blue);
 		}
 
 		void Text::setCPU(int cpu)
@@ -198,7 +199,7 @@ namespace Engine
 			strcat_s(cpuString, "%");
 
 			// Update the sentence vertex buffer with the new string information.
-			result = updateSentence(_sentence2, cpuString, 720, 40, 0.0f, 1.0f, 0.0f, GraphicsDX::GetDeviceContext());
+			result = updateSentence(_sentence2, cpuString, 720, 40, 0.0f, 1.0f, 0.0f);
 		}
 
 		bool Text::initializeSentence(SentenceType** i_sentence, int i_maxLength, ID3D11Device* i_device)
@@ -303,8 +304,7 @@ namespace Engine
 			return true;
 		}
 
-		bool Text::updateSentence(SentenceType* i_sentence, const char* i_text, int i_positionX, int i_positionY, float i_red, float i_green, float i_blue,
-			ID3D11DeviceContext* i_deviceContext)
+		bool Text::updateSentence(SentenceType* i_sentence, const char* i_text, int i_positionX, int i_positionY, float i_red, float i_green, float i_blue)
 		{
 			int numLetters;
 			VertexType* vertices;
@@ -345,8 +345,10 @@ namespace Engine
 			// Use the font class to build the vertex array from the sentence text and sentence draw location.
 			_font->buildVertexArray((void*)vertices, i_text, drawX, drawY);
 
+			ID3D11DeviceContext* deviceContext = GraphicsDX::GetDeviceContext();
+
 			// Lock the vertex buffer so it can be written to.
-			result = i_deviceContext->Map(i_sentence->vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+			result = deviceContext->Map(i_sentence->vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 			if (FAILED(result))
 			{
 				return false;
@@ -359,7 +361,7 @@ namespace Engine
 			memcpy(verticesPtr, (void*)vertices, (sizeof(VertexType) * i_sentence->vertexCount));
 
 			// Unlock the vertex buffer.
-			i_deviceContext->Unmap(i_sentence->vertexBuffer, 0);
+			deviceContext->Unmap(i_sentence->vertexBuffer, 0);
 
 			// Release the vertex array as it is no longer needed.
 			delete[] vertices;
@@ -392,8 +394,7 @@ namespace Engine
 			}
 		}
 
-		bool Text::renderSentence(ID3D11DeviceContext* i_deviceContext, SentenceType* i_sentence, D3DXMATRIX i_worldMatrix,
-			D3DXMATRIX i_orthoMatrix)
+		bool Text::renderSentence(SentenceType* i_sentence)
 		{
 			unsigned int stride, offset;
 			D3DXVECTOR4 pixelColor;
@@ -404,21 +405,22 @@ namespace Engine
 			stride = sizeof(VertexType);
 			offset = 0;
 
+			ID3D11DeviceContext* deviceContext = GraphicsDX::GetDeviceContext();
+
 			// Set the vertex buffer to active in the input assembler so it can be rendered.
-			i_deviceContext->IASetVertexBuffers(0, 1, &i_sentence->vertexBuffer, &stride, &offset);
+			deviceContext->IASetVertexBuffers(0, 1, &i_sentence->vertexBuffer, &stride, &offset);
 
 			// Set the index buffer to active in the input assembler so it can be rendered.
-			i_deviceContext->IASetIndexBuffer(i_sentence->indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+			deviceContext->IASetIndexBuffer(i_sentence->indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
 			// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
-			i_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 			// Create a pixel color vector with the input sentence color.
 			pixelColor = D3DXVECTOR4(i_sentence->red, i_sentence->green, i_sentence->blue, 1.0f);
 
 			// Render the text using the font shader.
-			result = _fontShader->render(i_deviceContext, i_sentence->indexCount, i_worldMatrix,
-				Graphics::GetCamera()->getViewMatrix(), i_orthoMatrix, _font->getTexture(), pixelColor);
+			result = _fontShader->render(i_sentence->indexCount, _font->getTexture(), pixelColor);
 			if (!result)
 			{
 				false;

@@ -17,7 +17,7 @@ namespace Engine
 			Texture(const Texture&);
 			~Texture();
 
-			bool initialize(ID3D11Device*, const char *);
+			bool initialize(const char *);
 			void shutdown();
 
 			ID3D11ShaderResourceView* getTexture();

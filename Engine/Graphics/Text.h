@@ -16,7 +16,7 @@ namespace Engine
 
 			bool initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int screenWidth, int screenHeight);
 			void shutdown();
-			bool render(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX orthoMatrix);
+			bool render();
 			void setFPS( int fps );
 			void setCPU( int cpu );
 
@@ -35,9 +35,9 @@ namespace Engine
 			};
 
 			bool initializeSentence(SentenceType** sentence, int maxLength, ID3D11Device* device);
-			bool updateSentence(SentenceType* sentence, const char* text, int positionX, int positionY, float red, float green, float blue, ID3D11DeviceContext* deviceContext);
+			bool updateSentence(SentenceType* sentence, const char* text, int positionX, int positionY, float red, float green, float blue);
 			void releaseSentence(SentenceType** sentence);
-			bool renderSentence(ID3D11DeviceContext* deviceContext, SentenceType* sentence, D3DXMATRIX worldMatrix, D3DXMATRIX orthoMatrix);
+			bool renderSentence(SentenceType* sentence);
 
 			Font* _font;
 			FontShader* _fontShader;

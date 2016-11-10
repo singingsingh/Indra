@@ -16,9 +16,9 @@ namespace Engine
 			public:
 				SpecularModel();
 				~SpecularModel();
-				bool initialize(ID3D11Device* device, char* modelFilename, const char* textureFilename);
+				bool initialize(char* modelFilename, const char* textureFilename);
 				void shutdown();
-				void render(ID3D11DeviceContext* deviceContext);
+				void render();
 				int getIndexCount();
 				ID3D11ShaderResourceView* getTexture();
 
@@ -37,12 +37,12 @@ namespace Engine
 					float nx, ny, nz;
 				};
 
-				bool initializeBuffers(ID3D11Device* device);
+				bool initializeBuffers();
 				void shutdownBuffers();
-				void renderBuffers(ID3D11DeviceContext* deviceContext);
+				void renderBuffers();
 				bool loadModel(const char* modelFileName);
 				void releaseModel();
-				bool loadTexture(ID3D11Device* device, const char* textureFileName);
+				bool loadTexture(const char* textureFileName);
 				void releaseTexture();
 
 				ID3D11Buffer *_vertexBuffer, *_indexBuffer;

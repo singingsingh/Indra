@@ -51,7 +51,6 @@
     <ClInclude Include="Controllers\PlayerController.h">
       <Filter>Source Files\Controllers</Filter>
     </ClInclude>
-    <ClInclude Include="..\Engine\Engine.h" />
     <ClInclude Include="Config.h">
       <Filter>Source Files</Filter>
     </ClInclude>

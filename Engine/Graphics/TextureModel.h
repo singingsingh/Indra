@@ -16,9 +16,9 @@ namespace Engine
 				TextureModel();
 				virtual ~TextureModel();
 
-				bool initialize(ID3D11Device* device, const char * textureFileName);
+				bool initialize(const char * textureFileName);
 				void shutdown();
-				void render(ID3D11DeviceContext*);
+				void render();
 				int getIndexCount();
 				ID3D11ShaderResourceView* getTexture();
 
@@ -29,10 +29,10 @@ namespace Engine
 					D3DXVECTOR2 texture;
 				};
 
-				bool initializeBuffers(ID3D11Device*);
+				bool initializeBuffers();
 				void shutdownBuffers();
-				void renderBuffers(ID3D11DeviceContext*);
-				bool loadTexture(ID3D11Device * device, const char * textureFileName);
+				void renderBuffers();
+				bool loadTexture(const char * textureFileName);
 				void releaseTexture();
 
 				ID3D11Buffer *_vertexBuffer, *_indexBuffer;

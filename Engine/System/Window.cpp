@@ -62,53 +62,6 @@ namespace Engine
 						quit = true;
 						break;
 					}
-				//	case WM_INPUT:
-				//	{
-				//		quit = Service(HRAWINPUT(msg.lParam));
-				//		break;
-				//	}
-				//	case WM_MOUSEMOVE:
-				//	{
-				//		break;
-				//	}
-				//	case WM_LBUTTONUP:
-				//	{
-				//		break;
-				//	}
-				//	case WM_LBUTTONDOWN:
-				//	{
-				//		DEBUG_PRINT("Mouse at x = %d y = %d\n", msg.pt.x, msg.pt.y);
-				//		break;
-				//	}
-				//	case WM_RBUTTONDOWN:
-				//	{
-				//		break;
-				//	}
-				//	case WM_RBUTTONUP:
-				//	{
-				//		break;
-				//	}
-				//	case WM_MOUSEWHEEL:
-				//	{
-				//		wheel_delta = GET_WHEEL_DELTA_WPARAM(Addtl_Info_L);
-				//		if (wheel_delta > 0) {
-				//			std::wostringstream outs;
-				//			outs << "Wheel delta is positive" << std::endl;
-				//			OutputDebugString(outs.str().c_str());
-				//			graphics_manager.camera_tilt = graphics_manager.camera_tilt + 0.1f;
-				//		}
-				//		else if (wheel_delta < 0) {
-				//			std::wostringstream outs;
-				//			outs << "Wheel delta is negative" << std::endl;
-				//			OutputDebugString(outs.str().c_str());
-				//			graphics_manager.camera_tilt = graphics_manager.camera_tilt - 0.1f;
-				//		}
-				//		break;
-				//	}
-				//	default:
-				//	{
-				//		//DEBUG_PRINT("message: 0x%04x\n", msg.message);
-				//	}
 				}
 			}
 		} while ((bGotMsg == TRUE) && (!quit));
@@ -261,6 +214,33 @@ namespace Engine
 		{
 			switch (i_Message)
 			{
+				case WM_SETFOCUS:
+				{
+					_active = true;
+					DEBUG_PRINT("Window gained the focus.\n");
+					break;
+				}
+
+				case WM_KILLFOCUS:
+				{
+					_active = false;
+					DEBUG_PRINT("Window lost the focus.\n");
+					break;
+				}
+
+				//case WM_ACTIVATE:
+				//{
+				//	if (LOWORD(i_wParam) == WA_ACTIVE)
+				//	{
+				//		DEBUG_PRINT("MEGAZORD ACTIVATED kew kew kew (flashy-eyes)\n");
+				//	}
+				//	else if (LOWORD(i_wParam) == WA_INACTIVE)
+				//	{
+				//		DEBUG_PRINT("I AM NOW INACTIVE.\n");
+				//	}
+				//	break;
+				//}
+				
 				case WM_KEYDOWN:
 				{
 					if (!_keyStates[i_wParam])
@@ -361,6 +341,34 @@ namespace Engine
 				}
 			}
 			return DefWindowProc(i_hWnd, i_Message, i_wParam, i_lParam);
+		}
+
+		void Window::SetCursor(uint16_t i_posX, uint16_t i_posY)
+		{
+			i_posX = int ((_instance->_moniterWidth - _instance->_currentWidth) * 0.5f + i_posX);
+			i_posY = int ((_instance->_moniterHeight - _instance->_currentHeight) * 0.5f + i_posY);
+			
+			if (_instance->_mousePosX != i_posX || _instance->_mousePosY != i_posY)
+			{
+				SetCursorPos(i_posX, i_posY);
+			}
+
+			SetCursorPos(i_posX, i_posY);
+		}
+
+		void Window::SetCursorToCenter()
+		{
+			int newX = int(_instance->_moniterWidth * 0.5f);
+			int newY = int(_instance->_moniterHeight * 0.5f);
+			if (_instance->_mousePosX != uint16_t(_instance->_currentWidth*0.5f) || _instance->_mousePosY != uint16_t(_instance->_currentHeight*0.5f))
+			{
+				SetCursorPos(newX, newY);
+			}
+		}
+
+		bool Window::IsActive()
+		{
+			return _instance->_active;
 		}
 
 		bool Window::Initialize(HINSTANCE i_hInstance, const char * i_pWindowName, unsigned int i_WindowWidth, unsigned int i_WindowHeight, const WORD* i_icon)

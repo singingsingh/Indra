@@ -1,4 +1,5 @@
 #include <Engine\Graphics\DiffuseModel.h>
+#include <Engine\Graphics\GraphicsDX.h>
 
 namespace Engine
 {
@@ -15,20 +16,20 @@ namespace Engine
 		{
 		}
 
-		bool DiffuseModel::initialize(ID3D11Device * i_device, const char * i_textureFileName)
+		bool DiffuseModel::initialize(const char * i_textureFileName)
 		{
 			bool result;
 
 
 			// Initialize the vertex and index buffers.
-			result = initializeBuffers(i_device);
+			result = initializeBuffers();
 			if (!result)
 			{
 				return false;
 			}
 
 			// Load the texture for this model.
-			result = loadTexture(i_device, i_textureFileName);
+			result = loadTexture( i_textureFileName);
 			if (!result)
 			{
 				return false;
@@ -43,9 +44,9 @@ namespace Engine
 			shutdownBuffers();
 		}
 
-		void DiffuseModel::render(ID3D11DeviceContext * i_deviceContext)
+		void DiffuseModel::render()
 		{
-			renderBuffers(i_deviceContext);
+			renderBuffers();
 		}
 
 		int DiffuseModel::getIndexCount()
@@ -58,7 +59,7 @@ namespace Engine
 			return _texture->getTexture();
 		}
 
-		bool DiffuseModel::initializeBuffers(ID3D11Device* i_device)
+		bool DiffuseModel::initializeBuffers()
 		{
 			VertexType* vertices;
 			unsigned long* indices;
@@ -119,7 +120,8 @@ namespace Engine
 			vertexData.SysMemSlicePitch = 0;
 
 			// Now create the vertex buffer.
-			result = i_device->CreateBuffer(&vertexBufferDesc, &vertexData, &_vertexBuffer);
+			ID3D11Device* device = GraphicsDX::GetDevice();
+			result = device->CreateBuffer(&vertexBufferDesc, &vertexData, &_vertexBuffer);
 			if (FAILED(result))
 			{
 				return false;
@@ -139,7 +141,7 @@ namespace Engine
 			indexData.SysMemSlicePitch = 0;
 
 			// Create the index buffer.
-			result = i_device->CreateBuffer(&indexBufferDesc, &indexData, &_indexBuffer);
+			result = device->CreateBuffer(&indexBufferDesc, &indexData, &_indexBuffer);
 			if (FAILED(result))
 			{
 				return false;
@@ -170,27 +172,21 @@ namespace Engine
 			}
 		}
 
-		void DiffuseModel::renderBuffers(ID3D11DeviceContext * i_deviceContext)
+		void DiffuseModel::renderBuffers()
 		{
 			unsigned int stride;
 			unsigned int offset;
 
-
-			// Set vertex buffer stride and offset.
 			stride = sizeof(VertexType);
 			offset = 0;
 
-			// Set the vertex buffer to active in the input assembler so it can be rendered.
-			i_deviceContext->IASetVertexBuffers(0, 1, &_vertexBuffer, &stride, &offset);
-
-			// Set the index buffer to active in the input assembler so it can be rendered.
-			i_deviceContext->IASetIndexBuffer(_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-
-			// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
-			i_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			ID3D11DeviceContext * deviceContext = GraphicsDX::GetDeviceContext();
+			deviceContext->IASetVertexBuffers(0, 1, &_vertexBuffer, &stride, &offset);
+			deviceContext->IASetIndexBuffer(_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+			deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		}
 
-		bool DiffuseModel::loadTexture(ID3D11Device * i_device, const char * i_textureFileName)
+		bool DiffuseModel::loadTexture(const char * i_textureFileName)
 		{
 			bool result;
 
@@ -201,7 +197,7 @@ namespace Engine
 			}
 
 			// Initialize the texture object.
-			result = _texture->initialize(i_device, i_textureFileName);
+			result = _texture->initialize(i_textureFileName);
 			if (!result)
 			{
 				return false;

@@ -5,7 +5,6 @@
 #include <Engine\Util\Assert.h>
 #include <Engine\System\Window.h>
 #include <Engine\Graphics\Camera.h>
-#include <Engine\System\Keyboard.h>
 
 #include <Engine\Util\MathUtils.h>
 
@@ -386,6 +385,10 @@ namespace Engine
 		{
 			static float rotation = 0.0f;
 
+			if (System::Window::IsActive())
+			{
+				System::Window::SetCursorToCenter();
+			}
 
 			// Update the rotation variable each frame.
 			rotation += (float)D3DX_PI * 0.001f;
@@ -417,7 +420,7 @@ namespace Engine
 				worldMatrix = GraphicsDX::GetWorldMatrix();
 
 				viewMatrix = _currentCamera->getViewMatrix();
-				projectionMatrix = _currentCamera->getProjectionMatrix();
+				projectionMatrix = _currentCamera->getProjMatrix();
 
 				GraphicsDX::RenderWireFrame();
 				_colorModel->render(GraphicsDX::GetDeviceContext());
@@ -443,7 +446,7 @@ namespace Engine
 				// UI Rendering
 				{
 					worldMatrix = GraphicsDX::GetWorldMatrix();
-					orthoMatrix = _currentCamera->getOrthogonalMatrix();
+					orthoMatrix = _currentCamera->getOrthoViewMatrix();
 					//result = _bitmap->render(GraphicsDX::GetDeviceContext(), 10, 10);
 					//if (!result)
 					//{
@@ -462,7 +465,7 @@ namespace Engine
 
 					_text->setFPS(_fps->getFps());
 					_text->setCPU(_cpuUsage->getCpuPercentage());
-					result = _text->render(GraphicsDX::GetDeviceContext(), worldMatrix, orthoMatrix);
+					result = _text->render();
 					if (!result)
 					{
 						return false;

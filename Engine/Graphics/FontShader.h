@@ -4,7 +4,6 @@
 #include <d3d11.h>
 #include <d3dx10math.h>
 #include <d3dx11async.h>
-#include <fstream>
 
 namespace Engine
 {
@@ -15,7 +14,6 @@ namespace Engine
 		private:
 			struct ConstantBufferType
 			{
-				D3DXMATRIX world;
 				D3DXMATRIX view;
 				D3DXMATRIX projection;
 			};
@@ -29,17 +27,17 @@ namespace Engine
 			FontShader();
 			~FontShader();
 
-			bool initialize(ID3D11Device*);
+			bool initialize();
 			void shutdown();
-			bool render(ID3D11DeviceContext*, int, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX, ID3D11ShaderResourceView*, D3DXVECTOR4);
+			bool render(int indexCount, ID3D11ShaderResourceView* fontTexture, D3DXVECTOR4 fontColor);
 
 		private:
-			bool initializeShader(ID3D11Device*, const char*, const char*);
+			bool initializeShader(const char* vsFilename, const char* fsFilename);
 			void shutdownShader();
 			void outputShaderErrorMessage(ID3D10Blob*, const char*);
 
-			bool setShaderParameters(ID3D11DeviceContext*, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX, ID3D11ShaderResourceView*, D3DXVECTOR4);
-			void renderShader(ID3D11DeviceContext*, int);
+			bool setShaderParameters(ID3D11ShaderResourceView* fontTexture, D3DXVECTOR4 fontColor);
+			void renderShader(int indexCount);
 
 		private:
 			ID3D11VertexShader* _vertexShader;

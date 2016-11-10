@@ -16,9 +16,9 @@ namespace Engine
 				DiffuseModel();
 				~DiffuseModel();
 
-				bool initialize(ID3D11Device* device, const char * textureFileName);
+				bool initialize(const char * textureFileName);
 				void shutdown();
-				void render(ID3D11DeviceContext* deviceContext);
+				void render();
 
 				int getIndexCount();
 				ID3D11ShaderResourceView* getTexture();
@@ -32,11 +32,11 @@ namespace Engine
 					D3DXVECTOR3 normal;
 				};
 
-				bool initializeBuffers(ID3D11Device* device);
+				bool initializeBuffers();
 				void shutdownBuffers();
-				void renderBuffers(ID3D11DeviceContext* deviceContext);
+				void renderBuffers();
 
-				bool loadTexture(ID3D11Device* device, const char * textureFileName);
+				bool loadTexture(const char * textureFileName);
 				void releaseTexture();
 
 				ID3D11Buffer *_vertexBuffer, *_indexBuffer;

@@ -2,6 +2,8 @@
 
 #include <Engine\System\Window.h>
 #include <Engine\Util\ConsolePrint.h>
+#include <Engine\System\Window.h>
+#include <Engine\Util\MathUtils.h>
 
 namespace Engine
 {
@@ -15,7 +17,7 @@ namespace Engine
 			_aspectRatio = i_aspectRatio;
 
 			D3DXMatrixPerspectiveFovLH(&_projectionMatrix, _fov, _aspectRatio, i_nearPlane, i_farPlane);
-			D3DXMatrixOrthoLH(&_orthoMatrix, float(System::Window::GetWidth()), float(System::Window::GetHeight()), i_nearPlane, i_farPlane);
+			D3DXMatrixOrthoLH(&_orthoProjMatrix, float(System::Window::GetWidth()), float(System::Window::GetHeight()), i_nearPlane, i_farPlane);
 
 			_position.x = 0;
 			_position.y = 0;
@@ -63,22 +65,29 @@ namespace Engine
 			float yaw, pitch, roll;
 			D3DXMATRIX rotationMatrix;
 
-
-			// Setup the vector that points upwards.
 			up.x = 0.0f;
 			up.y = 1.0f;
 			up.z = 0.0f;
 
+			lookAt.x = 0.0f;
+			lookAt.y = 0.0f;
+			lookAt.z = 1.0f;
 
-			// Setup where the camera is looking by default.
+			// Translate the rotated camera position to the location of the viewer.
+			lookAt = _position + lookAt;
+
+			// Finally create the view matrix from the three updated vectors.
+			D3DXMatrixLookAtLH(&_orthoViewMatrix, &_position, &lookAt, &up);
+
+			// Setup Look at again for view matrix
 			lookAt.x = 0.0f;
 			lookAt.y = 0.0f;
 			lookAt.z = 1.0f;
 
 			// Set the yaw (Y axis), pitch (X axis), and roll (Z axis) rotations in radians.
-			pitch = _rotation.x * 0.0174532925f;
-			yaw = _rotation.y * 0.0174532925f;
-			roll = _rotation.z * 0.0174532925f;
+			pitch = _rotation.x * MathUtils::DegToRad;
+			yaw = _rotation.y * MathUtils::DegToRad;
+			roll = _rotation.z * MathUtils::DegToRad;
 
 			// Create the rotation matrix from the yaw, pitch, and roll values.
 			D3DXMatrixRotationYawPitchRoll(&rotationMatrix, yaw, pitch, roll);
@@ -99,14 +108,19 @@ namespace Engine
 			return _viewMatrix;
 		}
 
-		D3DXMATRIX Camera::getProjectionMatrix()
+		D3DXMATRIX Camera::getOrthoViewMatrix()
+		{
+			return _orthoViewMatrix;
+		}
+
+		D3DXMATRIX Camera::getProjMatrix()
 		{
 			return _projectionMatrix;
 		}
 
-		D3DXMATRIX Camera::getOrthogonalMatrix()
+		D3DXMATRIX Camera::getOrthoProjMatrix()
 		{
-			return _orthoMatrix;
+			return _orthoProjMatrix;
 		}
 		void Camera::keyboardUpdate(uint8_t i_Key, bool i_down, uint16_t i_x, uint16_t i_y)
 		{
@@ -148,7 +162,20 @@ namespace Engine
 
 		void Camera::mousePassiveMoveUpdate(uint16_t i_x, uint16_t i_y)
 		{
-			DEBUG_PRINT("Mouse Location x = %d, y = %d\n",i_x, i_y);
+			static int16_t centerX = static_cast<uint16_t>(System::Window::GetWidth()*0.5f);
+			static int16_t centerY = static_cast<uint16_t>(System::Window::GetHeight()*0.5f);
+
+			int16_t diffX = static_cast<int16_t>(i_x) - centerX;
+			int16_t diffY = static_cast<int16_t>(i_y) - centerY;
+
+			if (diffX != 0 || diffY != 0)
+			{
+				DEBUG_PRINT("Mouse Location x = %d, y = %d\n", diffX, diffY);
+				_rotation.x += diffY;
+				_rotation.y += diffX;
+			}
+
+			//DEBUG_PRINT("Mouse Location x = %d, y = %d\n",i_x, i_y);
 		}
 
 		void Camera::mouseWheelUpdate(bool i_direction, uint16_t i_x, uint16_t i_y)
