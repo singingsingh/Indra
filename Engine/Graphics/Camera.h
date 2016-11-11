@@ -20,6 +20,9 @@ namespace Engine
 
 			D3DXVECTOR3 getPosition();
 			D3DXVECTOR3 getRotation();
+			D3DXVECTOR3 getRightVec();
+			D3DXVECTOR3 getForwardVec();
+			D3DXVECTOR3 getUpVec();
 
 			void update();
 			D3DXMATRIX getViewMatrix();
@@ -44,6 +47,8 @@ namespace Engine
 			D3DXMATRIX _viewMatrix, _orthoViewMatrix;
 			D3DXMATRIX _orthoProjMatrix;
 			D3DXMATRIX _projectionMatrix;
+
+			const static float _angularSensitivity;
 		};
 	}
 }

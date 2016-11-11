@@ -65,8 +65,8 @@
     <ClCompile Include="Graphics\TextureModel.cpp" />
     <ClCompile Include="Graphics\TextureShader.cpp" />
     <ClCompile Include="System\CPU.cpp" />
-    <ClCompile Include="System\FPS.cpp" />
     <ClCompile Include="System\Timer.cpp" />
+    <ClCompile Include="System\FPS.cpp" />
     <ClCompile Include="System\Window.cpp" />
     <ClCompile Include="Util\Assert.Win32.cpp" />
     <ClCompile Include="Util\ConsolePrint.Win32.cpp" />
@@ -134,11 +134,11 @@
     <ClInclude Include="Graphics\TextureModel.h" />
     <ClInclude Include="Graphics\TextureShader.h" />
     <ClInclude Include="System\CPU.h" />
+    <ClInclude Include="System\Timer.h" />
     <ClInclude Include="System\FPS.h" />
     <ClInclude Include="System\Target.h" />
     <ClInclude Include="System\Target.Win32.h" />
     <ClInclude Include="System\Target.Win64.h" />
-    <ClInclude Include="System\Timer.h" />
     <ClInclude Include="System\Window.h" />
     <ClInclude Include="Util\Assert.h" />
     <ClInclude Include="Util\ConsolePrint.h" />
