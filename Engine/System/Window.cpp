@@ -246,8 +246,8 @@ namespace Engine
 					if (!_keyStates[i_wParam])
 					{
 						_keyStates[i_wParam] = true;
-						_keyStateChangeCallback(static_cast<uint8_t>(i_wParam), true, _mousePosX, _mousePosY);
 					}
+					_keyStateChangeCallback(static_cast<uint8_t>(i_wParam), true, _mousePosX, _mousePosY);
 					break;
 				}
 				case WM_KEYUP:

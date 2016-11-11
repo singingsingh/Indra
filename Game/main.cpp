@@ -70,11 +70,11 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 	//Processor.AddToLoadQueue(*(new Game::LuaLoadTask("data\\luaFiles\\player.lua")));
 	//Processor.AddToLoadQueue(*(new Game::LuaLoadTask("data\\luaFiles\\monster.lua")));
 
-	Engine::SmartPtr<Engine::Timer> timer = new Engine::Timer();
-	uint64_t currentTick = timer->getCurrentTick();
+	Engine::System::Timer::Initialize();
+	uint64_t currentTick = Engine::System::Timer::GetCurrentTick();
 	uint64_t prevEngineTick = currentTick;
 	const uint8_t ENGINE_FPS = 50;
-	uint64_t engineFrameTicks = timer->getTicksPerSecond() / ENGINE_FPS;
+	uint64_t engineFrameTicks = Engine::System::Timer::GetTicksPerSecond() / ENGINE_FPS;
 	uint64_t nextEngineTick = currentTick;
 	const uint8_t MAX_FRAME_SKIP = 10;
 	uint8_t continuesEngineUpdate = 0;
@@ -87,7 +87,7 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 	do
 	{
 		//loadCompletedGO();
-		currentTick = timer->getCurrentTick();
+		currentTick = Engine::System::Timer::GetCurrentTick();
 
 		continuesEngineUpdate = 0;
 		while (currentTick > nextEngineTick && continuesEngineUpdate < MAX_FRAME_SKIP)
@@ -100,11 +100,13 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 				break;
 			}
 
-			updateEngine(timer->getElapsedTime_ms(prevEngineTick, currentTick));
+			double deltaTime = Engine::System::Timer::GetElapsedTimeMilliSec(prevEngineTick, currentTick);
+			Engine::System::Timer::SetDeltaTime(deltaTime);
+			updateEngine(deltaTime);
 
 			nextEngineTick += engineFrameTicks;
 			prevEngineTick = currentTick;
-			currentTick = timer->getCurrentTick();
+			currentTick = Engine::System::Timer::GetCurrentTick();
 		}
 
 		Engine::Graphics::Graphics::Render();

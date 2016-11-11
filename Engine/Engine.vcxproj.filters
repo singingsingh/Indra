@@ -46,9 +46,6 @@
     <ClCompile Include="Util\MathUtils.cpp">
       <Filter>Source Files\Util</Filter>
     </ClCompile>
-    <ClCompile Include="System\Timer.cpp">
-      <Filter>Source Files\System</Filter>
-    </ClCompile>
     <ClCompile Include="Util\FileUtils.cpp">
       <Filter>Source Files\Util</Filter>
     </ClCompile>
@@ -187,6 +184,9 @@
     <ClCompile Include="Graphics\TessellationShader.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="System\Timer.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\BitArray.h">
@@ -217,9 +217,6 @@
       <Filter>Source Files\System</Filter>
     </ClInclude>
     <ClInclude Include="System\Target.Win64.h">
-      <Filter>Source Files\System</Filter>
-    </ClInclude>
-    <ClInclude Include="System\Timer.h">
       <Filter>Source Files\System</Filter>
     </ClInclude>
     <ClInclude Include="Util\FileUtils.h">
@@ -398,6 +395,9 @@
     </ClInclude>
     <ClInclude Include="Graphics\TessellationShader.h">
       <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Timer.h">
+      <Filter>Source Files\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
