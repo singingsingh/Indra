@@ -187,6 +187,12 @@
     <ClCompile Include="System\Timer.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\WaterModel.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\WaterShader.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\BitArray.h">
@@ -399,6 +405,12 @@
     <ClInclude Include="System\Timer.h">
       <Filter>Source Files\System</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\WaterModel.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\WaterShader.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Graphics\Shaders\colorShaderPS.hlsl">
@@ -443,5 +455,13 @@
     <None Include="Graphics\Shaders\tessellationVS.hlsl">
       <Filter>Source Files\Graphics\shaders</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Graphics\Shaders\waterPS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Graphics\Shaders\waterVS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

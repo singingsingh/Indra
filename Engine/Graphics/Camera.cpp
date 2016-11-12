@@ -174,6 +174,14 @@ namespace Engine
 			//DEBUG_PRINT("Key %d state = %d, Mouse Location x = %d, y = %d\n", i_key, i_down, i_x, i_y);
 			switch (i_key)
 			{
+				case 0x52:
+				{
+					if (i_down)
+					{
+						reset();
+					}
+					break;
+				}
 				case 0x57:	// w
 					if (i_down)
 					{
@@ -236,6 +244,17 @@ namespace Engine
 		void Camera::mouseWheelUpdate(bool i_direction, uint16_t i_x, uint16_t i_y)
 		{
 			//DEBUG_PRINT("Roll %d Mouse Location x = %d, y = %d\n", i_direction, i_x, i_y);
+		}
+
+		void Camera::reset()
+		{
+			_position.x = 0;
+			_position.y = 0;
+			_position.z = -3.0f;
+
+			_rotation.x = 0;
+			_rotation.y = 0;
+			_rotation.z = 0;
 		}
 	}
 }	// namespace Engine

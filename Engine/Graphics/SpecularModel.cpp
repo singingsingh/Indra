@@ -209,8 +209,8 @@ namespace Engine
 			}
 			else
 			{
-				printf("Couldn't open file: %s\n", i_modelFileName);
-				printf("%s\n", importer.GetErrorString());
+				DEBUG_PRINT("Couldn't open file: %s\n", i_modelFileName);
+				DEBUG_PRINT("%s\n", importer.GetErrorString());
 				return false;
 			}
 
@@ -219,12 +219,12 @@ namespace Engine
 			// If the import failed, report it
 			if (!scene)
 			{
-				printf("%s\n", importer.GetErrorString());
+				DEBUG_PRINT("%s\n", importer.GetErrorString());
 				return false;
 			}
 
 			// Now we can access the file's contents.
-			printf("Import of scene %s succeeded.", i_modelFileName);
+			DEBUG_PRINT("Import of scene %s succeeded.", i_modelFileName);
 
 			_vertexCount = scene->mMeshes[0]->mNumVertices;
 			_indexCount = scene->mMeshes[0]->mNumFaces * 3;

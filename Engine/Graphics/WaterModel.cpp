@@ -1,35 +1,40 @@
-#include <Engine\Graphics\DiffuseModel.h>
+#include <Engine\Graphics\WaterModel.h>
+
+#include <External\Assimp\include\Importer.hpp>
+#include <External\Assimp\include\postprocess.h>
+#include <External\Assimp\include\scene.h>
+
+#include <Engine\Util\ConsolePrint.h>
 #include <Engine\Graphics\GraphicsDX.h>
+
+#include <fstream>
 
 namespace Engine
 {
 	namespace Graphics
 	{
-		DiffuseModel::DiffuseModel()
+		WaterModel::WaterModel()
 		{
-			_vertexBuffer = 0;
-			_indexBuffer = 0;
-			_texture = 0;
+			_vertexBuffer = nullptr;
+			_indexBuffer = nullptr;
+			_waterData = nullptr;
+			_index = nullptr;
+			_gridWidth = 1;
+			_gridHeight = 1;
+			_gridRows = 4;
+			_gridCols = 4;
 		}
 
-		DiffuseModel::~DiffuseModel()
+		WaterModel::~WaterModel()
 		{
 		}
 
-		bool DiffuseModel::initialize(const char * i_textureFileName)
+		bool WaterModel::initialize()
 		{
 			bool result;
 
-
-			// Initialize the vertex and index buffers.
+			// Initialize the vertex and index buffer that hold the geometry for the triangle.
 			result = initializeBuffers();
-			if (!result)
-			{
-				return false;
-			}
-
-			// Load the texture for this model.
-			result = loadTexture( i_textureFileName);
 			if (!result)
 			{
 				return false;
@@ -38,28 +43,23 @@ namespace Engine
 			return true;
 		}
 
-		void DiffuseModel::shutdown()
+		void WaterModel::shutdown()
 		{
-			releaseTexture();
 			shutdownBuffers();
+			releaseModel();
 		}
 
-		void DiffuseModel::render()
+		void WaterModel::render()
 		{
 			renderBuffers();
 		}
 
-		int DiffuseModel::getIndexCount()
+		int WaterModel::getIndexCount()
 		{
-			return _indexCount;;
+			return _indexCount;
 		}
 
-		ID3D11ShaderResourceView * DiffuseModel::getTexture()
-		{
-			return _texture->getTexture();
-		}
-
-		bool DiffuseModel::initializeBuffers()
+		bool WaterModel::initializeBuffers()
 		{
 			VertexType* vertices;
 			unsigned long* indices;
@@ -100,7 +100,7 @@ namespace Engine
 			indices[1] = 1;  // Top middle.
 			indices[2] = 2;  // Bottom right.
 
-							 // Set up the description of the static vertex buffer.
+			// Set up the description of the static vertex buffer.
 			vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 			vertexBufferDesc.ByteWidth = sizeof(VertexType) * _vertexCount;
 			vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -113,8 +113,8 @@ namespace Engine
 			vertexData.SysMemPitch = 0;
 			vertexData.SysMemSlicePitch = 0;
 
-			// Now create the vertex buffer.
 			ID3D11Device* device = GraphicsDX::GetDevice();
+			// Now create the vertex buffer.
 			result = device->CreateBuffer(&vertexBufferDesc, &vertexData, &_vertexBuffer);
 			if (FAILED(result))
 			{
@@ -151,63 +151,47 @@ namespace Engine
 			return true;
 		}
 
-		void DiffuseModel::shutdownBuffers()
+		void WaterModel::shutdownBuffers()
 		{
+			// Release the index buffer.
 			if (_indexBuffer)
 			{
 				_indexBuffer->Release();
 				_indexBuffer = 0;
 			}
 
+			// Release the vertex buffer.
 			if (_vertexBuffer)
 			{
 				_vertexBuffer->Release();
 				_vertexBuffer = 0;
 			}
+
+			return;
 		}
 
-		void DiffuseModel::renderBuffers()
+		void WaterModel::renderBuffers()
 		{
 			unsigned int stride;
 			unsigned int offset;
 
 			stride = sizeof(VertexType);
 			offset = 0;
-
-			ID3D11DeviceContext * deviceContext = GraphicsDX::GetDeviceContext();
-			deviceContext->IASetVertexBuffers(0, 1, &_vertexBuffer, &stride, &offset);
-			deviceContext->IASetIndexBuffer(_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-			deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			ID3D11DeviceContext* i_deviceContext = GraphicsDX::GetDeviceContext();
+			i_deviceContext->IASetVertexBuffers(0, 1, &_vertexBuffer, &stride, &offset);
+			i_deviceContext->IASetIndexBuffer(_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+			i_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		}
 
-		bool DiffuseModel::loadTexture(const char * i_textureFileName)
+		void WaterModel::releaseModel()
 		{
-			bool result;
+			delete[] _waterData;
+			_waterData = nullptr;
 
-			_texture = new Texture;
-			if (!_texture)
-			{
-				return false;
-			}
+			delete[] _index;
+			_index = nullptr;
 
-			// Initialize the texture object.
-			result = _texture->initialize(i_textureFileName);
-			if (!result)
-			{
-				return false;
-			}
-
-			return true;
+			return;
 		}
-
-		void DiffuseModel::releaseTexture()
-		{
-			if (_texture)
-			{
-				_texture->shutdown();
-				delete _texture;
-				_texture = nullptr;
-			}
-		}
-	}	// namespace Graphics
-}	// namespace Engine
+	}
+}

@@ -64,6 +64,8 @@
     <ClCompile Include="Graphics\Texture.cpp" />
     <ClCompile Include="Graphics\TextureModel.cpp" />
     <ClCompile Include="Graphics\TextureShader.cpp" />
+    <ClCompile Include="Graphics\WaterModel.cpp" />
+    <ClCompile Include="Graphics\WaterShader.cpp" />
     <ClCompile Include="System\CPU.cpp" />
     <ClCompile Include="System\Timer.cpp" />
     <ClCompile Include="System\FPS.cpp" />
@@ -133,6 +135,8 @@
     <ClInclude Include="Graphics\Texture.h" />
     <ClInclude Include="Graphics\TextureModel.h" />
     <ClInclude Include="Graphics\TextureShader.h" />
+    <ClInclude Include="Graphics\WaterModel.h" />
+    <ClInclude Include="Graphics\WaterShader.h" />
     <ClInclude Include="System\CPU.h" />
     <ClInclude Include="System\Timer.h" />
     <ClInclude Include="System\FPS.h" />
@@ -200,6 +204,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Graphics\Shaders\tessellationDS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphics\Shaders\waterPS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Graphics\Shaders\waterVS.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

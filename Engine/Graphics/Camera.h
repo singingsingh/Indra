@@ -38,6 +38,8 @@ namespace Engine
 
 		private:
 
+			void reset();
+
 			float _nearPlane;
 			float _farPlane;
 			float _fov;
