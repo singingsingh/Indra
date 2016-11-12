@@ -39,22 +39,22 @@ namespace Engine
 			SpecularShader();
 			~SpecularShader();
 
-			bool initialize(ID3D11Device* device);
+			bool initialize();
 			void shutdown();
-			bool render(ID3D11DeviceContext* deviceContext, int indexCount, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix,
+			bool render(int indexCount, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix,
 				D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, D3DXVECTOR3 lightDirection, D3DXVECTOR4 ambientColor,
 				D3DXVECTOR4 diffuseColor, D3DXVECTOR3 cameraPosition, D3DXVECTOR4 specularColor, float specularPower);
 
 		private:
-			bool initializeShader(ID3D11Device*, const char * vsFilename, const char * psFilename);
+			bool initializeShader(const char * vsFilename, const char * psFilename);
 			void shutdownShader();
 			void outputShaderErrorMessage(ID3D10Blob* errorMessage, const char* shaderFileName);
 
-			bool setShaderParameters(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix,
+			bool setShaderParameters(D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix,
 				D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, D3DXVECTOR3 lightDirection,
 				D3DXVECTOR4 ambientColor, D3DXVECTOR4 diffuseColor, D3DXVECTOR3 cameraPosition, D3DXVECTOR4 specularColor,
 				float specularPower);
-			void renderShader(ID3D11DeviceContext*, int);
+			void renderShader(int indexCount);
 
 		private:
 			ID3D11VertexShader* _vertexShader;

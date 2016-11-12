@@ -23,12 +23,12 @@ namespace Engine
 			VSYNC_ENABLED = false;
 			//_textureShader = nullptr;
 			//_textureModel = nullptr;
-			_diffuseModel = nullptr;
-			_diffuseShader = nullptr;
-			_diffuseLight = nullptr;
-			//_specularModel = nullptr;
-			//_specularShader = nullptr;
-			//_specularLight = nullptr;
+			//_diffuseModel = nullptr;
+			//_diffuseShader = nullptr;
+			//_diffuseLight = nullptr;
+			_specularModel = nullptr;
+			_specularShader = nullptr;
+			_specularLight = nullptr;
 			//_bitmap = nullptr;
 			_text = nullptr;
 			_cpuUsage = nullptr;
@@ -143,65 +143,30 @@ namespace Engine
 			//	return false;
 			//}
 
-			// Create the model object.
-			_diffuseModel = new DiffuseModel;
-			if (!_diffuseModel)
-			{
-				return false;
-			}
+			//// Create the model object.
+			//_diffuseModel = new DiffuseModel;
+			//if (!_diffuseModel)
+			//{
+			//	return false;
+			//}
 
-			// Initialize the model object.
-			result = _diffuseModel->initialize("Assets/Textures/seafloor.dds");
-			if (!result)
-			{
-				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the model object.", "Error", MB_OK);
-				return false;
-			}
-
-			// Create the light shader object.
-			_diffuseShader = new DiffuseShader;
-			if (!_diffuseShader)
-			{
-				return false;
-			}
-
-			// Initialize the light shader object.
-			result = _diffuseShader->initialize();
-			if (!result)
-			{
-				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the light shader object.", "Error", MB_OK);
-				return false;
-			}
-
-			// Create the light object.
-			_diffuseLight = new DiffuseLight;
-			if (!_diffuseLight)
-			{
-				return false;
-			}
-
-			// Initialize the light object.
-			_diffuseLight->setDiffuseColor(1.0f, 1.0f, 0.7f, 1.0f);
-			_diffuseLight->setDirection(0.0f, 0.0f, 1.0f);
-
-			//_specularModel = new SpecularModel;
-
-			//result = _specularModel->initialize(GraphicsDX::GetDevice(), "Assets/Meshes/neptune.ply", "Assets/Textures/161.dds");
+			//// Initialize the model object.
+			//result = _diffuseModel->initialize("Assets/Textures/seafloor.dds");
 			//if (!result)
 			//{
-			//	MessageBox(System::Window::GetWindwsHandle(), "Could not load the assmip the model object.", "Error", MB_OK);
+			//	MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the model object.", "Error", MB_OK);
 			//	return false;
 			//}
 
 			//// Create the light shader object.
-			//_specularShader = new SpecularShader;
-			//if (!_specularShader)
+			//_diffuseShader = new DiffuseShader;
+			//if (!_diffuseShader)
 			//{
 			//	return false;
 			//}
 
 			//// Initialize the light shader object.
-			//result = _specularShader->initialize(GraphicsDX::GetDevice());
+			//result = _diffuseShader->initialize();
 			//if (!result)
 			//{
 			//	MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the light shader object.", "Error", MB_OK);
@@ -209,18 +174,53 @@ namespace Engine
 			//}
 
 			//// Create the light object.
-			//_specularLight = new SpecularLight;
-			//if (!_specularLight)
+			//_diffuseLight = new DiffuseLight;
+			//if (!_diffuseLight)
 			//{
 			//	return false;
 			//}
 
 			//// Initialize the light object.
-			//_specularLight->setAmbientColor(0.15f, 0.15f, 0.15f, 1.0f);
-			//_specularLight->setDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
-			//_specularLight->setDirection(0.0f, 0.0f, 1.0f);
-			//_specularLight->setSpecularColor(1.0f, 1.0f, 1.0f, 1.0f);
-			//_specularLight->setSpecularPower(32.0f);
+			//_diffuseLight->setDiffuseColor(1.0f, 1.0f, 0.7f, 1.0f);
+			//_diffuseLight->setDirection(0.0f, 0.0f, 1.0f);
+
+			_specularModel = new SpecularModel;
+
+			result = _specularModel->initialize("Assets/Meshes/neptune.ply", "Assets/Textures/161.dds");
+			if (!result)
+			{
+				MessageBox(System::Window::GetWindwsHandle(), "Could not load the assmip the model object.", "Error", MB_OK);
+				return false;
+			}
+
+			// Create the light shader object.
+			_specularShader = new SpecularShader;
+			if (!_specularShader)
+			{
+				return false;
+			}
+
+			// Initialize the light shader object.
+			result = _specularShader->initialize();
+			if (!result)
+			{
+				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the light shader object.", "Error", MB_OK);
+				return false;
+			}
+
+			// Create the light object.
+			_specularLight = new SpecularLight;
+			if (!_specularLight)
+			{
+				return false;
+			}
+
+			// Initialize the light object.
+			_specularLight->setAmbientColor(0.15f, 0.15f, 0.15f, 1.0f);
+			_specularLight->setDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
+			_specularLight->setDirection(0.0f, 0.0f, 1.0f);
+			_specularLight->setSpecularColor(1.0f, 1.0f, 1.0f, 1.0f);
+			_specularLight->setSpecularPower(32.0f);
 
 			//// Create the bitmap object.
 			//_bitmap = new Bitmap;
@@ -328,27 +328,27 @@ namespace Engine
 			//	_textureModel = nullptr;
 			//}
 
-			// Release the light object.
-			if (_diffuseLight)
-			{
-				delete _diffuseLight;
-				_diffuseLight = 0;
-			}
+			//// Release the light object.
+			//if (_diffuseLight)
+			//{
+			//	delete _diffuseLight;
+			//	_diffuseLight = 0;
+			//}
 
-			// Release the light shader object.
-			if (_diffuseShader)
-			{
-				_diffuseShader->shutdown();
-				delete _diffuseShader;
-				_diffuseShader = 0;
-			}
+			//// Release the light shader object.
+			//if (_diffuseShader)
+			//{
+			//	_diffuseShader->shutdown();
+			//	delete _diffuseShader;
+			//	_diffuseShader = 0;
+			//}
 
-			if (_diffuseModel)
-			{
-				_diffuseModel->shutdown();
-				delete _diffuseModel;
-				_diffuseModel = nullptr;
-			}
+			//if (_diffuseModel)
+			//{
+			//	_diffuseModel->shutdown();
+			//	delete _diffuseModel;
+			//	_diffuseModel = nullptr;
+			//}
 			
 			// //Release the bitmap object.
 			//if (_bitmap)
@@ -358,16 +358,16 @@ namespace Engine
 			//	_bitmap = nullptr;
 			//}
 
-			//delete _specularLight;
-			//_specularLight = nullptr;
+			delete _specularLight;
+			_specularLight = nullptr;
 
-			//_specularModel->shutdown();
-			//delete _specularModel;
-			//_specularModel = nullptr;
+			_specularModel->shutdown();
+			delete _specularModel;
+			_specularModel = nullptr;
 
-			//_specularShader->shutdown();
-			//delete _specularShader;
-			//_specularShader = nullptr;
+			_specularShader->shutdown();
+			delete _specularShader;
+			_specularShader = nullptr;
 
 			if (_text)
 			{
@@ -428,14 +428,14 @@ namespace Engine
 				//	worldMatrix, viewMatrix, projectionMatrix, (float)_tessellationAmount);
 				//GraphicsDX::RenderSolidFill();
 
-				//_specularModel->render(GraphicsDX::GetDeviceContext());
-				//result = _specularShader->render(GraphicsDX::GetDeviceContext(), _specularModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
-				//	_specularModel->getTexture(), _specularLight->getDirection(), _specularLight->getAmbientColor(), _specularLight->getDiffuseColor(), _currentCamera->getPosition(),
-				//	_specularLight->getSpecularColor(), _specularLight->getSpecularPower());
+				_specularModel->render();
+				result = _specularShader->render(_specularModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+					_specularModel->getTexture(), _specularLight->getDirection(), _specularLight->getAmbientColor(), _specularLight->getDiffuseColor(), _currentCamera->getPosition(),
+					_specularLight->getSpecularColor(), _specularLight->getSpecularPower());
 
-				_diffuseModel->render();
-				result = _diffuseShader->render(_diffuseModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
-					_diffuseModel->getTexture(), _diffuseLight->getDirection(), _diffuseLight->getDiffuseColor());
+				//_diffuseModel->render();
+				//result = _diffuseShader->render(_diffuseModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+				//	_diffuseModel->getTexture(), _diffuseLight->getDirection(), _diffuseLight->getDiffuseColor());
 
 				if (!result)
 				{

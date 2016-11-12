@@ -7,12 +7,12 @@
 //#include <Engine\Graphics\ColorShader.h>
 #include <Engine\Graphics\TextureShader.h>
 //#include <Engine\Graphics\TextureModel.h>
-#include <Engine\Graphics\DiffuseShader.h>
-#include <Engine\Graphics\DiffuseModel.h>
-#include <Engine\Graphics\DiffuseLight.h>
-//#include <Engine\Graphics\SpecularShader.h>
-//#include <Engine\Graphics\SpecularModel.h>
-//#include <Engine\Graphics\SpecularLight.h>
+//#include <Engine\Graphics\DiffuseShader.h>
+//#include <Engine\Graphics\DiffuseModel.h>
+//#include <Engine\Graphics\DiffuseLight.h>
+#include <Engine\Graphics\SpecularShader.h>
+#include <Engine\Graphics\SpecularModel.h>
+#include <Engine\Graphics\SpecularLight.h>
 #include <Engine\Graphics\Bitmap.h>
 #include <Engine\Graphics\Text.h>
 
@@ -47,12 +47,12 @@ namespace Engine
 			//ColorShader* _colorShader;
 			//TextureModel* _textureModel;
 			//TextureShader* _textureShader;
-			DiffuseModel* _diffuseModel;
-			DiffuseShader* _diffuseShader;
-			DiffuseLight* _diffuseLight;
-			//SpecularModel* _specularModel;
-			//SpecularShader* _specularShader;
-			//SpecularLight* _specularLight;
+			//DiffuseModel* _diffuseModel;
+			//DiffuseShader* _diffuseShader;
+			//DiffuseLight* _diffuseLight;
+			SpecularModel* _specularModel;
+			SpecularShader* _specularShader;
+			SpecularLight* _specularLight;
 			//Bitmap* _bitmap;
 
 			//TessellationShader* _tessellationShader;
