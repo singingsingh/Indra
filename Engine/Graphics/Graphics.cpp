@@ -17,15 +17,15 @@ namespace Engine
 		Graphics::Graphics()
 		{
 			_currentCamera = nullptr;
-			_colorModel = nullptr;
+			//_colorModel = nullptr;
 			//_colorShader = nullptr;
-			_tessellationShader = nullptr;
+			//_tessellationShader = nullptr;
 			VSYNC_ENABLED = false;
 			//_textureShader = nullptr;
 			//_textureModel = nullptr;
-			//_diffuseModel = nullptr;
-			//_diffuseShader = nullptr;
-			//_diffuseLight = nullptr;
+			_diffuseModel = nullptr;
+			_diffuseShader = nullptr;
+			_diffuseLight = nullptr;
 			//_specularModel = nullptr;
 			//_specularShader = nullptr;
 			//_specularLight = nullptr;
@@ -97,20 +97,20 @@ namespace Engine
 			//	return false;
 			//}
 
-			// Create the model object.
-			_colorModel = new Model();
-			if (!_colorModel)
-			{
-				return false;
-			}
+			//// Create the model object.
+			//_colorModel = new Model();
+			//if (!_colorModel)
+			//{
+			//	return false;
+			//}
 
-			// Initialize the model object.
-			result = _colorModel->initialize(GraphicsDX::GetDevice());
-			if (!result)
-			{
-				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the model object.", "Error", MB_OK);
-				return false;
-			}
+			//// Initialize the model object.
+			//result = _colorModel->initialize(GraphicsDX::GetDevice());
+			//if (!result)
+			//{
+			//	MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the model object.", "Error", MB_OK);
+			//	return false;
+			//}
 
 			//// Create the color shader object.
 			//_colorShader = new ColorShader();
@@ -128,61 +128,61 @@ namespace Engine
 			//}
 
 
-			// Create the color shader object.
-			_tessellationShader = new TessellationShader();
-			if (!_tessellationShader)
+			//// Create the color shader object.
+			//_tessellationShader = new TessellationShader();
+			//if (!_tessellationShader)
+			//{
+			//	return false;
+			//}
+
+			//// Initialize the color shader object.
+			//result = _tessellationShader->Initialize(GraphicsDX::GetDevice());
+			//if (!result)
+			//{
+			//	MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the color shader object.", "Error", MB_OK);
+			//	return false;
+			//}
+
+			// Create the model object.
+			_diffuseModel = new DiffuseModel;
+			if (!_diffuseModel)
 			{
 				return false;
 			}
 
-			// Initialize the color shader object.
-			result = _tessellationShader->Initialize(GraphicsDX::GetDevice());
+			// Initialize the model object.
+			result = _diffuseModel->initialize("Assets/Textures/seafloor.dds");
 			if (!result)
 			{
-				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the color shader object.", "Error", MB_OK);
+				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the model object.", "Error", MB_OK);
 				return false;
 			}
 
-			//// Create the model object.
-			//_diffuseModel = new DiffuseModel;
-			//if (!_diffuseModel)
-			//{
-			//	return false;
-			//}
+			// Create the light shader object.
+			_diffuseShader = new DiffuseShader;
+			if (!_diffuseShader)
+			{
+				return false;
+			}
 
-			//// Initialize the model object.
-			//result = _diffuseModel->initialize(GraphicsDX::GetDevice(), "Assets/Textures/seafloor.dds");
-			//if (!result)
-			//{
-			//	MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the model object.", "Error", MB_OK);
-			//	return false;
-			//}
+			// Initialize the light shader object.
+			result = _diffuseShader->initialize();
+			if (!result)
+			{
+				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the light shader object.", "Error", MB_OK);
+				return false;
+			}
 
-			//// Create the light shader object.
-			//_diffuseShader = new DiffuseShader;
-			//if (!_diffuseShader)
-			//{
-			//	return false;
-			//}
+			// Create the light object.
+			_diffuseLight = new DiffuseLight;
+			if (!_diffuseLight)
+			{
+				return false;
+			}
 
-			//// Initialize the light shader object.
-			//result = _diffuseShader->initialize(GraphicsDX::GetDevice());
-			//if (!result)
-			//{
-			//	MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the light shader object.", "Error", MB_OK);
-			//	return false;
-			//}
-
-			//// Create the light object.
-			//_diffuseLight = new DiffuseLight;
-			//if (!_diffuseLight)
-			//{
-			//	return false;
-			//}
-
-			//// Initialize the light object.
-			//_diffuseLight->setDiffuseColor(1.0f, 1.0f, 0.7f, 1.0f);
-			//_diffuseLight->setDirection(0.0f, 0.0f, 1.0f);
+			// Initialize the light object.
+			_diffuseLight->setDiffuseColor(1.0f, 1.0f, 0.7f, 1.0f);
+			_diffuseLight->setDirection(0.0f, 0.0f, 1.0f);
 
 			//_specularModel = new SpecularModel;
 
@@ -297,20 +297,20 @@ namespace Engine
 			//	_colorShader = nullptr;
 			//}
 
-			if (_tessellationShader)
-			{
-				_tessellationShader->Shutdown();
-				delete _tessellationShader;
-				_tessellationShader = nullptr;
-			}
+			//if (_tessellationShader)
+			//{
+			//	_tessellationShader->Shutdown();
+			//	delete _tessellationShader;
+			//	_tessellationShader = nullptr;
+			//}
 
-			// Release the model object.
-			if (_colorModel)
-			{
-				_colorModel->shutdown();
-				delete _colorModel;
-				_colorModel = nullptr;
-			}
+			//// Release the model object.
+			//if (_colorModel)
+			//{
+			//	_colorModel->shutdown();
+			//	delete _colorModel;
+			//	_colorModel = nullptr;
+			//}
 
 			//// Release the color shader object.
 			//if (_textureShader)
@@ -328,27 +328,27 @@ namespace Engine
 			//	_textureModel = nullptr;
 			//}
 
-			//// Release the light object.
-			//if (_diffuseLight)
-			//{
-			//	delete _diffuseLight;
-			//	_diffuseLight = 0;
-			//}
+			// Release the light object.
+			if (_diffuseLight)
+			{
+				delete _diffuseLight;
+				_diffuseLight = 0;
+			}
 
-			//// Release the light shader object.
-			//if (_diffuseShader)
-			//{
-			//	_diffuseShader->shutdown();
-			//	delete _diffuseShader;
-			//	_diffuseShader = 0;
-			//}
+			// Release the light shader object.
+			if (_diffuseShader)
+			{
+				_diffuseShader->shutdown();
+				delete _diffuseShader;
+				_diffuseShader = 0;
+			}
 
-			//if (_diffuseModel)
-			//{
-			//	_diffuseModel->shutdown();
-			//	delete _diffuseModel;
-			//	_diffuseModel = nullptr;
-			//}
+			if (_diffuseModel)
+			{
+				_diffuseModel->shutdown();
+				delete _diffuseModel;
+				_diffuseModel = nullptr;
+			}
 			
 			// //Release the bitmap object.
 			//if (_bitmap)
@@ -422,16 +422,20 @@ namespace Engine
 				viewMatrix = _currentCamera->getViewMatrix();
 				projectionMatrix = _currentCamera->getProjMatrix();
 
-				GraphicsDX::RenderWireFrame();
-				_colorModel->render(GraphicsDX::GetDeviceContext());
-				result = _tessellationShader->Render(GraphicsDX::GetDeviceContext(), _colorModel->getIndexCount(),
-					worldMatrix, viewMatrix, projectionMatrix, (float)_tessellationAmount);
-				GraphicsDX::RenderSolidFill();
+				//GraphicsDX::RenderWireFrame();
+				//_colorModel->render(GraphicsDX::GetDeviceContext());
+				//result = _tessellationShader->Render(GraphicsDX::GetDeviceContext(), _colorModel->getIndexCount(),
+				//	worldMatrix, viewMatrix, projectionMatrix, (float)_tessellationAmount);
+				//GraphicsDX::RenderSolidFill();
 
 				//_specularModel->render(GraphicsDX::GetDeviceContext());
 				//result = _specularShader->render(GraphicsDX::GetDeviceContext(), _specularModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
 				//	_specularModel->getTexture(), _specularLight->getDirection(), _specularLight->getAmbientColor(), _specularLight->getDiffuseColor(), _currentCamera->getPosition(),
 				//	_specularLight->getSpecularColor(), _specularLight->getSpecularPower());
+
+				_diffuseModel->render();
+				result = _diffuseShader->render(_diffuseModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+					_diffuseModel->getTexture(), _diffuseLight->getDirection(), _diffuseLight->getDiffuseColor());
 
 				if (!result)
 				{

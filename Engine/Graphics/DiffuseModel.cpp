@@ -67,7 +67,6 @@ namespace Engine
 			D3D11_SUBRESOURCE_DATA vertexData, indexData;
 			HRESULT result;
 
-
 			// Set the number of vertices in the vertex array.
 			_vertexCount = 3;
 

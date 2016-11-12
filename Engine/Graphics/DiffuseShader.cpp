@@ -1,6 +1,7 @@
 #include <Engine\Graphics\DiffuseShader.h>
 
 #include <Engine\System\Window.h>
+#include <Engine\Graphics\GraphicsDX.h>
 
 #include <fstream>
 
@@ -22,11 +23,11 @@ namespace Engine
 		{
 		}
 
-		bool DiffuseShader::initialize(ID3D11Device * i_device)
+		bool DiffuseShader::initialize()
 		{
 			bool result;
 
-			result = initializeShader(i_device, "../Engine/Graphics/Shaders/diffuseLightVS.hlsl", "../Engine/Graphics/Shaders/diffuseLightPS.hlsl");
+			result = initializeShader("../Engine/Graphics/Shaders/diffuseLightVS.hlsl", "../Engine/Graphics/Shaders/diffuseLightPS.hlsl");
 			if (!result)
 			{
 				return false;
@@ -40,26 +41,26 @@ namespace Engine
 			shutdownShader();
 		}
 
-		bool DiffuseShader::render(ID3D11DeviceContext * i_deviceContext, int i_indexCount, D3DXMATRIX i_worldMatrix, D3DXMATRIX i_viewMatrix,
+		bool DiffuseShader::render(int i_indexCount, D3DXMATRIX i_worldMatrix, D3DXMATRIX i_viewMatrix,
 			D3DXMATRIX i_projectionMatrix, ID3D11ShaderResourceView * i_texture, D3DXVECTOR3 i_lightDirection, D3DXVECTOR4 i_diffuseColor)
 		{
 			bool result;
 
 
 			// Set the shader parameters that it will use for rendering.
-			result = setShaderParameters(i_deviceContext, i_worldMatrix, i_viewMatrix, i_projectionMatrix, i_texture, i_lightDirection, i_diffuseColor);
+			result = setShaderParameters(i_worldMatrix, i_viewMatrix, i_projectionMatrix, i_texture, i_lightDirection, i_diffuseColor);
 			if (!result)
 			{
 				return false;
 			}
 
 			// Now render the prepared buffers with the shader.
-			renderShader(i_deviceContext, i_indexCount);
+			renderShader(i_indexCount);
 
 			return true;
 		}
 
-		bool DiffuseShader::initializeShader(ID3D11Device * i_device, const char * i_vsFilename, const char * i_psFilename)
+		bool DiffuseShader::initializeShader(const char * i_vsFilename, const char * i_psFilename)
 		{
 			HRESULT result;
 			ID3D10Blob* errorMessage;
@@ -115,15 +116,17 @@ namespace Engine
 				return false;
 			}
 
+			ID3D11Device * device = GraphicsDX::GetDevice();
+
 			// Create the vertex shader from the buffer.
-			result = i_device->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), NULL, &_vertexShader);
+			result = device->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), NULL, &_vertexShader);
 			if (FAILED(result))
 			{
 				return false;
 			}
 
 			// Create the pixel shader from the buffer.
-			result = i_device->CreatePixelShader(pixelShaderBuffer->GetBufferPointer(), pixelShaderBuffer->GetBufferSize(), NULL, &_pixelShader);
+			result = device->CreatePixelShader(pixelShaderBuffer->GetBufferPointer(), pixelShaderBuffer->GetBufferSize(), NULL, &_pixelShader);
 			if (FAILED(result))
 			{
 				return false;
@@ -159,7 +162,7 @@ namespace Engine
 			numElements = sizeof(polygonLayout) / sizeof(polygonLayout[0]);
 
 			// Create the vertex input layout.
-			result = i_device->CreateInputLayout(polygonLayout, numElements, vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(),
+			result = device->CreateInputLayout(polygonLayout, numElements, vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(),
 				&_layout);
 			if (FAILED(result))
 			{
@@ -189,7 +192,7 @@ namespace Engine
 			samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
 			// Create the texture sampler state.
-			result = i_device->CreateSamplerState(&samplerDesc, &_sampleState);
+			result = device->CreateSamplerState(&samplerDesc, &_sampleState);
 			if (FAILED(result))
 			{
 				return false;
@@ -204,7 +207,7 @@ namespace Engine
 			matrixBufferDesc.StructureByteStride = 0;
 
 			// Create the constant buffer pointer so we can access the vertex shader constant buffer from within this class.
-			result = i_device->CreateBuffer(&matrixBufferDesc, NULL, &_matrixBuffer);
+			result = device->CreateBuffer(&matrixBufferDesc, NULL, &_matrixBuffer);
 			if (FAILED(result))
 			{
 				return false;
@@ -220,7 +223,7 @@ namespace Engine
 			lightBufferDesc.StructureByteStride = 0;
 
 			// Create the constant buffer pointer so we can access the vertex shader constant buffer from within this class.
-			result = i_device->CreateBuffer(&lightBufferDesc, NULL, &_lightBuffer);
+			result = device->CreateBuffer(&lightBufferDesc, NULL, &_lightBuffer);
 			if (FAILED(result))
 			{
 				return false;
@@ -307,7 +310,7 @@ namespace Engine
 			MessageBox(System::Window::GetWindwsHandle(), "Error compiling shader.  Check shader-error.txt for message.", i_shaderFilename, MB_OK);
 		}
 
-		bool DiffuseShader::setShaderParameters(ID3D11DeviceContext * i_deviceContext, D3DXMATRIX i_worldMatrix, D3DXMATRIX i_viewMatrix,
+		bool DiffuseShader::setShaderParameters(D3DXMATRIX i_worldMatrix, D3DXMATRIX i_viewMatrix,
 			D3DXMATRIX i_projectionMatrix, ID3D11ShaderResourceView * i_texture, D3DXVECTOR3 i_lightDirection, D3DXVECTOR4 i_diffuseColor)
 		{
 			HRESULT result;
@@ -316,14 +319,15 @@ namespace Engine
 			MatrixBufferType* dataPtr;
 			LightBufferType* dataPtr2;
 
-
 			// Transpose the matrices to prepare them for the shader.
 			D3DXMatrixTranspose(&i_worldMatrix, &i_worldMatrix);
 			D3DXMatrixTranspose(&i_viewMatrix, &i_viewMatrix);
 			D3DXMatrixTranspose(&i_projectionMatrix, &i_projectionMatrix);
 
+			ID3D11DeviceContext * deviceContext = GraphicsDX::GetDeviceContext();
+
 			// Lock the constant buffer so it can be written to.
-			result = i_deviceContext->Map(_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+			result = deviceContext->Map(_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 			if (FAILED(result))
 			{
 				return false;
@@ -338,19 +342,19 @@ namespace Engine
 			dataPtr->projection = i_projectionMatrix;
 
 			// Unlock the constant buffer.
-			i_deviceContext->Unmap(_matrixBuffer, 0);
+			deviceContext->Unmap(_matrixBuffer, 0);
 
 			// Set the position of the constant buffer in the vertex shader.
 			bufferNumber = 0;
 
 			// Now set the constant buffer in the vertex shader with the updated values.
-			i_deviceContext->VSSetConstantBuffers(bufferNumber, 1, &_matrixBuffer);
+			deviceContext->VSSetConstantBuffers(bufferNumber, 1, &_matrixBuffer);
 
 			// Set shader texture resource in the pixel shader.
-			i_deviceContext->PSSetShaderResources(0, 1, &i_texture);
+			deviceContext->PSSetShaderResources(0, 1, &i_texture);
 
 			// Lock the light constant buffer so it can be written to.
-			result = i_deviceContext->Map(_lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+			result = deviceContext->Map(_lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 			if (FAILED(result))
 			{
 				return false;
@@ -365,31 +369,26 @@ namespace Engine
 			dataPtr2->padding = 0.0f;
 
 			// Unlock the constant buffer.
-			i_deviceContext->Unmap(_lightBuffer, 0);
+			deviceContext->Unmap(_lightBuffer, 0);
 
 			// Set the position of the light constant buffer in the pixel shader.
 			bufferNumber = 0;
 
 			// Finally set the light constant buffer in the pixel shader with the updated values.
-			i_deviceContext->PSSetConstantBuffers(bufferNumber, 1, &_lightBuffer);
+			deviceContext->PSSetConstantBuffers(bufferNumber, 1, &_lightBuffer);
 
 			return true;
 		}
 
-		void DiffuseShader::renderShader(ID3D11DeviceContext * i_deviceContext, int i_indexCount)
+		void DiffuseShader::renderShader(int i_indexCount)
 		{
-			// Set the vertex input layout.
-			i_deviceContext->IASetInputLayout(_layout);
+			ID3D11DeviceContext * deviceContext = GraphicsDX::GetDeviceContext();
 
-			// Set the vertex and pixel shaders that will be used to render this triangle.
-			i_deviceContext->VSSetShader(_vertexShader, NULL, 0);
-			i_deviceContext->PSSetShader(_pixelShader, NULL, 0);
-
-			// Set the sampler state in the pixel shader.
-			i_deviceContext->PSSetSamplers(0, 1, &_sampleState);
-
-			// Render the triangle.
-			i_deviceContext->DrawIndexed(i_indexCount, 0, 0);
+			deviceContext->IASetInputLayout(_layout);
+			deviceContext->VSSetShader(_vertexShader, NULL, 0);
+			deviceContext->PSSetShader(_pixelShader, NULL, 0);
+			deviceContext->PSSetSamplers(0, 1, &_sampleState);
+			deviceContext->DrawIndexed(i_indexCount, 0, 0);
 		}
 	}
 }
