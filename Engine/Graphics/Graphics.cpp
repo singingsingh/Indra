@@ -468,7 +468,8 @@ namespace Engine
 				//	_specularLight->getSpecularColor(), _specularLight->getSpecularPower());
 
 				_waterModel->render();
-				result = _waterShader->render(_waterModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,_specularLight->getDirection(), _specularLight->getAmbientColor(), _specularLight->getDiffuseColor(), _currentCamera->getPosition(),
+				result = _waterShader->render(_waterModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,_specularLight->getDirection(),
+					_specularLight->getAmbientColor(), _specularLight->getDiffuseColor(), _currentCamera->getPosition(),
 					_specularLight->getSpecularColor(), _specularLight->getSpecularPower());
 
 				//_diffuseModel->render();

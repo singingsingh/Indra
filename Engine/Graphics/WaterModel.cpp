@@ -17,8 +17,6 @@ namespace Engine
 		{
 			_vertexBuffer = nullptr;
 			_indexBuffer = nullptr;
-			_waterData = nullptr;
-			_index = nullptr;
 			_gridWidth = 1;
 			_gridHeight = 1;
 			_gridRows = 4;
@@ -67,8 +65,8 @@ namespace Engine
 			D3D11_SUBRESOURCE_DATA vertexData, indexData;
 			HRESULT result;
 
-			_vertexCount = 3;
-			_indexCount = 3;
+			_vertexCount = 4;
+			_indexCount = 6;
 
 			vertices = new VertexType[_vertexCount];
 			if (!vertices)
@@ -84,21 +82,24 @@ namespace Engine
 
 			// Load the vertex array with data.
 			vertices[0].position = D3DXVECTOR3(-1.0f, -1.0f, 0.0f);  // Bottom left.
-			vertices[0].texture = D3DXVECTOR2(0.0f, 1.0f);
 			vertices[0].normal = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
 
-			vertices[1].position = D3DXVECTOR3(0.0f, 1.0f, 0.0f);  // Top middle.
-			vertices[1].texture = D3DXVECTOR2(0.5f, 0.0f);
+			vertices[1].position = D3DXVECTOR3(-1.0f, 1.0f, 0.0f);  // Top middle.
 			vertices[1].normal = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
 
 			vertices[2].position = D3DXVECTOR3(1.0f, -1.0f, 0.0f);  // Bottom right.
-			vertices[2].texture = D3DXVECTOR2(1.0f, 1.0f);
 			vertices[2].normal = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
+
+			vertices[3].position = D3DXVECTOR3(1.0f, 1.0f, 0.0f);  // Bottom right.
+			vertices[3].normal = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
 
 			// Load the index array with data.
 			indices[0] = 0;  // Bottom left.
 			indices[1] = 1;  // Top middle.
 			indices[2] = 2;  // Bottom right.
+			indices[3] = 3;  // Bottom right.
+			indices[4] = 2;  // Bottom right.
+			indices[5] = 1;  // Bottom right.
 
 			// Set up the description of the static vertex buffer.
 			vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -177,21 +178,15 @@ namespace Engine
 
 			stride = sizeof(VertexType);
 			offset = 0;
-			ID3D11DeviceContext* i_deviceContext = GraphicsDX::GetDeviceContext();
-			i_deviceContext->IASetVertexBuffers(0, 1, &_vertexBuffer, &stride, &offset);
-			i_deviceContext->IASetIndexBuffer(_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-			i_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+			ID3D11DeviceContext* deviceContext = GraphicsDX::GetDeviceContext();
+			deviceContext->IASetVertexBuffers(0, 1, &_vertexBuffer, &stride, &offset);
+			deviceContext->IASetIndexBuffer(_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+			deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		}
 
 		void WaterModel::releaseModel()
 		{
-			delete[] _waterData;
-			_waterData = nullptr;
-
-			delete[] _index;
-			_index = nullptr;
-
-			return;
 		}
 	}
 }
