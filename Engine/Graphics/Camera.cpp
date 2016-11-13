@@ -10,7 +10,7 @@ namespace Engine
 {
 	namespace Graphics
 	{
-		const float Camera::_angularSensitivity = 0.01f;
+		const float Camera::_movementSensitivity = 0.01f;
 
 		Camera::Camera(float i_nearPlane, float i_farPlane, float i_fov, float i_aspectRatio)
 		{
@@ -25,6 +25,8 @@ namespace Engine
 			_position.x = 0;
 			_position.y = 0;
 			_position.z = 0;
+
+			_startPos = _position;
 
 			_rotation.x = 0;
 			_rotation.y = 0;
@@ -63,6 +65,8 @@ namespace Engine
 			_position.x = i_x;
 			_position.y = i_y;
 			_position.z = i_z;
+
+			_startPos = _position;
 		}
 
 		void Camera::setRotation(float i_x, float i_y, float i_z)
@@ -186,30 +190,44 @@ namespace Engine
 					if (i_down)
 					{
 						D3DXVECTOR3 forwardVec = getForwardVec();
-						_position += forwardVec * _angularSensitivity * (float)System::Timer::GetDeltaTime();
+						_position += forwardVec * _movementSensitivity * (float)System::Timer::GetDeltaTime();
+						break;
 					}
-					break;
 				case 0x53:	// s
 					if (i_down)
 					{
 						D3DXVECTOR3 forwardVec = getForwardVec();
-						_position -= forwardVec * _angularSensitivity * (float)System::Timer::GetDeltaTime();
+						_position -= forwardVec * _movementSensitivity * (float)System::Timer::GetDeltaTime();
+						break;
 					}
-					break;
 				case 0x41:	// a
 					if (i_down)
 					{
 						D3DXVECTOR3 rightVec = getRightVec();
-						_position -= rightVec * _angularSensitivity * (float)System::Timer::GetDeltaTime();
+						_position -= rightVec * _movementSensitivity * (float)System::Timer::GetDeltaTime();
+						break;
 					}
-					break;
 				case 0x44:	//d
 					if (i_down)
 					{
 						D3DXVECTOR3 rightVec = getRightVec();
-						_position += rightVec * _angularSensitivity * (float)System::Timer::GetDeltaTime();
+						_position += rightVec * _movementSensitivity * (float)System::Timer::GetDeltaTime();
+						break;
 					}
-					break;
+				case 0x45:	// e
+					if (i_down)
+					{
+						D3DXVECTOR3 upVec = getUpVec();
+						_position += upVec * _movementSensitivity * (float)System::Timer::GetDeltaTime();
+						break;
+					}
+				case 0x51:	//q
+					if (i_down)
+					{
+						D3DXVECTOR3 upVec = getUpVec();
+						_position -= upVec * _movementSensitivity * (float)System::Timer::GetDeltaTime();
+						break;
+					}
 			}
 		}
 
@@ -248,9 +266,7 @@ namespace Engine
 
 		void Camera::reset()
 		{
-			_position.x = 0;
-			_position.y = 0;
-			_position.z = -3.0f;
+			_position = _startPos;
 
 			_rotation.x = 0;
 			_rotation.y = 0;

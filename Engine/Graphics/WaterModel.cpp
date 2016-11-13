@@ -17,10 +17,10 @@ namespace Engine
 		{
 			_vertexBuffer = nullptr;
 			_indexBuffer = nullptr;
-			_gridWidth = 1.0f;
-			_gridHeight = 1.0f;
-			_gridRows = 5;
-			_gridCols = 4;
+			_gridWidth = 0.3f;
+			_gridHeight = 0.3f;
+			_gridRows = 25;
+			_gridCols = 25;
 		}
 
 		WaterModel::~WaterModel()
@@ -73,7 +73,7 @@ namespace Engine
 			float halfWidth = _gridCols*_gridWidth/2.0f;
 			float halfHeight = _gridRows*_gridHeight/2.0f;
 			corner.x = -halfWidth;
-			corner.y = halfHeight;
+			corner.z = halfHeight;
 
 			vertices = new VertexType[_vertexCount];
 			if (!vertices)
@@ -92,7 +92,7 @@ namespace Engine
 			{
 				for (uint8_t col = 0; col <= _gridCols; col++)
 				{
-					vertices[vertexCount].position = D3DXVECTOR3(col*_gridWidth, -row*_gridHeight, 0.0f) + corner;
+					vertices[vertexCount].position = D3DXVECTOR3(col*_gridWidth, 0.0f, -row*_gridHeight) + corner;
 					vertices[vertexCount].normal = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
 					vertexCount++;
 				}
