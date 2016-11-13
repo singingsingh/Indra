@@ -35,7 +35,7 @@ namespace Engine
 
 				ID3D11Buffer *_vertexBuffer, *_indexBuffer;
 				int _vertexCount, _indexCount;
-				uint8_t _gridWidth, _gridHeight;
+				float _gridWidth, _gridHeight;
 				uint8_t _gridRows, _gridCols;
 		};
 	}	// Graphics

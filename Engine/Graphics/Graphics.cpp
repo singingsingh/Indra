@@ -467,10 +467,12 @@ namespace Engine
 				//	_specularModel->getTexture(), _specularLight->getDirection(), _specularLight->getAmbientColor(), _specularLight->getDiffuseColor(), _currentCamera->getPosition(),
 				//	_specularLight->getSpecularColor(), _specularLight->getSpecularPower());
 
+				GraphicsDX::RenderWireFrame();
 				_waterModel->render();
 				result = _waterShader->render(_waterModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,_specularLight->getDirection(),
 					_specularLight->getAmbientColor(), _specularLight->getDiffuseColor(), _currentCamera->getPosition(),
 					_specularLight->getSpecularColor(), _specularLight->getSpecularPower());
+				GraphicsDX::RenderSolidFill();
 
 				//_diffuseModel->render();
 				//result = _diffuseShader->render(_diffuseModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,

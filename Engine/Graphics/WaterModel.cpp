@@ -17,9 +17,9 @@ namespace Engine
 		{
 			_vertexBuffer = nullptr;
 			_indexBuffer = nullptr;
-			_gridWidth = 1;
-			_gridHeight = 1;
-			_gridRows = 4;
+			_gridWidth = 1.0f;
+			_gridHeight = 1.0f;
+			_gridRows = 5;
 			_gridCols = 4;
 		}
 
@@ -65,8 +65,15 @@ namespace Engine
 			D3D11_SUBRESOURCE_DATA vertexData, indexData;
 			HRESULT result;
 
-			_vertexCount = 4;
-			_indexCount = 6;
+			_vertexCount = (_gridCols+1)*(_gridRows+1);
+			_indexCount = (_gridCols*_gridRows)* 2* 3;
+
+			D3DXVECTOR3 corner(0.0f, 0.0f, 0.0f);
+
+			float halfWidth = _gridCols*_gridWidth/2.0f;
+			float halfHeight = _gridRows*_gridHeight/2.0f;
+			corner.x = -halfWidth;
+			corner.y = halfHeight;
 
 			vertices = new VertexType[_vertexCount];
 			if (!vertices)
@@ -80,26 +87,41 @@ namespace Engine
 				return false;
 			}
 
-			// Load the vertex array with data.
-			vertices[0].position = D3DXVECTOR3(-1.0f, -1.0f, 0.0f);  // Bottom left.
-			vertices[0].normal = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
+			int vertexCount = 0;
+			for (uint8_t row = 0; row <= _gridRows; row++)
+			{
+				for (uint8_t col = 0; col <= _gridCols; col++)
+				{
+					vertices[vertexCount].position = D3DXVECTOR3(col*_gridWidth, -row*_gridHeight, 0.0f) + corner;
+					vertices[vertexCount].normal = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
+					vertexCount++;
+				}
+			}
 
-			vertices[1].position = D3DXVECTOR3(-1.0f, 1.0f, 0.0f);  // Top middle.
-			vertices[1].normal = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
+			int indexCount = 0;
+			for (uint8_t row = 0; row < _gridRows; row++)
+			{
+				for (uint8_t col = 0; col < _gridCols; col++)
+				{
+					indices[indexCount] = row * (_gridCols + 1) + col;
+					indexCount++;
 
-			vertices[2].position = D3DXVECTOR3(1.0f, -1.0f, 0.0f);  // Bottom right.
-			vertices[2].normal = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
+					indices[indexCount] = (row + 1) * (_gridCols + 1) + col + 1;
+					indexCount++;
 
-			vertices[3].position = D3DXVECTOR3(1.0f, 1.0f, 0.0f);  // Bottom right.
-			vertices[3].normal = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
+					indices[indexCount] = (row + 1) * (_gridCols + 1) + col;
+					indexCount++;
 
-			// Load the index array with data.
-			indices[0] = 0;  // Bottom left.
-			indices[1] = 1;  // Top middle.
-			indices[2] = 2;  // Bottom right.
-			indices[3] = 3;  // Bottom right.
-			indices[4] = 2;  // Bottom right.
-			indices[5] = 1;  // Bottom right.
+					indices[indexCount] = row * (_gridCols + 1) + col;
+					indexCount++;
+
+					indices[indexCount] = row * (_gridCols + 1) + col + 1;
+					indexCount++;
+
+					indices[indexCount] = (row + 1) * (_gridCols + 1) + col + 1;
+					indexCount++;
+				}
+			}
 
 			// Set up the description of the static vertex buffer.
 			vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
