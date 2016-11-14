@@ -34,7 +34,7 @@ float4 WaterPixelShader(PixelInputType input) : SV_TARGET
     specular = float4(0.0f, 0.0f, 0.0f, 0.0f);
 	
 	// Invert the light direction for calculations.
-    lightDir = -lightDirection;
+    lightDir = normalize(lightDirection);
 
     // Calculate the amount of light on this pixel.
     lightIntensity = saturate(dot(input.normal, lightDir));

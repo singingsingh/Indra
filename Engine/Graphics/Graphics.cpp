@@ -244,7 +244,7 @@ namespace Engine
 			// Initialize the light object.
 			_specularLight->setAmbientColor(0.15f, 0.15f, 0.15f, 1.0f);
 			_specularLight->setDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
-			_specularLight->setDirection(0.0f, 0.0f, 1.0f);
+			_specularLight->setDirection(1.0f, 1.0f, -1.0f);
 			_specularLight->setSpecularColor(1.0f, 1.0f, 1.0f, 1.0f);
 			_specularLight->setSpecularPower(32.0f);
 

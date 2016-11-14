@@ -455,13 +455,11 @@
     <None Include="Graphics\Shaders\tessellationVS.hlsl">
       <Filter>Source Files\Graphics\shaders</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Graphics\Shaders\waterPS.hlsl">
+    <None Include="Graphics\Shaders\waterPS.hlsl">
       <Filter>Source Files\Graphics\shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Graphics\Shaders\waterVS.hlsl">
+    </None>
+    <None Include="Graphics\Shaders\waterVS.hlsl">
       <Filter>Source Files\Graphics\shaders</Filter>
-    </FxCompile>
+    </None>
   </ItemGroup>
 </Project>
