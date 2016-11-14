@@ -20,6 +20,8 @@ namespace Engine
 	namespace Graphics
 	{
 		WaterModel::WaterModel()
+			:_numWaveParticles(100),
+			_waveParticleMemPool(static_cast<WaveParticle*>(MemoryMgr::getInstance()->allocMemory(_numWaveParticles*sizeof(WaveParticle))))
 		{
 			_vertexBuffer = nullptr;
 			_indexBuffer = nullptr;
@@ -29,24 +31,26 @@ namespace Engine
 			_gridHeight = 0.1f;
 			_gridRows = 64;
 			_gridCols = 64;
+			_activeParticles = 0;
 
-			_waveParticle.position = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+			_waveParticle.origin = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 			_waveParticle.direction = D3DXVECTOR3(1.0f, 0.0f, 0.0f);
 			_waveParticle.velocity = 0.00003f;
 			_waveParticle.amplitude = 0.5f;
 			_waveParticle.invRadius = 2.0f;
 			_waveParticle.spawnTime = System::Timer::GetCurrentTick();
 
-			_numWaveParticles = 100;
+			_freeList = nullptr;
+			_activeList = nullptr;
 
-			size_t requiredSize = sizeof(WaveParticle)*_numWaveParticles;
+			_corner = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
-			if (requiredSize > MemoryMgr::getInstance()->getAvailableMem())
-			{
-				MessagedAssert(false, "Memory Manager does not have enough memory.");
-			}
+			float halfWidth = _gridCols*_gridWidth / 2.0f;
+			float halfHeight = _gridRows*_gridHeight / 2.0f;
+			_corner.x = -halfWidth;
+			_corner.z = halfHeight;
 
-			_waveParticleMemPool = static_cast<WaveParticle*>( MemoryMgr::getInstance()->allocMemory(requiredSize));
+			initializeWaveParticles();
 		}
 
 		WaterModel::~WaterModel()
@@ -71,6 +75,7 @@ namespace Engine
 		{
 			shutdownBuffers();
 			releaseModel();
+			MemoryMgr::getInstance()->dellocMemory(static_cast<void*>(const_cast<WaveParticle*>(_waveParticleMemPool)));
 		}
 
 		void WaterModel::render()
@@ -94,12 +99,7 @@ namespace Engine
 			_vertexCount = (_gridCols+1)*(_gridRows+1);
 			_indexCount = (_gridCols*_gridRows)* 2* 3;
 
-			D3DXVECTOR3 corner(0.0f, 0.0f, 0.0f);
 
-			float halfWidth = _gridCols*_gridWidth/2.0f;
-			float halfHeight = _gridRows*_gridHeight/2.0f;
-			corner.x = -halfWidth;
-			corner.z = halfHeight;
 
 			_vertices = new VertexType[_vertexCount];
 			if (!_vertices)
@@ -118,7 +118,7 @@ namespace Engine
 			{
 				for (uint8_t col = 0; col <= _gridCols; col++)
 				{
-					_vertices[vertexCount].position = D3DXVECTOR3(col*_gridWidth, 0.0f, -row*_gridHeight) + corner;
+					_vertices[vertexCount].position = D3DXVECTOR3(col*_gridWidth, 0.0f, -row*_gridHeight) + _corner;
 					_vertices[vertexCount].normal = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 					vertexCount++;
 				}
@@ -241,26 +241,38 @@ namespace Engine
 		{
 			double deltaTime = System::Timer::GetDeltaTime();
 
-			_waveParticle.position += _waveParticle.direction * _waveParticle.velocity * (float)deltaTime;
+			_waveParticle.origin += _waveParticle.direction * _waveParticle.velocity * (float)deltaTime;
 		}
 
 		void WaterModel::updateBuffers()
 		{
-			for (int vertexCount = 0; vertexCount<_vertexCount; vertexCount++)
-			{
-				float dist = sqrt(((_vertices[vertexCount].position.x - _waveParticle.position.x) * (_vertices[vertexCount].position.x - _waveParticle.position.x))
-					+ ((_vertices[vertexCount].position.z - _waveParticle.position.z) * (_vertices[vertexCount].position.z - _waveParticle.position.z)));
+			//uint64_t currentTick = System::Timer::GetCurrentTick();
+			//WaveParticle* current = _activeList;
 
-				float rectFunc = dist * _waveParticle.invRadius;
-				if (rectFunc <= 1.0f)
+			//while (current)
+			//{
+				int vertexCount = 0;
+				for (uint8_t row = 0; row <= _gridRows; row++)
 				{
-					_vertices[vertexCount].position.y = _waveParticle.amplitude * 0.5f * (cos(MathUtils::PI * _waveParticle.invRadius * dist) + 1.0f);
+					for (uint8_t col = 0; col <= _gridCols; col++)
+					{
+						_vertices[vertexCount].position = D3DXVECTOR3(col*_gridWidth, 0.0f, -row*_gridHeight) + _corner;
+
+						float dist = sqrt(((_vertices[vertexCount].position.x - _waveParticle.origin.x) * (_vertices[vertexCount].position.x - _waveParticle.origin.x))
+							+ ((_vertices[vertexCount].position.z - _waveParticle.origin.z) * (_vertices[vertexCount].position.z - _waveParticle.origin.z)));
+
+						float rectFunc = dist * _waveParticle.invRadius;
+						if (rectFunc <= 1.0f)
+						{
+							_vertices[vertexCount].position.y += _waveParticle.amplitude * 0.5f * (cos(MathUtils::PI * _waveParticle.invRadius * dist) + 1.0f);
+						}
+
+						vertexCount++;
+					}
 				}
-				else
-				{
-					_vertices[vertexCount].position.y = 0.0f;
-				}
-			}
+
+				//current = current->next;
+			//}
 
 			// update the buffers
 
@@ -276,6 +288,72 @@ namespace Engine
 
 			memcpy(mappedResource.pData, _vertices, sizeof(VertexType)*_vertexCount);
 			deviceContext->Unmap(_vertexBuffer, 0);
+		}
+
+		void WaterModel::initializeWaveParticles()
+		{
+			_freeList = const_cast<WaveParticle*>(_waveParticleMemPool);
+			WaveParticle* currentPtr = _freeList;
+			WaveParticle* nextPtr = currentPtr+1;
+
+			for (uint32_t i = 0; i < _numWaveParticles-1; i++)
+			{
+				currentPtr->next = nextPtr;
+				currentPtr = nextPtr;
+				nextPtr += 1;
+			}
+
+			currentPtr->next = nullptr;
+		}
+
+		WaterModel::WaveParticle * WaterModel::getFreePartices(uint32_t i_numParticles)
+		{
+			if (_freeList == nullptr)
+			{
+				MessagedAssert(false, "Free particles exhausted.");
+				return nullptr;
+			}
+
+			WaveParticle* first = _freeList;
+			WaveParticle* current = first;
+			WaveParticle* prev = nullptr;
+
+			uint32_t i = 0;
+			for (; i < i_numParticles && current != nullptr; i++)
+			{
+				prev = current;
+				current = current->next;
+			}
+
+			if (i == i_numParticles)
+			{
+				prev->next = nullptr;
+				_freeList = current;
+				return first;
+			}
+			else
+			{
+				MessagedAssert(false, "Free particles exhausted.");
+				return nullptr;
+			}
+		}
+
+		void WaterModel::recycleParticles( WaveParticle* i_waveParticle )
+		{
+			if (i_waveParticle == nullptr)
+			{
+				return;
+			}
+
+			WaveParticle* last = i_waveParticle;
+
+			while (last->next != nullptr)
+			{
+				last = last->next;
+			}
+
+			last->next = _freeList;
+			_freeList = i_waveParticle;
 		}
 	}
 }

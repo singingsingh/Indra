@@ -30,9 +30,10 @@ namespace Engine
 
 				struct WaveParticle
 				{
-					D3DXVECTOR3 position;
+					D3DXVECTOR3 origin;
 					D3DXVECTOR3 direction;
 					uint64_t spawnTime;
+					uint64_t actionTime;
 					float amplitude;
 					float invRadius;
 					float velocity;
@@ -45,6 +46,9 @@ namespace Engine
 				void releaseModel();
 				void updateWaveParticles();
 				void updateBuffers();
+				void initializeWaveParticles();
+				WaveParticle* getFreePartices(uint32_t numParticles);
+				void recycleParticles(WaveParticle* i_waveParticle);
 
 				ID3D11Buffer *_vertexBuffer, *_indexBuffer;
 				int _vertexCount, _indexCount;
@@ -55,8 +59,10 @@ namespace Engine
 				VertexType* _vertices;
 				unsigned long* _indices;
 
-				WaveParticle* _waveParticleMemPool;
-				uint16_t _numWaveParticles;
+				uint32_t _numWaveParticles, _activeParticles;
+				const WaveParticle* _waveParticleMemPool;
+				WaveParticle *_freeList, *_activeList;
+				D3DXVECTOR3 _corner;
 		};
 	}	// Graphics
 }	// Engine
