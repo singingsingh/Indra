@@ -418,6 +418,7 @@ namespace Engine
 		bool Graphics::Render()
 		{
 			static float rotation = 0.0f;
+			static bool first = true;
 
 			if (System::Window::IsActive())
 			{
@@ -435,6 +436,12 @@ namespace Engine
 			{
 				_instance->_cpuUsage->frame();
 				_instance->_fps->frame();
+			}
+
+			if (first)
+			{
+				first = false;
+				_instance->_waterModel->spawnParticles();
 			}
 
 			return _instance->_render(rotation);

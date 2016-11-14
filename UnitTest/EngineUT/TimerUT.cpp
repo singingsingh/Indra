@@ -15,7 +15,7 @@ namespace UnitTest
 		{
 			Sleep(1000);
 			currentTick = Engine::System::Timer::GetCurrentTick();
-			std::cout << "Time elapsed in ms = " << Engine::System::Timer::GetElapsedTimeMilliSec(prevTick, currentTick) << std::endl;
+			std::cout << "Time elapsed in ms = " << Engine::System::Timer::GetElapsedTimeMilliSec(prevTick, currentTick, false) << std::endl;
 			prevTick = currentTick;
 		}
 	}

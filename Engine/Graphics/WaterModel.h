@@ -20,6 +20,7 @@ namespace Engine
 				void shutdown();
 				void render();
 				int getIndexCount();
+				void spawnParticles();
 
 			private:
 				struct VertexType
@@ -32,10 +33,11 @@ namespace Engine
 				{
 					D3DXVECTOR3 origin;
 					D3DXVECTOR3 direction;
-					uint64_t spawnTime;
-					uint64_t actionTime;
+					uint64_t spawnTick;
+					uint64_t actionTick;
+					float angle;
 					float amplitude;
-					float invRadius;
+					float radius;
 					float velocity;
 					WaveParticle* next;
 				};
@@ -44,17 +46,17 @@ namespace Engine
 				void shutdownBuffers();
 				void renderBuffers();
 				void releaseModel();
-				void updateWaveParticles();
+				void subDivideParticles();
 				void updateBuffers();
 				void initializeWaveParticles();
 				WaveParticle* getFreePartices(uint32_t numParticles);
-				void recycleParticles(WaveParticle* i_waveParticle);
+				void pushToActiveList( WaveParticle*  waveParticle);
+				void recycleParticles(WaveParticle* waveParticle);
 
 				ID3D11Buffer *_vertexBuffer, *_indexBuffer;
 				int _vertexCount, _indexCount;
 				float _gridWidth, _gridHeight;
 				uint8_t _gridRows, _gridCols;
-				WaveParticle _waveParticle;
 
 				VertexType* _vertices;
 				unsigned long* _indices;

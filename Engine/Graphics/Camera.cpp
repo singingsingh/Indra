@@ -74,6 +74,8 @@ namespace Engine
 			_rotation.x = i_x;
 			_rotation.y = i_y;
 			_rotation.z = i_z;
+
+			_startRotation = _rotation;
 		}
 
 		D3DXVECTOR3 Camera::getPosition()
@@ -267,10 +269,7 @@ namespace Engine
 		void Camera::reset()
 		{
 			_position = _startPos;
-
-			_rotation.x = 0;
-			_rotation.y = 0;
-			_rotation.z = 0;
+			_rotation = _startRotation;
 		}
 	}
 }	// namespace Engine

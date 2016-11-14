@@ -60,7 +60,7 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 	//#if defined _DEBUG
 	//	_CrtSetBreakAlloc(252);
 	//#endif // _DEBUG
-
+	Engine::System::Timer::Initialize();
 	const WORD icon = IDI_EAEGAMEPAD;
 	Engine::Initialize("Data/SaveData.dat", i_hInstance, "WaterSimulation", Game::WINDOW_WIDTH, Game::WINDOW_HEIGHT, &icon);
 	Game::Initialize();
@@ -70,7 +70,6 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 	//Processor.AddToLoadQueue(*(new Game::LuaLoadTask("data\\luaFiles\\player.lua")));
 	//Processor.AddToLoadQueue(*(new Game::LuaLoadTask("data\\luaFiles\\monster.lua")));
 
-	Engine::System::Timer::Initialize();
 	uint64_t currentTick = Engine::System::Timer::GetCurrentTick();
 	uint64_t prevEngineTick = currentTick;
 	const uint8_t ENGINE_FPS = 50;
@@ -82,7 +81,8 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 	
 	Engine::Graphics::Camera* camera = new Engine::Graphics::Camera(0.1f, 100.0f, Engine::MathUtils::DegToRad * 60.0f, float (Game::WINDOW_WIDTH)/ Game::WINDOW_HEIGHT);
 	Engine::Graphics::Graphics::SetCamera(camera);
-	camera->setPosition(0.0f, 1.0f, -5.5f);
+	camera->setPosition(0.0f, 3.0f, -5.5f);
+	camera->setRotation(20.0f, 0.0f, 0.0f);
 
 	do
 	{
@@ -100,7 +100,7 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 				break;
 			}
 
-			double deltaTime = Engine::System::Timer::GetElapsedTimeMilliSec(prevEngineTick, currentTick);
+			double deltaTime = Engine::System::Timer::GetElapsedTimeMilliSec(prevEngineTick, currentTick, true);
 			Engine::System::Timer::SetDeltaTime(deltaTime);
 			updateEngine(deltaTime);
 

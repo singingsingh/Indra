@@ -11,11 +11,12 @@ namespace Engine
 		{
 			public:
 				static void Initialize();
-				static double GetElapsedTimeMilliSec(uint64_t previouTick, uint64_t currentTick);
+				static double GetElapsedTimeMilliSec(uint64_t previouTick, uint64_t currentTick, bool normalized);
 				static uint64_t GetTicksPerSecond();
 				static uint64_t GetCurrentTick();
 				static double GetDeltaTime();
 				static void SetDeltaTime(double deltaTime);
+				static uint64_t ConvertMilliSecToTick(double milliSec);
 
 			private:
 				Timer();

@@ -15,13 +15,18 @@
 
 #include <fstream>
 
+namespace
+{
+	uint64_t currentTick;
+}
+
 namespace Engine
 {
 	namespace Graphics
 	{
 		WaterModel::WaterModel()
 			:_numWaveParticles(100),
-			_waveParticleMemPool(static_cast<WaveParticle*>(MemoryMgr::getInstance()->allocMemory(_numWaveParticles*sizeof(WaveParticle))))
+			_waveParticleMemPool(static_cast<WaveParticle*>(MemoryMgr::getInstance()->allocMemory(_numWaveParticles * sizeof(WaveParticle))))
 		{
 			_vertexBuffer = nullptr;
 			_indexBuffer = nullptr;
@@ -33,20 +38,13 @@ namespace Engine
 			_gridCols = 64;
 			_activeParticles = 0;
 
-			_waveParticle.origin = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-			_waveParticle.direction = D3DXVECTOR3(1.0f, 0.0f, 0.0f);
-			_waveParticle.velocity = 0.00003f;
-			_waveParticle.amplitude = 0.5f;
-			_waveParticle.invRadius = 2.0f;
-			_waveParticle.spawnTime = System::Timer::GetCurrentTick();
-
 			_freeList = nullptr;
 			_activeList = nullptr;
 
 			_corner = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
-			float halfWidth = _gridCols*_gridWidth / 2.0f;
-			float halfHeight = _gridRows*_gridHeight / 2.0f;
+			float halfWidth = _gridCols*_gridWidth * 0.5f;
+			float halfHeight = _gridRows*_gridHeight * 0.5f;
 			_corner.x = -halfWidth;
 			_corner.z = halfHeight;
 
@@ -80,7 +78,8 @@ namespace Engine
 
 		void WaterModel::render()
 		{
-			updateWaveParticles();
+			currentTick = System::Timer::GetCurrentTick();
+			subDivideParticles();
 			updateBuffers();
 			renderBuffers();
 		}
@@ -90,16 +89,52 @@ namespace Engine
 			return _indexCount;
 		}
 
+		void WaterModel::spawnParticles()
+		{
+			WaveParticle* newParticles = getFreePartices(3);
+			WaveParticle* first = newParticles;
+
+			newParticles->origin = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+			newParticles->direction = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
+			newParticles->velocity = 0.002f;
+			newParticles->amplitude = 0.2f;
+			newParticles->radius = 0.5f;
+			newParticles->angle = 30.0f;
+			newParticles->spawnTick = System::Timer::GetCurrentTick();
+			newParticles->actionTick = newParticles->spawnTick + System::Timer::ConvertMilliSecToTick( newParticles->radius / (4.0 * sin ((newParticles->angle / 2.0)*MathUtils::DegToRad) * newParticles->velocity));
+
+			newParticles = newParticles->next;
+			newParticles->origin = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+			newParticles->direction = D3DXVECTOR3(sin(30.0f*MathUtils::DegToRad), 0.0f, cos(30.0f*MathUtils::DegToRad));
+			newParticles->velocity = 0.002f;
+			newParticles->amplitude = 0.2f;
+			newParticles->radius = 0.5f;
+			newParticles->angle = 30.0f;
+			newParticles->spawnTick = System::Timer::GetCurrentTick();
+			newParticles->actionTick = newParticles->spawnTick + System::Timer::ConvertMilliSecToTick(newParticles->radius / (4.0 * sin((newParticles->angle / 2.0)*MathUtils::DegToRad) * newParticles->velocity));
+
+			newParticles = newParticles->next;
+			newParticles->origin = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+			newParticles->direction = D3DXVECTOR3(sin(-30.0f*MathUtils::DegToRad), 0.0f, cos(-30.0f*MathUtils::DegToRad));
+			newParticles->velocity = 0.002f;
+			newParticles->amplitude = 0.2f;
+			newParticles->radius = 0.5f;
+			newParticles->angle = 30.0f;
+			newParticles->spawnTick = System::Timer::GetCurrentTick();
+			newParticles->actionTick = newParticles->spawnTick + System::Timer::ConvertMilliSecToTick(newParticles->radius / (4.0 * sin((newParticles->angle / 2.0)*MathUtils::DegToRad) * newParticles->velocity));
+			newParticles->next = nullptr;
+
+			pushToActiveList(first);
+		}
+
 		bool WaterModel::initializeBuffers()
 		{
 			D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
 			D3D11_SUBRESOURCE_DATA vertexData, indexData;
 			HRESULT result;
 
-			_vertexCount = (_gridCols+1)*(_gridRows+1);
-			_indexCount = (_gridCols*_gridRows)* 2* 3;
-
-
+			_vertexCount = (_gridCols + 1)*(_gridRows + 1);
+			_indexCount = (_gridCols*_gridRows) * 2 * 3;
 
 			_vertices = new VertexType[_vertexCount];
 			if (!_vertices)
@@ -237,42 +272,96 @@ namespace Engine
 		{
 		}
 
-		void WaterModel::updateWaveParticles()
+		void WaterModel::subDivideParticles()
 		{
-			double deltaTime = System::Timer::GetDeltaTime();
+			WaveParticle* currentParticle = _activeList;
 
-			_waveParticle.origin += _waveParticle.direction * _waveParticle.velocity * (float)deltaTime;
+			while (currentParticle && currentParticle->actionTick < currentTick)
+			{
+				_activeList = currentParticle->next;
+
+				WaveParticle* newParticles = getFreePartices(2);
+				currentParticle->next = newParticles;
+
+				currentParticle->amplitude = currentParticle->amplitude * 0.33333333f;
+				currentParticle->angle = currentParticle->angle * 0.33333333f;
+				currentParticle->actionTick = currentParticle->actionTick +
+					System::Timer::ConvertMilliSecToTick(currentParticle->radius / (4.0 * sin((currentParticle->angle / 2.0)*MathUtils::DegToRad) * currentParticle->velocity));
+
+				WaveParticle* temp = newParticles;
+				while (temp)
+				{
+					temp->origin = currentParticle->origin;
+					temp->spawnTick = currentParticle->spawnTick;
+					temp->actionTick = currentParticle->actionTick;
+					temp->angle = currentParticle->angle;
+					temp->amplitude = currentParticle->amplitude;
+					temp->radius = currentParticle->radius;
+					temp->velocity = currentParticle->velocity;
+
+					temp = temp->next;
+				}
+
+				D3DXVECTOR3 direction = currentParticle->direction;
+				D3DXVECTOR3 newDirection = direction;
+				float angle = currentParticle->angle*MathUtils::DegToRad;
+				newDirection.x = direction.x * cos(angle) - direction.z * sin(angle);
+				newDirection.z = direction.x * sin(angle) + direction.z * cos(angle);
+				temp = newParticles;
+				temp->direction = newDirection;
+
+				temp = temp->next;
+
+				direction = currentParticle->direction;
+				newDirection = currentParticle->direction;
+				angle = -currentParticle->angle*MathUtils::DegToRad;
+				newDirection.x = direction.x * cos(angle) - direction.z * sin(angle);
+				newDirection.z = direction.x * sin(angle) + direction.z * cos(angle);
+				temp->direction = newDirection;
+
+				pushToActiveList(currentParticle);
+
+				currentParticle = _activeList;
+			}
 		}
 
 		void WaterModel::updateBuffers()
 		{
-			//uint64_t currentTick = System::Timer::GetCurrentTick();
-			//WaveParticle* current = _activeList;
+			WaveParticle* currentParticle = _activeList;
+			bool first = true;
 
-			//while (current)
-			//{
+			while (currentParticle)
+			{
+				double elapsedTime = System::Timer::GetElapsedTimeMilliSec(currentParticle->spawnTick, currentTick, false);
+				D3DXVECTOR3 wavePos = currentParticle->origin + (currentParticle->direction * currentParticle->velocity * (float)elapsedTime);
 				int vertexCount = 0;
+				float invRadius = 1.0f / currentParticle->radius;
+
 				for (uint8_t row = 0; row <= _gridRows; row++)
 				{
 					for (uint8_t col = 0; col <= _gridCols; col++)
 					{
-						_vertices[vertexCount].position = D3DXVECTOR3(col*_gridWidth, 0.0f, -row*_gridHeight) + _corner;
+						if (first)
+						{
+							_vertices[vertexCount].position = D3DXVECTOR3(col*_gridWidth, 0.0f, -row*_gridHeight) + _corner;
+						}
 
-						float dist = sqrt(((_vertices[vertexCount].position.x - _waveParticle.origin.x) * (_vertices[vertexCount].position.x - _waveParticle.origin.x))
-							+ ((_vertices[vertexCount].position.z - _waveParticle.origin.z) * (_vertices[vertexCount].position.z - _waveParticle.origin.z)));
+						float dist = sqrt(((_vertices[vertexCount].position.x - wavePos.x) * (_vertices[vertexCount].position.x - wavePos.x))
+							+ ((_vertices[vertexCount].position.z - wavePos.z) * (_vertices[vertexCount].position.z - wavePos.z)));
 
-						float rectFunc = dist * _waveParticle.invRadius;
+						float rectFunc = dist * invRadius;
 						if (rectFunc <= 1.0f)
 						{
-							_vertices[vertexCount].position.y += _waveParticle.amplitude * 0.5f * (cos(MathUtils::PI * _waveParticle.invRadius * dist) + 1.0f);
+							_vertices[vertexCount].position.y += currentParticle->amplitude * 0.5f * (cos(MathUtils::PI * invRadius * dist) + 1.0f);
 						}
 
 						vertexCount++;
 					}
 				}
 
-				//current = current->next;
-			//}
+				first = false;
+				currentParticle = currentParticle->next;
+			}
 
 			// update the buffers
 
@@ -294,9 +383,9 @@ namespace Engine
 		{
 			_freeList = const_cast<WaveParticle*>(_waveParticleMemPool);
 			WaveParticle* currentPtr = _freeList;
-			WaveParticle* nextPtr = currentPtr+1;
+			WaveParticle* nextPtr = currentPtr + 1;
 
-			for (uint32_t i = 0; i < _numWaveParticles-1; i++)
+			for (uint32_t i = 0; i < _numWaveParticles - 1; i++)
 			{
 				currentPtr->next = nextPtr;
 				currentPtr = nextPtr;
@@ -338,7 +427,39 @@ namespace Engine
 			}
 		}
 
-		void WaterModel::recycleParticles( WaveParticle* i_waveParticle )
+		void WaterModel::pushToActiveList(WaveParticle * i_waveParticle)
+		{
+			WaveParticle* currentParticle = i_waveParticle;
+			WaveParticle* nextParticle = nullptr;
+
+			while (currentParticle)
+			{
+				nextParticle = currentParticle->next;
+				WaveParticle* currentPtr = _activeList;
+				WaveParticle* prevPtr = nullptr;
+
+				while (currentPtr && currentParticle->actionTick > currentPtr->actionTick)
+				{
+					prevPtr = currentPtr;
+					currentPtr = currentPtr->next;
+				}
+
+				if (prevPtr)
+				{
+					prevPtr->next = currentParticle;
+					currentParticle->next = currentPtr;
+				}
+				else
+				{
+					_activeList = currentParticle;
+					currentParticle->next = nullptr;
+				}
+
+				currentParticle = nextParticle;
+			}
+		}
+
+		void WaterModel::recycleParticles(WaveParticle* i_waveParticle)
 		{
 			if (i_waveParticle == nullptr)
 			{

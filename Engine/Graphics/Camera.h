@@ -45,7 +45,7 @@ namespace Engine
 			float _fov;
 			float _aspectRatio;
 
-			D3DXVECTOR3 _position, _rotation, _startPos;
+			D3DXVECTOR3 _position, _rotation, _startPos, _startRotation;
 			D3DXMATRIX _viewMatrix, _orthoViewMatrix;
 			D3DXMATRIX _orthoProjMatrix;
 			D3DXMATRIX _projectionMatrix;
