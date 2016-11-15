@@ -10,7 +10,7 @@ namespace Engine
 {
 	namespace Graphics
 	{
-		const float Camera::_angularSensitivity = 0.01f;
+		const float Camera::_movementSensitivity = 0.01f;
 
 		Camera::Camera(float i_nearPlane, float i_farPlane, float i_fov, float i_aspectRatio)
 		{
@@ -25,6 +25,8 @@ namespace Engine
 			_position.x = 0;
 			_position.y = 0;
 			_position.z = 0;
+
+			_startPos = _position;
 
 			_rotation.x = 0;
 			_rotation.y = 0;
@@ -63,6 +65,8 @@ namespace Engine
 			_position.x = i_x;
 			_position.y = i_y;
 			_position.z = i_z;
+
+			_startPos = _position;
 		}
 
 		void Camera::setRotation(float i_x, float i_y, float i_z)
@@ -70,6 +74,8 @@ namespace Engine
 			_rotation.x = i_x;
 			_rotation.y = i_y;
 			_rotation.z = i_z;
+
+			_startRotation = _rotation;
 		}
 
 		D3DXVECTOR3 Camera::getPosition()
@@ -174,34 +180,56 @@ namespace Engine
 			//DEBUG_PRINT("Key %d state = %d, Mouse Location x = %d, y = %d\n", i_key, i_down, i_x, i_y);
 			switch (i_key)
 			{
+				case 0x52:
+				{
+					if (i_down)
+					{
+						reset();
+					}
+					break;
+				}
 				case 0x57:	// w
 					if (i_down)
 					{
 						D3DXVECTOR3 forwardVec = getForwardVec();
-						_position += forwardVec * _angularSensitivity * (float)System::Timer::GetDeltaTime();
+						_position += forwardVec * _movementSensitivity * (float)System::Timer::GetDeltaTime();
+						break;
 					}
-					break;
 				case 0x53:	// s
 					if (i_down)
 					{
 						D3DXVECTOR3 forwardVec = getForwardVec();
-						_position -= forwardVec * _angularSensitivity * (float)System::Timer::GetDeltaTime();
+						_position -= forwardVec * _movementSensitivity * (float)System::Timer::GetDeltaTime();
+						break;
 					}
-					break;
 				case 0x41:	// a
 					if (i_down)
 					{
 						D3DXVECTOR3 rightVec = getRightVec();
-						_position -= rightVec * _angularSensitivity * (float)System::Timer::GetDeltaTime();
+						_position -= rightVec * _movementSensitivity * (float)System::Timer::GetDeltaTime();
+						break;
 					}
-					break;
 				case 0x44:	//d
 					if (i_down)
 					{
 						D3DXVECTOR3 rightVec = getRightVec();
-						_position += rightVec * _angularSensitivity * (float)System::Timer::GetDeltaTime();
+						_position += rightVec * _movementSensitivity * (float)System::Timer::GetDeltaTime();
+						break;
 					}
-					break;
+				case 0x45:	// e
+					if (i_down)
+					{
+						D3DXVECTOR3 upVec = getUpVec();
+						_position += upVec * _movementSensitivity * (float)System::Timer::GetDeltaTime();
+						break;
+					}
+				case 0x51:	//q
+					if (i_down)
+					{
+						D3DXVECTOR3 upVec = getUpVec();
+						_position -= upVec * _movementSensitivity * (float)System::Timer::GetDeltaTime();
+						break;
+					}
 			}
 		}
 
@@ -236,6 +264,12 @@ namespace Engine
 		void Camera::mouseWheelUpdate(bool i_direction, uint16_t i_x, uint16_t i_y)
 		{
 			//DEBUG_PRINT("Roll %d Mouse Location x = %d, y = %d\n", i_direction, i_x, i_y);
+		}
+
+		void Camera::reset()
+		{
+			_position = _startPos;
+			_rotation = _startRotation;
 		}
 	}
 }	// namespace Engine

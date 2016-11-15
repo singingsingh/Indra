@@ -67,21 +67,15 @@ namespace Engine
 			D3D11_SUBRESOURCE_DATA vertexData, indexData;
 			HRESULT result;
 
-
-			// Set the number of vertices in the vertex array.
 			_vertexCount = 3;
-
-			// Set the number of indices in the index array.
 			_indexCount = 3;
 
-			// Create the vertex array.
 			vertices = new VertexType[_vertexCount];
 			if (!vertices)
 			{
 				return false;
 			}
 
-			// Create the index array.
 			indices = new unsigned long[_indexCount];
 			if (!indices)
 			{

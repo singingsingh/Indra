@@ -38,17 +38,19 @@ namespace Engine
 
 		private:
 
+			void reset();
+
 			float _nearPlane;
 			float _farPlane;
 			float _fov;
 			float _aspectRatio;
 
-			D3DXVECTOR3 _position, _rotation;
+			D3DXVECTOR3 _position, _rotation, _startPos, _startRotation;
 			D3DXMATRIX _viewMatrix, _orthoViewMatrix;
 			D3DXMATRIX _orthoProjMatrix;
 			D3DXMATRIX _projectionMatrix;
 
-			const static float _angularSensitivity;
+			const static float _movementSensitivity;
 		};
 	}
 }

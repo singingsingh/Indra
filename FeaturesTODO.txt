@@ -1,5 +1,6 @@
 Matrix font
 camera zoom
+smooth camera movement over the frames
 Subsurface scattering.
 
 Post processing shaders

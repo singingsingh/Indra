@@ -154,7 +154,7 @@ namespace Engine
 			SetFocus(_windowHandle);
 
 			// show the cursor
-			ShowCursor(true);
+			ShowCursor(false);
 			SetCursorPos(_moniterWidth/2, _moniterHeight/2);
 
 			// clear all the keys to false

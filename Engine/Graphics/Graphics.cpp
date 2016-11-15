@@ -17,9 +17,9 @@ namespace Engine
 		Graphics::Graphics()
 		{
 			_currentCamera = nullptr;
-			_colorModel = nullptr;
+			//_colorModel = nullptr;
 			//_colorShader = nullptr;
-			_tessellationShader = nullptr;
+			//_tessellationShader = nullptr;
 			VSYNC_ENABLED = false;
 			//_textureShader = nullptr;
 			//_textureModel = nullptr;
@@ -28,7 +28,9 @@ namespace Engine
 			//_diffuseLight = nullptr;
 			//_specularModel = nullptr;
 			//_specularShader = nullptr;
-			//_specularLight = nullptr;
+			_waterModel = nullptr;
+			_waterShader = nullptr;
+			_specularLight = nullptr;
 			//_bitmap = nullptr;
 			_text = nullptr;
 			_cpuUsage = nullptr;
@@ -97,20 +99,20 @@ namespace Engine
 			//	return false;
 			//}
 
-			// Create the model object.
-			_colorModel = new Model();
-			if (!_colorModel)
-			{
-				return false;
-			}
+			//// Create the model object.
+			//_colorModel = new Model();
+			//if (!_colorModel)
+			//{
+			//	return false;
+			//}
 
-			// Initialize the model object.
-			result = _colorModel->initialize(GraphicsDX::GetDevice());
-			if (!result)
-			{
-				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the model object.", "Error", MB_OK);
-				return false;
-			}
+			//// Initialize the model object.
+			//result = _colorModel->initialize(GraphicsDX::GetDevice());
+			//if (!result)
+			//{
+			//	MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the model object.", "Error", MB_OK);
+			//	return false;
+			//}
 
 			//// Create the color shader object.
 			//_colorShader = new ColorShader();
@@ -128,20 +130,20 @@ namespace Engine
 			//}
 
 
-			// Create the color shader object.
-			_tessellationShader = new TessellationShader();
-			if (!_tessellationShader)
-			{
-				return false;
-			}
+			//// Create the color shader object.
+			//_tessellationShader = new TessellationShader();
+			//if (!_tessellationShader)
+			//{
+			//	return false;
+			//}
 
-			// Initialize the color shader object.
-			result = _tessellationShader->Initialize(GraphicsDX::GetDevice());
-			if (!result)
-			{
-				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the color shader object.", "Error", MB_OK);
-				return false;
-			}
+			//// Initialize the color shader object.
+			//result = _tessellationShader->Initialize(GraphicsDX::GetDevice());
+			//if (!result)
+			//{
+			//	MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the color shader object.", "Error", MB_OK);
+			//	return false;
+			//}
 
 			//// Create the model object.
 			//_diffuseModel = new DiffuseModel;
@@ -151,7 +153,7 @@ namespace Engine
 			//}
 
 			//// Initialize the model object.
-			//result = _diffuseModel->initialize(GraphicsDX::GetDevice(), "Assets/Textures/seafloor.dds");
+			//result = _diffuseModel->initialize("Assets/Textures/seafloor.dds");
 			//if (!result)
 			//{
 			//	MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the model object.", "Error", MB_OK);
@@ -166,7 +168,7 @@ namespace Engine
 			//}
 
 			//// Initialize the light shader object.
-			//result = _diffuseShader->initialize(GraphicsDX::GetDevice());
+			//result = _diffuseShader->initialize();
 			//if (!result)
 			//{
 			//	MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the light shader object.", "Error", MB_OK);
@@ -186,7 +188,7 @@ namespace Engine
 
 			//_specularModel = new SpecularModel;
 
-			//result = _specularModel->initialize(GraphicsDX::GetDevice(), "Assets/Meshes/neptune.ply", "Assets/Textures/161.dds");
+			//result = _specularModel->initialize("Assets/Meshes/neptune.ply", "Assets/Textures/161.dds");
 			//if (!result)
 			//{
 			//	MessageBox(System::Window::GetWindwsHandle(), "Could not load the assmip the model object.", "Error", MB_OK);
@@ -201,26 +203,50 @@ namespace Engine
 			//}
 
 			//// Initialize the light shader object.
-			//result = _specularShader->initialize(GraphicsDX::GetDevice());
+			//result = _specularShader->initialize();
 			//if (!result)
 			//{
 			//	MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the light shader object.", "Error", MB_OK);
 			//	return false;
 			//}
 
-			//// Create the light object.
-			//_specularLight = new SpecularLight;
-			//if (!_specularLight)
-			//{
-			//	return false;
-			//}
+			_waterModel = new WaterModel;
 
-			//// Initialize the light object.
-			//_specularLight->setAmbientColor(0.15f, 0.15f, 0.15f, 1.0f);
-			//_specularLight->setDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
-			//_specularLight->setDirection(0.0f, 0.0f, 1.0f);
-			//_specularLight->setSpecularColor(1.0f, 1.0f, 1.0f, 1.0f);
-			//_specularLight->setSpecularPower(32.0f);
+			result = _waterModel->initialize();
+			if (!result)
+			{
+				MessageBox(System::Window::GetWindwsHandle(), "Could not load the assmip the model object.", "Error", MB_OK);
+				return false;
+			}
+
+			// Create the light shader object.
+			_waterShader = new WaterShader;
+			if (!_waterShader)
+			{
+				return false;
+			}
+
+			// Initialize the light shader object.
+			result = _waterShader->initialize();
+			if (!result)
+			{
+				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the water shader object.", "Error", MB_OK);
+				return false;
+			}
+
+			// Create the light object.
+			_specularLight = new SpecularLight;
+			if (!_specularLight)
+			{
+				return false;
+			}
+
+			// Initialize the light object.
+			_specularLight->setAmbientColor(0.15f, 0.15f, 0.15f, 1.0f);
+			_specularLight->setDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
+			_specularLight->setDirection(1.0f, 1.0f, -1.0f);
+			_specularLight->setSpecularColor(1.0f, 1.0f, 1.0f, 1.0f);
+			_specularLight->setSpecularPower(32.0f);
 
 			//// Create the bitmap object.
 			//_bitmap = new Bitmap;
@@ -297,20 +323,20 @@ namespace Engine
 			//	_colorShader = nullptr;
 			//}
 
-			if (_tessellationShader)
-			{
-				_tessellationShader->Shutdown();
-				delete _tessellationShader;
-				_tessellationShader = nullptr;
-			}
+			//if (_tessellationShader)
+			//{
+			//	_tessellationShader->Shutdown();
+			//	delete _tessellationShader;
+			//	_tessellationShader = nullptr;
+			//}
 
-			// Release the model object.
-			if (_colorModel)
-			{
-				_colorModel->shutdown();
-				delete _colorModel;
-				_colorModel = nullptr;
-			}
+			//// Release the model object.
+			//if (_colorModel)
+			//{
+			//	_colorModel->shutdown();
+			//	delete _colorModel;
+			//	_colorModel = nullptr;
+			//}
 
 			//// Release the color shader object.
 			//if (_textureShader)
@@ -358,8 +384,8 @@ namespace Engine
 			//	_bitmap = nullptr;
 			//}
 
-			//delete _specularLight;
-			//_specularLight = nullptr;
+			delete _specularLight;
+			_specularLight = nullptr;
 
 			//_specularModel->shutdown();
 			//delete _specularModel;
@@ -368,6 +394,14 @@ namespace Engine
 			//_specularShader->shutdown();
 			//delete _specularShader;
 			//_specularShader = nullptr;
+
+			_waterModel->shutdown();
+			delete _waterModel;
+			_waterModel = nullptr;
+
+			_waterShader->shutdown();
+			delete _waterShader;
+			_waterShader = nullptr;
 
 			if (_text)
 			{
@@ -384,6 +418,7 @@ namespace Engine
 		bool Graphics::Render()
 		{
 			static float rotation = 0.0f;
+			static bool first = true;
 
 			if (System::Window::IsActive())
 			{
@@ -401,6 +436,12 @@ namespace Engine
 			{
 				_instance->_cpuUsage->frame();
 				_instance->_fps->frame();
+			}
+
+			if (first)
+			{
+				first = false;
+				_instance->_waterModel->spawnParticles();
 			}
 
 			return _instance->_render(rotation);
@@ -422,16 +463,27 @@ namespace Engine
 				viewMatrix = _currentCamera->getViewMatrix();
 				projectionMatrix = _currentCamera->getProjMatrix();
 
-				GraphicsDX::RenderWireFrame();
-				_colorModel->render(GraphicsDX::GetDeviceContext());
-				result = _tessellationShader->Render(GraphicsDX::GetDeviceContext(), _colorModel->getIndexCount(),
-					worldMatrix, viewMatrix, projectionMatrix, (float)_tessellationAmount);
-				GraphicsDX::RenderSolidFill();
+				//GraphicsDX::RenderWireFrame();
+				//_colorModel->render(GraphicsDX::GetDeviceContext());
+				//result = _tessellationShader->Render(GraphicsDX::GetDeviceContext(), _colorModel->getIndexCount(),
+				//	worldMatrix, viewMatrix, projectionMatrix, (float)_tessellationAmount);
+				//GraphicsDX::RenderSolidFill();
 
-				//_specularModel->render(GraphicsDX::GetDeviceContext());
-				//result = _specularShader->render(GraphicsDX::GetDeviceContext(), _specularModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+				//_specularModel->render();
+				//result = _specularShader->render(_specularModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
 				//	_specularModel->getTexture(), _specularLight->getDirection(), _specularLight->getAmbientColor(), _specularLight->getDiffuseColor(), _currentCamera->getPosition(),
 				//	_specularLight->getSpecularColor(), _specularLight->getSpecularPower());
+
+				GraphicsDX::RenderWireFrame();
+				_waterModel->render();
+				result = _waterShader->render(_waterModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,_specularLight->getDirection(),
+					_specularLight->getAmbientColor(), _specularLight->getDiffuseColor(), _currentCamera->getPosition(),
+					_specularLight->getSpecularColor(), _specularLight->getSpecularPower());
+				GraphicsDX::RenderSolidFill();
+
+				//_diffuseModel->render();
+				//result = _diffuseShader->render(_diffuseModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+				//	_diffuseModel->getTexture(), _diffuseLight->getDirection(), _diffuseLight->getDiffuseColor());
 
 				if (!result)
 				{

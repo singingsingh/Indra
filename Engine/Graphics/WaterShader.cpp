@@ -1,4 +1,4 @@
-#include <Engine\Graphics\SpecularShader.h>
+#include <Engine\Graphics\WaterShader.h>
 
 #include <Engine\System\Window.h>
 #include <Engine\Graphics\GraphicsDX.h>
@@ -7,27 +7,28 @@ namespace Engine
 {
 	namespace Graphics
 	{
-		SpecularShader::SpecularShader()
+		WaterShader::WaterShader()
 		{
 			_vertexShader = nullptr;
 			_pixelShader = nullptr;
 			_layout = nullptr;
-			_sampleState = nullptr;
 			_matrixBuffer = nullptr;
 			_lightBuffer = nullptr;
 			_cameraBuffer = nullptr;
+			_waterBuffer = nullptr;
+			_waterColor = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
 		}
 
-		SpecularShader::~SpecularShader()
+		WaterShader::~WaterShader()
 		{
 		}
 
-		bool SpecularShader::initialize()
+		bool WaterShader::initialize()
 		{
 			bool result;
 
 			// Initialize the vertex and pixel shaders.
-			result = initializeShader("../Engine/Graphics/Shaders/specularLightVS.hlsl", "../Engine/Graphics/Shaders/specularLightPS.hlsl");
+			result = initializeShader("../Engine/Graphics/Shaders/waterVS.hlsl", "../Engine/Graphics/Shaders/waterPS.hlsl");
 			if (!result)
 			{
 				return false;
@@ -36,19 +37,19 @@ namespace Engine
 			return true;
 		}
 
-		void SpecularShader::shutdown()
+		void WaterShader::shutdown()
 		{
 			shutdownShader();
 		}
 
-		bool SpecularShader::render(int i_indexCount, D3DXMATRIX i_worldMatrix, D3DXMATRIX i_viewMatrix,
-			D3DXMATRIX i_projMatrix, ID3D11ShaderResourceView* i_texture, D3DXVECTOR3 i_lightDirection, D3DXVECTOR4 i_ambientColor,
+		bool WaterShader::render(int i_indexCount, D3DXMATRIX i_worldMatrix, D3DXMATRIX i_viewMatrix,
+			D3DXMATRIX i_projMatrix, D3DXVECTOR3 i_lightDirection, D3DXVECTOR4 i_ambientColor,
 			D3DXVECTOR4 i_diffuseColor, D3DXVECTOR3 i_cameraPosition, D3DXVECTOR4 i_specularColor, float i_specularPower)
 		{
 			bool result;
 
 			// Set the shader parameters that it will use for rendering.
-			result = setShaderParameters(i_worldMatrix, i_viewMatrix, i_projMatrix, i_texture, i_lightDirection, i_ambientColor, i_diffuseColor,
+			result = setShaderParameters(i_worldMatrix, i_viewMatrix, i_projMatrix, i_lightDirection, i_ambientColor, i_diffuseColor,
 				i_cameraPosition, i_specularColor, i_specularPower);
 
 			if (!result)
@@ -62,19 +63,19 @@ namespace Engine
 			return true;
 		}
 
-		bool SpecularShader::initializeShader(const char* i_vsFilename, const char* i_psFilename)
+		bool WaterShader::initializeShader(const char* i_vsFilename, const char* i_psFilename)
 		{
 			HRESULT result;
 			ID3D10Blob* errorMessage;
 			ID3D10Blob* vertexShaderBuffer;
 			ID3D10Blob* pixelShaderBuffer;
 
-			D3D11_INPUT_ELEMENT_DESC polygonLayout[3];
+			D3D11_INPUT_ELEMENT_DESC polygonLayout[2];
 			unsigned int numElements;
-			D3D11_SAMPLER_DESC samplerDesc;
 			D3D11_BUFFER_DESC matrixBufferDesc;
 			D3D11_BUFFER_DESC cameraBufferDesc;
 			D3D11_BUFFER_DESC lightBufferDesc;
+			D3D11_BUFFER_DESC waterBufferDesc;
 
 			// Initialize the pointers this function will use to null.
 			errorMessage = 0;
@@ -82,7 +83,7 @@ namespace Engine
 			pixelShaderBuffer = 0;
 
 			// Compile the vertex shader code.
-			result = D3DX11CompileFromFile(i_vsFilename, NULL, NULL, "LightVertexShader", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL,
+			result = D3DX11CompileFromFile(i_vsFilename, NULL, NULL, "WaterVertexShader", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL,
 				&vertexShaderBuffer, &errorMessage, NULL);
 			if (FAILED(result))
 			{
@@ -101,7 +102,7 @@ namespace Engine
 			}
 
 			// Compile the pixel shader code.
-			result = D3DX11CompileFromFile(i_psFilename, NULL, NULL, "LightPixelShader", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL,
+			result = D3DX11CompileFromFile(i_psFilename, NULL, NULL, "WaterPixelShader", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL,
 				&pixelShaderBuffer, &errorMessage, NULL);
 			if (FAILED(result))
 			{
@@ -144,21 +145,13 @@ namespace Engine
 			polygonLayout[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 			polygonLayout[0].InstanceDataStepRate = 0;
 
-			polygonLayout[1].SemanticName = "TEXCOORD";
+			polygonLayout[1].SemanticName = "NORMAL";
 			polygonLayout[1].SemanticIndex = 0;
-			polygonLayout[1].Format = DXGI_FORMAT_R32G32_FLOAT;
+			polygonLayout[1].Format = DXGI_FORMAT_R32G32B32_FLOAT;
 			polygonLayout[1].InputSlot = 0;
 			polygonLayout[1].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
 			polygonLayout[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 			polygonLayout[1].InstanceDataStepRate = 0;
-
-			polygonLayout[2].SemanticName = "NORMAL";
-			polygonLayout[2].SemanticIndex = 0;
-			polygonLayout[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
-			polygonLayout[2].InputSlot = 0;
-			polygonLayout[2].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
-			polygonLayout[2].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-			polygonLayout[2].InstanceDataStepRate = 0;
 
 			// Get a count of the elements in the layout.
 			numElements = sizeof(polygonLayout) / sizeof(polygonLayout[0]);
@@ -177,28 +170,6 @@ namespace Engine
 
 			pixelShaderBuffer->Release();
 			pixelShaderBuffer = 0;
-
-			// Create a texture sampler state description.
-			samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-			samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-			samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-			samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-			samplerDesc.MipLODBias = 0.0f;
-			samplerDesc.MaxAnisotropy = 1;
-			samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-			samplerDesc.BorderColor[0] = 0;
-			samplerDesc.BorderColor[1] = 0;
-			samplerDesc.BorderColor[2] = 0;
-			samplerDesc.BorderColor[3] = 0;
-			samplerDesc.MinLOD = 0;
-			samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
-
-			// Create the texture sampler state.
-			result = device->CreateSamplerState(&samplerDesc, &_sampleState);
-			if (FAILED(result))
-			{
-				return false;
-			}
 
 			// Setup the description of the dynamic matrix constant buffer that is in the vertex shader.
 			matrixBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
@@ -246,62 +217,75 @@ namespace Engine
 				return false;
 			}
 
+			waterBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+			waterBufferDesc.ByteWidth = sizeof(WaterBufferType);
+			waterBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+			waterBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+			waterBufferDesc.MiscFlags = 0;
+			waterBufferDesc.StructureByteStride = 0;
+
+			// Create the constant buffer pointer so we can access the vertex shader constant buffer from within this class.
+			result = device->CreateBuffer(&waterBufferDesc, NULL, &_waterBuffer);
+			if (FAILED(result))
+			{
+				return false;
+			}
+
 			return true;
 		}
 
-		void SpecularShader::shutdownShader()
+		void WaterShader::shutdownShader()
 		{
 			// Release the light constant buffer.
 			if (_lightBuffer)
 			{
 				_lightBuffer->Release();
-				_lightBuffer = 0;
+				_lightBuffer = nullptr;
+			}
+
+			if (_waterBuffer)
+			{
+				_waterBuffer->Release();
+				_waterBuffer = nullptr;
 			}
 
 			// Release the camera constant buffer.
 			if (_cameraBuffer)
 			{
 				_cameraBuffer->Release();
-				_cameraBuffer = 0;
+				_cameraBuffer = nullptr;
 			}
 
 			// Release the matrix constant buffer.
 			if (_matrixBuffer)
 			{
 				_matrixBuffer->Release();
-				_matrixBuffer = 0;
-			}
-
-			// Release the sampler state.
-			if (_sampleState)
-			{
-				_sampleState->Release();
-				_sampleState = 0;
+				_matrixBuffer = nullptr;
 			}
 
 			// Release the layout.
 			if (_layout)
 			{
 				_layout->Release();
-				_layout = 0;
+				_layout = nullptr;
 			}
 
 			// Release the pixel shader.
 			if (_pixelShader)
 			{
 				_pixelShader->Release();
-				_pixelShader = 0;
+				_pixelShader = nullptr;
 			}
 
 			// Release the vertex shader.
 			if (_vertexShader)
 			{
 				_vertexShader->Release();
-				_vertexShader = 0;
+				_vertexShader = nullptr;
 			}
 		}
 
-		void SpecularShader::outputShaderErrorMessage(ID3D10Blob* i_errorMessage, const char* i_shaderFileName)
+		void WaterShader::outputShaderErrorMessage(ID3D10Blob* i_errorMessage, const char* i_shaderFileName)
 		{
 			char* compileErrors;
 			size_t bufferSize, i;
@@ -334,8 +318,8 @@ namespace Engine
 			MessageBox(System::Window::GetWindwsHandle(), "Error compiling shader.  Check shader-error.txt for message.", i_shaderFileName, MB_OK);
 		}
 
-		bool SpecularShader::setShaderParameters(D3DXMATRIX i_worldMatrix, D3DXMATRIX i_viewMatrix,
-			D3DXMATRIX i_projectionMatrix, ID3D11ShaderResourceView* i_texture, D3DXVECTOR3 i_lightDirection,
+		bool WaterShader::setShaderParameters(D3DXMATRIX i_worldMatrix, D3DXMATRIX i_viewMatrix,
+			D3DXMATRIX i_projectionMatrix, D3DXVECTOR3 i_lightDirection,
 			D3DXVECTOR4 i_ambientColor, D3DXVECTOR4 i_diffuseColor, D3DXVECTOR3 i_cameraPosition, D3DXVECTOR4 i_specularColor,
 			float i_specularPower)
 		{
@@ -345,6 +329,7 @@ namespace Engine
 			MatrixBufferType* dataPtr;
 			LightBufferType* dataPtr2;
 			CameraBufferType* dataPtr3;
+			WaterBufferType* dataPtr4;
 
 			// Transpose the matrices to prepare them for the shader.
 			D3DXMatrixTranspose(&i_worldMatrix, &i_worldMatrix);
@@ -399,9 +384,6 @@ namespace Engine
 			// Now set the camera constant buffer in the vertex shader with the updated values.
 			deviceContext->VSSetConstantBuffers(bufferNumber, 1, &_cameraBuffer);
 
-			// Set shader texture resource in the pixel shader.
-			deviceContext->PSSetShaderResources(0, 1, &i_texture);
-
 			// Lock the light constant buffer so it can be written to.
 			result = deviceContext->Map(_lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 			if (FAILED(result))
@@ -422,16 +404,32 @@ namespace Engine
 			// Unlock the constant buffer.
 			deviceContext->Unmap(_lightBuffer, 0);
 
-			// Set the position of the light constant buffer in the pixel shader.
-			bufferNumber = 0;
+			// Lock the light constant buffer so it can be written to.
+			result = deviceContext->Map(_waterBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+			if (FAILED(result))
+			{
+				return false;
+			}
 
-			// Finally set the light constant buffer in the pixel shader with the updated values.
+			// Get a pointer to the data in the constant buffer.
+			dataPtr4 = (WaterBufferType*)mappedResource.pData;
+
+			// Copy the lighting variables into the constant buffer.
+			dataPtr4->waterColor = _waterColor;
+
+			// Unlock the constant buffer.
+			deviceContext->Unmap(_waterBuffer, 0);
+
+			bufferNumber = 0;
 			deviceContext->PSSetConstantBuffers(bufferNumber, 1, &_lightBuffer);
+
+			bufferNumber = 1;
+			deviceContext->PSSetConstantBuffers(bufferNumber, 1, &_waterBuffer);
 
 			return true;
 		}
 
-		void SpecularShader::renderShader(int i_indexCount)
+		void WaterShader::renderShader(int i_indexCount)
 		{
 			ID3D11DeviceContext* deviceContext = GraphicsDX::GetDeviceContext();
 
@@ -441,8 +439,6 @@ namespace Engine
 			deviceContext->HSSetShader(nullptr, NULL, 0);
 			deviceContext->DSSetShader(nullptr, NULL, 0);
 			deviceContext->PSSetShader(_pixelShader, NULL, 0);
-
-			deviceContext->PSSetSamplers(0, 1, &_sampleState);
 
 			deviceContext->DrawIndexed(i_indexCount, 0, 0);
 		}

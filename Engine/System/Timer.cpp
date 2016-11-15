@@ -22,12 +22,17 @@ namespace Engine
 			_ticksPerSecond = li.QuadPart;
 		}
 
-		double Timer::GetElapsedTimeMilliSec(uint64_t i_previousTick, uint64_t i_currentTick)
+		uint64_t Timer::ConvertMilliSecToTick( double i_milliSec )
+		{
+			return static_cast<uint64_t>(i_milliSec * 0.001 * static_cast<double>(_ticksPerSecond));
+		}
+
+		double Timer::GetElapsedTimeMilliSec(uint64_t i_previousTick, uint64_t i_currentTick, bool i_normalized)
 		{
 			double retVal = double(i_currentTick - i_previousTick) / _ticksPerSecond * 1000.0;
 
 			#if defined (_DEBUG)
-				if (retVal > 50.0)
+				if (i_normalized && retVal > 50.0)
 				{
 					return 50.0;
 				}
