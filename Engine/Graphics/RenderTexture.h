@@ -36,6 +36,9 @@ namespace Engine
 			ID3D11ShaderResourceView* _depthSRV;
 			ID3D11ShaderResourceView* _stencilSRV;
 
+			D3D11_VIEWPORT _viewport;
+			D3D11_VIEWPORT _prevViewport;
+
 			D3DXVECTOR4 _clearColor;
 		};
 	}	// namespace Graphics

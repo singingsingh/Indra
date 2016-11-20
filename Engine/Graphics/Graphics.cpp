@@ -291,7 +291,7 @@ namespace Engine
 			_cpuUsage = new System::CPU();
 			_cpuUsage->initialize();
 
-			_renderTexture = new RenderTexture(800, 600);
+			_renderTexture = new RenderTexture(256, 256);
 			_debugWindow = new DebugWindow(256, 256);
 
 			return true;

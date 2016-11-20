@@ -22,11 +22,10 @@ namespace Engine
 			D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 			D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
 
+			// Render Target View
 
-			// Initialize the render target texture description.
 			ZeroMemory(&renderTargetTextureDesc, sizeof(renderTargetTextureDesc));
 
-			// Setup the render target texture description.
 			renderTargetTextureDesc.Width = i_width;
 			renderTargetTextureDesc.Height = i_height;
 			renderTargetTextureDesc.MipLevels = 1;
@@ -38,42 +37,37 @@ namespace Engine
 			renderTargetTextureDesc.CPUAccessFlags = 0;
 			renderTargetTextureDesc.MiscFlags = 0;
 
-			// Create the render target texture.
 			result = GraphicsDX::GetDevice()->CreateTexture2D(&renderTargetTextureDesc, NULL, &_renderTargetTexture);
 			if (FAILED(result))
 			{
 				MessagedAssert(false, "Creation of texture failed.");
 			}
 
-			// Setup the description of the render target view.
 			renderTargetViewDesc.Format = renderTargetTextureDesc.Format;
 			renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 			renderTargetViewDesc.Texture2D.MipSlice = 0;
 
-			// Create the render target view.
 			result = GraphicsDX::GetDevice()->CreateRenderTargetView(_renderTargetTexture, &renderTargetViewDesc, &_renderTargetView);
 			if (FAILED(result))
 			{
 				MessagedAssert(false, "Creation of Render Target View failed.");
 			}
 
-			// Setup the description of the shader resource view.
 			shaderResourceViewDesc.Format = renderTargetTextureDesc.Format;
 			shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 			shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
 			shaderResourceViewDesc.Texture2D.MipLevels = 1;
 
-			// Create the shader resource view.
 			result = GraphicsDX::GetDevice()->CreateShaderResourceView(_renderTargetTexture, &shaderResourceViewDesc, &_renderTargetSRV);
 			if (FAILED(result))
 			{
 				MessagedAssert(false, "Cannot create Shader Resource View.");
 			}
 
-			// Initialize the description of the depth buffer.
+			// Depth Stencil
+
 			ZeroMemory(&depthStencilTextureDesc, sizeof(depthStencilTextureDesc));
 
-			// Set up the description of the depth buffer.
 			depthStencilTextureDesc.Width = i_width;
 			depthStencilTextureDesc.Height = i_height;
 			depthStencilTextureDesc.MipLevels = 1;
@@ -91,22 +85,18 @@ namespace Engine
 
 			ZeroMemory(&depthStencilViewDesc, sizeof(depthStencilViewDesc));
 
-			// Set up the depth stencil view description.
 			depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 			depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 			depthStencilViewDesc.Texture2D.MipSlice = 0;
 
-			// Create the depth stencil view.
 			result = GraphicsDX::GetDevice()->CreateDepthStencilView(_depthStencilTexture, &depthStencilViewDesc, &_depthStencilView);
 			MessagedAssert(SUCCEEDED(result), "Failed to create depth stencil view.");
 
-			// Setup the description of the shader resource view.
 			shaderResourceViewDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
 			shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 			shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
 			shaderResourceViewDesc.Texture2D.MipLevels = 1;
 
-			// Create the shader resource view.
 			result = GraphicsDX::GetDevice()->CreateShaderResourceView(_depthStencilTexture, &shaderResourceViewDesc, &_depthSRV);
 			MessagedAssert(SUCCEEDED(result), "Failed to create Shader resource view");
 
@@ -115,9 +105,17 @@ namespace Engine
 			shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
 			shaderResourceViewDesc.Texture2D.MipLevels = 1;
 
-			// Create the shader resource view.
 			result = GraphicsDX::GetDevice()->CreateShaderResourceView(_depthStencilTexture, &shaderResourceViewDesc, &_stencilSRV);
 			MessagedAssert(SUCCEEDED(result), "Failed to create Shader resource view");
+
+			// view port
+			// Setup the viewport for rendering.
+			_viewport.Width = (float)i_width;
+			_viewport.Height = (float)i_height;
+			_viewport.MinDepth = 0.0f;
+			_viewport.MaxDepth = 1.0f;
+			_viewport.TopLeftX = 0.0f;
+			_viewport.TopLeftY = 0.0f;
 		}
 
 		RenderTexture::~RenderTexture()
@@ -153,7 +151,12 @@ namespace Engine
 		void RenderTexture::beginRenderToTexture()
 		{
 			GraphicsDX::GetDeviceContext()->OMGetRenderTargets(1, &_prevRenderTargetView, &_prevDepthStencilView);
+			UINT numViewPort = 1;
+			GraphicsDX::GetDeviceContext()->RSGetViewports(&numViewPort, &_prevViewport);
+
 			GraphicsDX::GetDeviceContext()->OMSetRenderTargets(1, &_renderTargetView, _depthStencilView);
+			GraphicsDX::GetDeviceContext()->RSSetViewports(1, &_viewport);
+
 			GraphicsDX::GetDeviceContext()->ClearRenderTargetView(_renderTargetView, _clearColor);
 			GraphicsDX::GetDeviceContext()->ClearDepthStencilView(_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 		}
@@ -161,6 +164,7 @@ namespace Engine
 		void RenderTexture::endRenderToTexture()
 		{
 			GraphicsDX::GetDeviceContext()->OMSetRenderTargets(1, &_prevRenderTargetView, _prevDepthStencilView);
+			GraphicsDX::GetDeviceContext()->RSSetViewports(1, &_prevViewport);
 		}
 
 		ID3D11ShaderResourceView * RenderTexture::getRenderTargetTexture()
