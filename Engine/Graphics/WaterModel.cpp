@@ -25,7 +25,7 @@ namespace Engine
 	namespace Graphics
 	{
 		WaterModel::WaterModel()
-			:_numWaveParticles(100),
+			:_numWaveParticles(400),
 			_waveParticleMemPool(static_cast<WaveParticle*>(MemoryMgr::getInstance()->allocMemory(_numWaveParticles * sizeof(WaveParticle))))
 		{
 			_vertexBuffer = nullptr;
@@ -286,7 +286,7 @@ namespace Engine
 				currentParticle->amplitude = currentParticle->amplitude * 0.33333333f;
 				currentParticle->angle = currentParticle->angle * 0.33333333f;
 				currentParticle->actionTick = currentParticle->actionTick +
-					System::Timer::ConvertMilliSecToTick(currentParticle->radius / (4.0 * sin((currentParticle->angle / 2.0)*MathUtils::DegToRad) * currentParticle->velocity));
+					System::Timer::ConvertMilliSecToTick(currentParticle->radius / (4.0 * sin((currentParticle->angle * 0.5)*MathUtils::DegToRad) * currentParticle->velocity));
 
 				WaveParticle* temp = newParticles;
 				while (temp)

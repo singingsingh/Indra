@@ -10,16 +10,17 @@
 //#include <Engine\Graphics\DiffuseShader.h>
 //#include <Engine\Graphics\DiffuseModel.h>
 //#include <Engine\Graphics\DiffuseLight.h>
-//#include <Engine\Graphics\SpecularShader.h>
-//#include <Engine\Graphics\SpecularModel.h>
+#include <Engine\Graphics\SpecularShader.h>
+#include <Engine\Graphics\SpecularModel.h>
 #include <Engine\Graphics\WaterModel.h>
 #include <Engine\Graphics\WaterShader.h>
 #include <Engine\Graphics\SpecularLight.h>
 #include <Engine\Graphics\Bitmap.h>
 #include <Engine\Graphics\Text.h>
-
+#include <Engine\Graphics\RenderTexture.h>
 #include <Engine\System\CPU.h>
 #include <Engine\System\FPS.h>
+#include <Engine\Graphics\DebugWindow.h>
 
 //#include <Engine\Graphics\TessellationShader.h>
 
@@ -48,16 +49,16 @@ namespace Engine
 			//Model* _colorModel;
 			//ColorShader* _colorShader;
 			//TextureModel* _textureModel;
-			//TextureShader* _textureShader;
+			TextureShader* _textureShader;
 			//DiffuseModel* _diffuseModel;
 			//DiffuseShader* _diffuseShader;
 			//DiffuseLight* _diffuseLight;
-			//SpecularModel* _specularModel;
-			//SpecularShader* _specularShader;
+			SpecularModel* _specularModel;
+			SpecularShader* _specularShader;
 			WaterModel* _waterModel;
 			WaterShader* _waterShader;
 			SpecularLight* _specularLight;
-			//Bitmap* _bitmap;
+			Bitmap* _bitmap;
 
 			//TessellationShader* _tessellationShader;
 
@@ -66,6 +67,8 @@ namespace Engine
 			System::FPS* _fps;
 			System::CPU* _cpuUsage;
 			int _tessellationAmount;
+			RenderTexture* _renderTexture;
+			DebugWindow* _debugWindow;
 
 			static Graphics* _instance;
 		};

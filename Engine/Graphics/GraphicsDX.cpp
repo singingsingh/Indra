@@ -615,7 +615,7 @@ namespace Engine
 		return _instance->_device;
 	}
 
-	ID3D11DeviceContext * GraphicsDX::GetDeviceContext()
+	ID3D11DeviceContext* GraphicsDX::GetDeviceContext()
 	{
 		return _instance->_deviceContext;
 	}

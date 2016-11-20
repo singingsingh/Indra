@@ -192,21 +192,25 @@ namespace Engine
 
 		HWND Window::GetWindwsHandle()
 		{
+			MessagedAssert(_instance, "Window not initialized.");
 			return _instance->_windowHandle;
 		}
 
 		bool Window::IsFullScreen()
 		{
+			MessagedAssert(_instance, "Window not initialized.");
 			return _instance->FULL_SCREEN;
 		}
 
 		int Window::GetWidth()
 		{
+			MessagedAssert(_instance, "Window not initialized.");
 			return _instance->_currentWidth;
 		}
 
 		int Window::GetHeight()
 		{
+			MessagedAssert(_instance, "Window not initialized.");
 			return _instance->_currentHeight;
 		}
 

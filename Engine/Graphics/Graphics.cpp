@@ -21,22 +21,23 @@ namespace Engine
 			//_colorShader = nullptr;
 			//_tessellationShader = nullptr;
 			VSYNC_ENABLED = false;
-			//_textureShader = nullptr;
+			_textureShader = nullptr;
 			//_textureModel = nullptr;
 			//_diffuseModel = nullptr;
 			//_diffuseShader = nullptr;
 			//_diffuseLight = nullptr;
-			//_specularModel = nullptr;
-			//_specularShader = nullptr;
+			_specularModel = nullptr;
+			_specularShader = nullptr;
 			_waterModel = nullptr;
 			_waterShader = nullptr;
 			_specularLight = nullptr;
-			//_bitmap = nullptr;
+			_bitmap = nullptr;
 			_text = nullptr;
 			_cpuUsage = nullptr;
 			_fps = nullptr;
-
-			_tessellationAmount = 5;
+			_debugWindow = nullptr;
+			_renderTexture = nullptr;
+			//_tessellationAmount = 5;
 		}
 
 		bool Graphics::Initialize(HINSTANCE i_hInstance, const char * i_windowName, unsigned int i_windowWidth, unsigned int i_windowHeight, const WORD* i_icon)
@@ -84,20 +85,20 @@ namespace Engine
 			//	return false;
 			//}
 
-			//// Create the texture shader object.
-			//_textureShader = new TextureShader;
-			//if (!_textureShader)
-			//{
-			//	return false;
-			//}
+			// Create the texture shader object.
+			_textureShader = new TextureShader;
+			if (!_textureShader)
+			{
+				return false;
+			}
 
-			//// Initialize the texture shader object.
-			//result = _textureShader->initialize(GraphicsDX::GetDevice());
-			//if (!result)
-			//{
-			//	MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the texture shader object.", "Error", MB_OK);
-			//	return false;
-			//}
+			// Initialize the texture shader object.
+			result = _textureShader->initialize(GraphicsDX::GetDevice());
+			if (!result)
+			{
+				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the texture shader object.", "Error", MB_OK);
+				return false;
+			}
 
 			//// Create the model object.
 			//_colorModel = new Model();
@@ -186,29 +187,29 @@ namespace Engine
 			//_diffuseLight->setDiffuseColor(1.0f, 1.0f, 0.7f, 1.0f);
 			//_diffuseLight->setDirection(0.0f, 0.0f, 1.0f);
 
-			//_specularModel = new SpecularModel;
+			_specularModel = new SpecularModel;
 
-			//result = _specularModel->initialize("Assets/Meshes/neptune.ply", "Assets/Textures/161.dds");
-			//if (!result)
-			//{
-			//	MessageBox(System::Window::GetWindwsHandle(), "Could not load the assmip the model object.", "Error", MB_OK);
-			//	return false;
-			//}
+			result = _specularModel->initialize("Assets/Meshes/neptune.ply", "Assets/Textures/161.dds");
+			if (!result)
+			{
+				MessageBox(System::Window::GetWindwsHandle(), "Could not load the assmip the model object.", "Error", MB_OK);
+				return false;
+			}
 
-			//// Create the light shader object.
-			//_specularShader = new SpecularShader;
-			//if (!_specularShader)
-			//{
-			//	return false;
-			//}
+			// Create the light shader object.
+			_specularShader = new SpecularShader;
+			if (!_specularShader)
+			{
+				return false;
+			}
 
-			//// Initialize the light shader object.
-			//result = _specularShader->initialize();
-			//if (!result)
-			//{
-			//	MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the light shader object.", "Error", MB_OK);
-			//	return false;
-			//}
+			// Initialize the light shader object.
+			result = _specularShader->initialize();
+			if (!result)
+			{
+				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the light shader object.", "Error", MB_OK);
+				return false;
+			}
 
 			_waterModel = new WaterModel;
 
@@ -244,24 +245,24 @@ namespace Engine
 			// Initialize the light object.
 			_specularLight->setAmbientColor(0.15f, 0.15f, 0.15f, 1.0f);
 			_specularLight->setDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
-			_specularLight->setDirection(1.0f, 1.0f, -1.0f);
+			_specularLight->setDirection(0.0f, 0.0f, 1.0f);
 			_specularLight->setSpecularColor(1.0f, 1.0f, 1.0f, 1.0f);
 			_specularLight->setSpecularPower(32.0f);
 
-			//// Create the bitmap object.
-			//_bitmap = new Bitmap;
-			//if (!_bitmap)
-			//{
-			//	return false;
-			//}
+			// Create the bitmap object.
+			_bitmap = new Bitmap;
+			if (!_bitmap)
+			{
+				return false;
+			}
 
-			//// Initialize the bitmap object.
-			//result = _bitmap->initialize(GraphicsDX::GetDevice(), System::Window::GetWidth(), System::Window::GetHeight(), "Assets/Textures/seafloor.dds", 256, 256);
-			//if (!result)
-			//{
-			//	MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the bitmap object.", "Error", MB_OK);
-			//	return false;
-			//}
+			// Initialize the bitmap object.
+			result = _bitmap->initialize(System::Window::GetWidth(), System::Window::GetHeight(), "Assets/Textures/seafloor.dds", 256, 256);
+			if (!result)
+			{
+				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the bitmap object.", "Error", MB_OK);
+				return false;
+			}
 
 			//// Initialize a base view matrix with the camera for 2D user interface rendering.
 			//Camera *camera = new Camera();
@@ -290,6 +291,9 @@ namespace Engine
 			_cpuUsage = new System::CPU();
 			_cpuUsage->initialize();
 
+			_renderTexture = new RenderTexture(800, 600);
+			_debugWindow = new DebugWindow(256, 256);
+
 			return true;
 		}
 
@@ -302,6 +306,12 @@ namespace Engine
 
 		void Graphics::_shutdown()
 		{
+			delete _debugWindow;
+			_debugWindow = nullptr;
+
+			delete _renderTexture;
+			_renderTexture = nullptr;
+
 			if (_cpuUsage)
 			{
 				_cpuUsage->shutdown();
@@ -338,13 +348,13 @@ namespace Engine
 			//	_colorModel = nullptr;
 			//}
 
-			//// Release the color shader object.
-			//if (_textureShader)
-			//{
-			//	_textureShader->shutdown();
-			//	delete _textureShader;
-			//	_textureShader = nullptr;
-			//}
+			// Release the color shader object.
+			if (_textureShader)
+			{
+				_textureShader->shutdown();
+				delete _textureShader;
+				_textureShader = nullptr;
+			}
 
 			//// Release the model object.
 			//if (_textureModel)
@@ -376,24 +386,24 @@ namespace Engine
 			//	_diffuseModel = nullptr;
 			//}
 			
-			// //Release the bitmap object.
-			//if (_bitmap)
-			//{
-			//	_bitmap->shutdown();
-			//	delete _bitmap;
-			//	_bitmap = nullptr;
-			//}
+			 //Release the bitmap object.
+			if (_bitmap)
+			{
+				_bitmap->shutdown();
+				delete _bitmap;
+				_bitmap = nullptr;
+			}
 
 			delete _specularLight;
 			_specularLight = nullptr;
 
-			//_specularModel->shutdown();
-			//delete _specularModel;
-			//_specularModel = nullptr;
+			_specularModel->shutdown();
+			delete _specularModel;
+			_specularModel = nullptr;
 
-			//_specularShader->shutdown();
-			//delete _specularShader;
-			//_specularShader = nullptr;
+			_specularShader->shutdown();
+			delete _specularShader;
+			_specularShader = nullptr;
 
 			_waterModel->shutdown();
 			delete _waterModel;
@@ -449,46 +459,57 @@ namespace Engine
 
 		bool Graphics::_render( float i_rotation )
 		{
-			GraphicsDX::BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
-
 			D3DXMATRIX viewMatrix, projectionMatrix, worldMatrix, orthoMatrix;
 			bool result;
 
+			_currentCamera->update();
+
+			viewMatrix = _currentCamera->getViewMatrix();
+			projectionMatrix = _currentCamera->getProjMatrix();
+			worldMatrix = GraphicsDX::GetWorldMatrix();
+
+			// render to texture
+			{
+				_renderTexture->beginRenderToTexture();
+
+				_specularModel->render();
+				result = _specularShader->render(_specularModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+					_specularModel->getTexture(), _specularLight->getDirection(), _specularLight->getAmbientColor(), _specularLight->getDiffuseColor(), _currentCamera->getPosition(),
+					_specularLight->getSpecularColor(), _specularLight->getSpecularPower());
+
+				_renderTexture->endRenderToTexture();
+			}
+
+			GraphicsDX::BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
+
 			// render 3D stuff
 			{
-				_currentCamera->update();
-
-				worldMatrix = GraphicsDX::GetWorldMatrix();
-
-				viewMatrix = _currentCamera->getViewMatrix();
-				projectionMatrix = _currentCamera->getProjMatrix();
-
 				//GraphicsDX::RenderWireFrame();
 				//_colorModel->render(GraphicsDX::GetDeviceContext());
 				//result = _tessellationShader->Render(GraphicsDX::GetDeviceContext(), _colorModel->getIndexCount(),
 				//	worldMatrix, viewMatrix, projectionMatrix, (float)_tessellationAmount);
 				//GraphicsDX::RenderSolidFill();
 
-				//_specularModel->render();
-				//result = _specularShader->render(_specularModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
-				//	_specularModel->getTexture(), _specularLight->getDirection(), _specularLight->getAmbientColor(), _specularLight->getDiffuseColor(), _currentCamera->getPosition(),
-				//	_specularLight->getSpecularColor(), _specularLight->getSpecularPower());
-
-				GraphicsDX::RenderWireFrame();
-				_waterModel->render();
-				result = _waterShader->render(_waterModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,_specularLight->getDirection(),
-					_specularLight->getAmbientColor(), _specularLight->getDiffuseColor(), _currentCamera->getPosition(),
+				_specularModel->render();
+				result = _specularShader->render(_specularModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+					_specularModel->getTexture(), _specularLight->getDirection(), _specularLight->getAmbientColor(), _specularLight->getDiffuseColor(), _currentCamera->getPosition(),
 					_specularLight->getSpecularColor(), _specularLight->getSpecularPower());
-				GraphicsDX::RenderSolidFill();
+
+				//GraphicsDX::RenderWireFrame();
+				//_waterModel->render();
+				//result = _waterShader->render(_waterModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,_specularLight->getDirection(),
+				//	_specularLight->getAmbientColor(), _specularLight->getDiffuseColor(), _currentCamera->getPosition(),
+				//	_specularLight->getSpecularColor(), _specularLight->getSpecularPower());
+				//GraphicsDX::RenderSolidFill();
 
 				//_diffuseModel->render();
 				//result = _diffuseShader->render(_diffuseModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
 				//	_diffuseModel->getTexture(), _diffuseLight->getDirection(), _diffuseLight->getDiffuseColor());
 
-				if (!result)
-				{
-					Assert(false);
-				}
+				//if (!result)
+				//{
+				//	Assert(false);
+				//}
 			}
 
 			// render 2D stuff
@@ -498,8 +519,9 @@ namespace Engine
 				// UI Rendering
 				{
 					worldMatrix = GraphicsDX::GetWorldMatrix();
-					orthoMatrix = _currentCamera->getOrthoViewMatrix();
-					//result = _bitmap->render(GraphicsDX::GetDeviceContext(), 10, 10);
+					viewMatrix = _currentCamera->getOrthoViewMatrix();
+					orthoMatrix = _currentCamera->getOrthoProjMatrix();
+					//result = _bitmap->render(10, 10);
 					//if (!result)
 					//{
 					//	return false;
@@ -509,6 +531,10 @@ namespace Engine
 					//{
 					//	return false;
 					//}
+
+					_debugWindow->render(10, 10);
+					result = _textureShader->render(GraphicsDX::GetDeviceContext(), _debugWindow->getIndexCount(), 
+						worldMatrix, viewMatrix, orthoMatrix, _renderTexture->getRenderTargetTexture());
 				}
 
 				// Font Rendering
