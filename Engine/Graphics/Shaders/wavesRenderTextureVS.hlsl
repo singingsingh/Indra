@@ -7,13 +7,13 @@ cbuffer MatrixBuffer
 struct VertexInputType
 {
 	float2 pos : POSITION;
-	float2 tex : TEXCOORD0;
+	float2 size : SIZE;
 };
 
 struct VertexOutputType
 {
-	float4 pos : SV_POSITION;
-	float2 tex : TEXCOORD0;
+	float4 pos : POSITION;
+	float2 size : SIZE;
 };
 
 VertexOutputType WaveParticlesRTTVertexShader(VertexInputType input)
@@ -24,7 +24,7 @@ VertexOutputType WaveParticlesRTTVertexShader(VertexInputType input)
 	output.pos = mul(output.pos, orthoViewMatrix);
 	output.pos = mul(output.pos, orthoProjMatrix);
 
-	output.tex = input.tex;
+	output.size = input.size;
 
 	return output;
 }

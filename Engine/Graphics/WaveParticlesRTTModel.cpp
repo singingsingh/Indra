@@ -54,7 +54,7 @@ namespace Engine
 
 			ID3D11DeviceContext* deviceContext = GraphicsDX::GetDeviceContext();
 			deviceContext->IASetVertexBuffers(0, 1, &_vertexBuffer, &stride, &offset);
-			deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 		}
 
 		int WaveParticlesRTTModel::getVertexCount()
@@ -84,13 +84,13 @@ namespace Engine
 			}
 
 			vertices[0].position = D3DXVECTOR2(0.0f, 0.0f);
-			vertices[0].texture = D3DXVECTOR2(0.0, 0.0);
+			vertices[0].texture = D3DXVECTOR2(0.5f, 0.5f);
 
-			vertices[1].position = D3DXVECTOR2(0.0f, 100.0f);
-			vertices[1].texture = D3DXVECTOR2(0.0, 1.0);
+			vertices[1].position = D3DXVECTOR2(0.0f, 200.0f);
+			vertices[1].texture = D3DXVECTOR2(0.5f, 0.5f);
 
-			vertices[2].position = D3DXVECTOR2(100.0f, 0.0f);
-			vertices[2].texture = D3DXVECTOR2(1.0, 0.0);
+			vertices[2].position = D3DXVECTOR2(250.0f, 0.0f);
+			vertices[2].texture = D3DXVECTOR2(0.5f, 0.5f);
 
 			 // Set up the description of the vertex buffer.
 			vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;

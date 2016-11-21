@@ -575,7 +575,7 @@ namespace Engine
 						worldMatrix, orthoViewMatrix, orthoProjMatrix, _renderTexture->getRenderTargetTexture());
 
 					_waveParticlesRTTModel->render();
-					result = _waveParticlesRTTShader->render(_waveParticlesRTTModel->getVertexCount(), orthoViewMatrix, orthoProjMatrix, _waveParticlesRTTModel->getTexture());
+					result = _waveParticlesRTTShader->render(_waveParticlesRTTModel->getVertexCount(), orthoViewMatrix, orthoProjMatrix, _renderTexture->getDepthTexture());
 				}
 
 				// Font Rendering

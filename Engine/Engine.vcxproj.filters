@@ -485,6 +485,9 @@
     <None Include="Graphics\Shaders\waterVS.hlsl">
       <Filter>Source Files\Graphics\shaders</Filter>
     </None>
+    <None Include="Graphics\Shaders\wavesRenderTextureGS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Graphics\Shaders\wavesRenderTexturePS.hlsl">

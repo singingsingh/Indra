@@ -317,6 +317,9 @@ namespace Engine
 
 			// Set the vertex and pixel shaders that will be used to render this triangle.
 			i_deviceContext->VSSetShader(_vertexShader, NULL, 0);
+			i_deviceContext->HSSetShader(nullptr, NULL, 0);
+			i_deviceContext->DSSetShader(nullptr, NULL, 0);
+			i_deviceContext->GSSetShader(nullptr, NULL, 0);
 			i_deviceContext->PSSetShader(_pixelShader, NULL, 0);
 
 			// Set the sampler state in the pixel shader.

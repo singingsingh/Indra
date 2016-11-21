@@ -231,6 +231,11 @@
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphics\Shaders\wavesRenderTextureGS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{BA598A12-D560-4E96-816C-2D443D6ED6FD}</ProjectGuid>
     <RootNamespace>Engine</RootNamespace>
