@@ -31,13 +31,15 @@ namespace Engine
 			_waterModel = nullptr;
 			_waterShader = nullptr;
 			_specularLight = nullptr;
-			_bitmap = nullptr;
+			//_bitmap = nullptr;
 			_text = nullptr;
 			_cpuUsage = nullptr;
 			_fps = nullptr;
 			_debugWindow = nullptr;
 			_renderTexture = nullptr;
 			//_tessellationAmount = 5;
+			_waveParticlesRTTModel = nullptr;
+			_waveParticlesRTTShader = nullptr;
 		}
 
 		bool Graphics::Initialize(HINSTANCE i_hInstance, const char * i_windowName, unsigned int i_windowWidth, unsigned int i_windowHeight, const WORD* i_icon)
@@ -249,20 +251,20 @@ namespace Engine
 			_specularLight->setSpecularColor(1.0f, 1.0f, 1.0f, 1.0f);
 			_specularLight->setSpecularPower(32.0f);
 
-			// Create the bitmap object.
-			_bitmap = new Bitmap;
-			if (!_bitmap)
-			{
-				return false;
-			}
+			//// Create the bitmap object.
+			//_bitmap = new Bitmap;
+			//if (!_bitmap)
+			//{
+			//	return false;
+			//}
 
-			// Initialize the bitmap object.
-			result = _bitmap->initialize(System::Window::GetWidth(), System::Window::GetHeight(), "Assets/Textures/seafloor.dds", 256, 256);
-			if (!result)
-			{
-				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the bitmap object.", "Error", MB_OK);
-				return false;
-			}
+			//// Initialize the bitmap object.
+			//result = _bitmap->initialize(System::Window::GetWidth(), System::Window::GetHeight(), "Assets/Textures/seafloor.dds", 256, 256);
+			//if (!result)
+			//{
+			//	MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the bitmap object.", "Error", MB_OK);
+			//	return false;
+			//}
 
 			//// Initialize a base view matrix with the camera for 2D user interface rendering.
 			//Camera *camera = new Camera();
@@ -294,6 +296,36 @@ namespace Engine
 			_renderTexture = new RenderTexture(256, 256);
 			_debugWindow = new DebugWindow(256, 256);
 
+			// Create the wave rtt object.
+			_waveParticlesRTTModel = new WaveParticlesRTTModel();
+			if (!_waveParticlesRTTModel)
+			{
+				return false;
+			}
+
+			// Initialize the model object.
+			result = _waveParticlesRTTModel->initialize("Assets/Textures/seafloor.dds");
+			if (!result)
+			{
+				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the model object.", "Error", MB_OK);
+				return false;
+			}
+
+			// Create the texture shader object.
+			_waveParticlesRTTShader = new WaveParticlesRTTShader;
+			if (!_waveParticlesRTTShader)
+			{
+				return false;
+			}
+
+			// Initialize the texture shader object.
+			result = _waveParticlesRTTShader->initialize();
+			if (!result)
+			{
+				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the texture shader object.", "Error", MB_OK);
+				return false;
+			}
+
 			return true;
 		}
 
@@ -306,6 +338,12 @@ namespace Engine
 
 		void Graphics::_shutdown()
 		{
+			delete _waveParticlesRTTModel;
+			_waveParticlesRTTModel = nullptr;
+
+			delete _waveParticlesRTTShader;
+			_waveParticlesRTTShader = nullptr;
+
 			delete _debugWindow;
 			_debugWindow = nullptr;
 
@@ -386,13 +424,13 @@ namespace Engine
 			//	_diffuseModel = nullptr;
 			//}
 			
-			 //Release the bitmap object.
-			if (_bitmap)
-			{
-				_bitmap->shutdown();
-				delete _bitmap;
-				_bitmap = nullptr;
-			}
+			// //Release the bitmap object.
+			//if (_bitmap)
+			//{
+			//	_bitmap->shutdown();
+			//	delete _bitmap;
+			//	_bitmap = nullptr;
+			//}
 
 			delete _specularLight;
 			_specularLight = nullptr;
@@ -459,7 +497,7 @@ namespace Engine
 
 		bool Graphics::_render( float i_rotation )
 		{
-			D3DXMATRIX viewMatrix, projectionMatrix, worldMatrix, orthoMatrix;
+			D3DXMATRIX viewMatrix, orthoViewMatrix, projectionMatrix, worldMatrix, orthoProjMatrix;
 			bool result;
 
 			_currentCamera->update();
@@ -490,10 +528,10 @@ namespace Engine
 				//	worldMatrix, viewMatrix, projectionMatrix, (float)_tessellationAmount);
 				//GraphicsDX::RenderSolidFill();
 
-				_specularModel->render();
-				result = _specularShader->render(_specularModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
-					_specularModel->getTexture(), _specularLight->getDirection(), _specularLight->getAmbientColor(), _specularLight->getDiffuseColor(), _currentCamera->getPosition(),
-					_specularLight->getSpecularColor(), _specularLight->getSpecularPower());
+				//_specularModel->render();
+				//result = _specularShader->render(_specularModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+				//	_specularModel->getTexture(), _specularLight->getDirection(), _specularLight->getAmbientColor(), _specularLight->getDiffuseColor(), _currentCamera->getPosition(),
+				//	_specularLight->getSpecularColor(), _specularLight->getSpecularPower());
 
 				//GraphicsDX::RenderWireFrame();
 				//_waterModel->render();
@@ -519,14 +557,14 @@ namespace Engine
 				// UI Rendering
 				{
 					worldMatrix = GraphicsDX::GetWorldMatrix();
-					viewMatrix = _currentCamera->getOrthoViewMatrix();
-					orthoMatrix = _currentCamera->getOrthoProjMatrix();
+					orthoViewMatrix = _currentCamera->getOrthoViewMatrix();
+					orthoProjMatrix = _currentCamera->getOrthoProjMatrix();
 					//result = _bitmap->render(10, 10);
 					//if (!result)
 					//{
 					//	return false;
 					//}
-					//result = _textureShader->render(GraphicsDX::GetDeviceContext(), _bitmap->getIndexCount(), worldMatrix, viewMatrix, orthoMatrix, _bitmap->getTexture());
+					//result = _textureShader->render(GraphicsDX::GetDeviceContext(), _bitmap->getIndexCount(), worldMatrix, orthoViewMatrix, orthoProjMatrix, _bitmap->getTexture());
 					//if (!result)
 					//{
 					//	return false;
@@ -534,7 +572,10 @@ namespace Engine
 
 					_debugWindow->render(10, 10);
 					result = _textureShader->render(GraphicsDX::GetDeviceContext(), _debugWindow->getIndexCount(), 
-						worldMatrix, viewMatrix, orthoMatrix, _renderTexture->getRenderTargetTexture());
+						worldMatrix, orthoViewMatrix, orthoProjMatrix, _renderTexture->getRenderTargetTexture());
+
+					_waveParticlesRTTModel->render();
+					result = _waveParticlesRTTShader->render(_waveParticlesRTTModel->getVertexCount(), orthoViewMatrix, orthoProjMatrix, _waveParticlesRTTModel->getTexture());
 				}
 
 				// Font Rendering

@@ -21,6 +21,8 @@
 #include <Engine\System\CPU.h>
 #include <Engine\System\FPS.h>
 #include <Engine\Graphics\DebugWindow.h>
+#include <Engine\Graphics\WaveParticlesRTTModel.h>
+#include <Engine\Graphics\WaveParticlesRTTShader.h>
 
 //#include <Engine\Graphics\TessellationShader.h>
 
@@ -58,7 +60,9 @@ namespace Engine
 			WaterModel* _waterModel;
 			WaterShader* _waterShader;
 			SpecularLight* _specularLight;
-			Bitmap* _bitmap;
+			//Bitmap* _bitmap;
+			WaveParticlesRTTModel* _waveParticlesRTTModel;
+			WaveParticlesRTTShader* _waveParticlesRTTShader;
 
 			//TessellationShader* _tessellationShader;
 

@@ -68,6 +68,8 @@
     <ClCompile Include="Graphics\TextureShader.cpp" />
     <ClCompile Include="Graphics\WaterModel.cpp" />
     <ClCompile Include="Graphics\WaterShader.cpp" />
+    <ClCompile Include="Graphics\WaveParticlesRTTModel.cpp" />
+    <ClCompile Include="Graphics\WaveParticlesRTTShader.cpp" />
     <ClCompile Include="System\CPU.cpp" />
     <ClCompile Include="System\Timer.cpp" />
     <ClCompile Include="System\FPS.cpp" />
@@ -141,6 +143,8 @@
     <ClInclude Include="Graphics\TextureShader.h" />
     <ClInclude Include="Graphics\WaterModel.h" />
     <ClInclude Include="Graphics\WaterShader.h" />
+    <ClInclude Include="Graphics\WaveParticlesRTTModel.h" />
+    <ClInclude Include="Graphics\WaveParticlesRTTShader.h" />
     <ClInclude Include="System\CPU.h" />
     <ClInclude Include="System\Timer.h" />
     <ClInclude Include="System\FPS.h" />
@@ -216,6 +220,14 @@
       <FileType>Document</FileType>
     </None>
     <None Include="Graphics\Shaders\waterVS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphics\Shaders\wavesRenderTexturePS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Graphics\Shaders\wavesRenderTextureVS.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
