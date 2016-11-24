@@ -1,9 +1,10 @@
 #ifndef __WATER_MODEL_H__
 #define __WATER_MODEL_H__
 
+#include <Engine\Graphics\RenderTexture.h>
+
 #include <d3d11.h>
 #include <d3dx10math.h>
-
 #include <stdint.h>
 
 namespace Engine
@@ -52,11 +53,13 @@ namespace Engine
 				WaveParticle* getFreePartices(uint32_t numParticles);
 				void pushToActiveList( WaveParticle*  waveParticle);
 				void recycleParticles(WaveParticle* waveParticle);
+				void renderWaveParticle();
 
 				ID3D11Buffer *_vertexBuffer, *_indexBuffer;
 				int _vertexCount, _indexCount;
 				float _gridWidth, _gridHeight;
 				uint8_t _gridRows, _gridCols;
+				RenderTexture* _renderTexture;
 
 				VertexType* _vertices;
 				unsigned long* _indices;

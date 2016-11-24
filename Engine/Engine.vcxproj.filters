@@ -205,6 +205,12 @@
     <ClCompile Include="Graphics\WaveParticlesRTTShader.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\BuildWave.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\BuildWaveShader.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\BitArray.h">
@@ -435,6 +441,12 @@
     <ClInclude Include="Graphics\WaveParticlesRTTShader.h">
       <Filter>Source Files\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\BuildWave.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\BuildWaveShader.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Graphics\Shaders\colorShaderPS.hlsl">
@@ -488,12 +500,18 @@
     <None Include="Graphics\Shaders\wavesRenderTextureGS.hlsl">
       <Filter>Source Files\Graphics\shaders</Filter>
     </None>
+    <None Include="Graphics\Shaders\wavesRenderTexturePS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
+    <None Include="Graphics\Shaders\wavesRenderTextureVS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Graphics\Shaders\wavesRenderTexturePS.hlsl">
+    <FxCompile Include="Graphics\Shaders\buildWavePS.hlsl">
       <Filter>Source Files\Graphics\shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Graphics\Shaders\wavesRenderTextureVS.hlsl">
+    <FxCompile Include="Graphics\Shaders\buildWaveVS.hlsl">
       <Filter>Source Files\Graphics\shaders</Filter>
     </FxCompile>
   </ItemGroup>

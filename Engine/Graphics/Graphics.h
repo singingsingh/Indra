@@ -23,6 +23,8 @@
 #include <Engine\Graphics\DebugWindow.h>
 #include <Engine\Graphics\WaveParticlesRTTModel.h>
 #include <Engine\Graphics\WaveParticlesRTTShader.h>
+#include <Engine\Graphics\BuildWave.h>
+#include <Engine\Graphics\BuildWaveShader.h>
 
 //#include <Engine\Graphics\TessellationShader.h>
 
@@ -63,6 +65,8 @@ namespace Engine
 			//Bitmap* _bitmap;
 			WaveParticlesRTTModel* _waveParticlesRTTModel;
 			WaveParticlesRTTShader* _waveParticlesRTTShader;
+			BuildWave* _buildWaveModel;
+			BuildWaveShader* _buildWaveShader;
 
 			//TessellationShader* _tessellationShader;
 

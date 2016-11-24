@@ -40,6 +40,9 @@ namespace Engine
 			//_tessellationAmount = 5;
 			_waveParticlesRTTModel = nullptr;
 			_waveParticlesRTTShader = nullptr;
+
+			_buildWaveModel = nullptr;
+			_buildWaveShader = nullptr;
 		}
 
 		bool Graphics::Initialize(HINSTANCE i_hInstance, const char * i_windowName, unsigned int i_windowWidth, unsigned int i_windowHeight, const WORD* i_icon)
@@ -326,6 +329,9 @@ namespace Engine
 				return false;
 			}
 
+			_buildWaveModel = new BuildWave();
+			_buildWaveShader = new BuildWaveShader();
+
 			return true;
 		}
 
@@ -338,6 +344,12 @@ namespace Engine
 
 		void Graphics::_shutdown()
 		{
+			delete _buildWaveModel;
+			_buildWaveModel = nullptr;
+
+			delete _buildWaveShader;
+			_buildWaveShader = nullptr;
+
 			delete _waveParticlesRTTModel;
 			_waveParticlesRTTModel = nullptr;
 
@@ -508,14 +520,14 @@ namespace Engine
 
 			// render to texture
 			{
-				_renderTexture->beginRenderToTexture();
+				//_renderTexture->beginRenderToTexture();
 
-				_specularModel->render();
-				result = _specularShader->render(_specularModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
-					_specularModel->getTexture(), _specularLight->getDirection(), _specularLight->getAmbientColor(), _specularLight->getDiffuseColor(), _currentCamera->getPosition(),
-					_specularLight->getSpecularColor(), _specularLight->getSpecularPower());
+				//_specularModel->render();
+				//result = _specularShader->render(_specularModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+				//	_specularModel->getTexture(), _specularLight->getDirection(), _specularLight->getAmbientColor(), _specularLight->getDiffuseColor(), _currentCamera->getPosition(),
+				//	_specularLight->getSpecularColor(), _specularLight->getSpecularPower());
 
-				_renderTexture->endRenderToTexture();
+				//_renderTexture->endRenderToTexture();
 			}
 
 			GraphicsDX::BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
@@ -548,6 +560,9 @@ namespace Engine
 				//{
 				//	Assert(false);
 				//}
+
+				_buildWaveModel->render();
+				_buildWaveShader->render(_buildWaveModel->getIndexCount());
 			}
 
 			// render 2D stuff
@@ -570,12 +585,12 @@ namespace Engine
 					//	return false;
 					//}
 
-					_debugWindow->render(10, 10);
-					result = _textureShader->render(GraphicsDX::GetDeviceContext(), _debugWindow->getIndexCount(), 
-						worldMatrix, orthoViewMatrix, orthoProjMatrix, _renderTexture->getRenderTargetTexture());
+					//_debugWindow->render(10, 10);
+					//result = _textureShader->render(GraphicsDX::GetDeviceContext(), _debugWindow->getIndexCount(), 
+					//	worldMatrix, orthoViewMatrix, orthoProjMatrix, _renderTexture->getRenderTargetTexture());
 
-					_waveParticlesRTTModel->render();
-					result = _waveParticlesRTTShader->render(_waveParticlesRTTModel->getVertexCount(), orthoViewMatrix, orthoProjMatrix, _renderTexture->getDepthTexture());
+					//_waveParticlesRTTModel->render();
+					//result = _waveParticlesRTTShader->render(_waveParticlesRTTModel->getVertexCount(), orthoViewMatrix, orthoProjMatrix, _renderTexture->getDepthTexture());
 				}
 
 				// Font Rendering

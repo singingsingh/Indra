@@ -46,6 +46,8 @@
     <ClCompile Include="Engine\Serializer.cpp" />
     <ClCompile Include="Engine\World.cpp" />
     <ClCompile Include="Graphics\Bitmap.cpp" />
+    <ClCompile Include="Graphics\BuildWave.cpp" />
+    <ClCompile Include="Graphics\BuildWaveShader.cpp" />
     <ClCompile Include="Graphics\Camera.cpp" />
     <ClCompile Include="Graphics\ColorShader.cpp" />
     <ClCompile Include="Graphics\DebugWindow.cpp" />
@@ -121,6 +123,8 @@
     <ClInclude Include="Engine\Serializer.h" />
     <ClInclude Include="Engine\World.h" />
     <ClInclude Include="Graphics\Bitmap.h" />
+    <ClInclude Include="Graphics\BuildWave.h" />
+    <ClInclude Include="Graphics\BuildWaveShader.h" />
     <ClInclude Include="Graphics\Camera.h" />
     <ClInclude Include="Graphics\ColorShader.h" />
     <ClInclude Include="Graphics\DebugWindow.h" />
@@ -233,6 +237,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Graphics\Shaders\wavesRenderTextureGS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphics\Shaders\buildWavePS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Graphics\Shaders\buildWaveVS.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

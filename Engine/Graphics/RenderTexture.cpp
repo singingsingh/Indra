@@ -12,9 +12,15 @@ namespace Engine
 			:_clearColor(1.0f, 1.0f, 1.0f, 1.0f)
 		{
 			_renderTargetTexture = nullptr;
+			_depthStencilTexture = nullptr;
+
 			_renderTargetView = nullptr;
+			_depthStencilView = nullptr;
+
 			_renderTargetSRV = nullptr;
-			
+			_depthSRV = nullptr;
+			_stencilSRV = nullptr;
+
 			D3D11_TEXTURE2D_DESC renderTargetTextureDesc;
 			D3D11_TEXTURE2D_DESC depthStencilTextureDesc;
 			HRESULT result;
@@ -108,8 +114,6 @@ namespace Engine
 			result = GraphicsDX::GetDevice()->CreateShaderResourceView(_depthStencilTexture, &shaderResourceViewDesc, &_stencilSRV);
 			MessagedAssert(SUCCEEDED(result), "Failed to create Shader resource view");
 
-			// view port
-			// Setup the viewport for rendering.
 			_viewport.Width = (float)i_width;
 			_viewport.Height = (float)i_height;
 			_viewport.MinDepth = 0.0f;
@@ -131,12 +135,6 @@ namespace Engine
 
 			_depthStencilView->Release();
 			_depthStencilView = nullptr;
-
-			_prevRenderTargetView->Release();
-			_prevRenderTargetView = nullptr;
-
-			_prevDepthStencilView->Release();
-			_prevDepthStencilView = nullptr;
 
 			_renderTargetSRV->Release();
 			_renderTargetSRV = nullptr;
@@ -171,14 +169,17 @@ namespace Engine
 		{
 			return _renderTargetSRV;
 		}
+
 		ID3D11ShaderResourceView * RenderTexture::getDepthTexture()
 		{
 			return _depthSRV;
 		}
+
 		ID3D11ShaderResourceView * RenderTexture::getStencilTexture()
 		{
 			return _stencilSRV;
 		}
+
 		void RenderTexture::setClearColor(D3DXVECTOR4 i_clearColor)
 		{
 			_clearColor = i_clearColor;

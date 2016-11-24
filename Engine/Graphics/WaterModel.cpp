@@ -10,6 +10,9 @@
 #include <Engine\Util\Assert.h>
 #include <Engine\Util\MathUtils.h>
 #include <Engine\Core\MemoryMgr.h>
+#include <Engine\Graphics\RenderTexture.h>
+#include <Engine\Graphics\BuildWave.h>
+#include <Engine\Graphics\BuildWaveShader.h>
 
 #include <math.h>
 
@@ -26,7 +29,8 @@ namespace Engine
 	{
 		WaterModel::WaterModel()
 			:_numWaveParticles(400),
-			_waveParticleMemPool(static_cast<WaveParticle*>(MemoryMgr::getInstance()->allocMemory(_numWaveParticles * sizeof(WaveParticle))))
+			_waveParticleMemPool(static_cast<WaveParticle*>(MemoryMgr::getInstance()->allocMemory(_numWaveParticles * sizeof(WaveParticle)))),
+			_renderTexture( new RenderTexture(256, 256))
 		{
 			_vertexBuffer = nullptr;
 			_indexBuffer = nullptr;
@@ -49,6 +53,7 @@ namespace Engine
 			_corner.z = halfHeight;
 
 			initializeWaveParticles();
+			renderWaveParticle();
 		}
 
 		WaterModel::~WaterModel()
@@ -230,19 +235,14 @@ namespace Engine
 
 		void WaterModel::shutdownBuffers()
 		{
-			// Release the index buffer.
-			if (_indexBuffer)
-			{
-				_indexBuffer->Release();
-				_indexBuffer = 0;
-			}
+			_indexBuffer->Release();
+			_indexBuffer = 0;
 
-			// Release the vertex buffer.
-			if (_vertexBuffer)
-			{
-				_vertexBuffer->Release();
-				_vertexBuffer = 0;
-			}
+			_vertexBuffer->Release();
+			_vertexBuffer = 0;
+
+			delete _renderTexture;
+			_renderTexture = nullptr;;
 
 			// Release the arrays now that the vertex and index buffers have been created and loaded.
 			delete[] _vertices;
@@ -475,6 +475,23 @@ namespace Engine
 
 			last->next = _freeList;
 			_freeList = i_waveParticle;
+		}
+
+		void WaterModel::renderWaveParticle()
+		{
+			BuildWave* buildWaveModel = new BuildWave();
+			BuildWaveShader* buildWaveShader = new BuildWaveShader();
+
+			_renderTexture->beginRenderToTexture();
+
+			buildWaveModel->render();
+			buildWaveShader->render(buildWaveModel->getIndexCount());
+
+			_renderTexture->endRenderToTexture();
+
+
+			delete buildWaveModel;
+			delete buildWaveShader;
 		}
 	}
 }
