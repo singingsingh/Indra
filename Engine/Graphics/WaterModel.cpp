@@ -194,7 +194,7 @@ namespace Engine
 				for (uint8_t col = 0; col <= _gridCols; col++)
 				{
 					_vertices[vertexCount].pos = D3DXVECTOR2(col*_gridGap, -row*_gridGap) + _corner;
-					_vertices[vertexCount].tex = D3DXVECTOR2(float(row)/_gridRows, float(col)/_gridCols);
+					_vertices[vertexCount].tex = D3DXVECTOR2(float(col)/_gridCols, float(row) / _gridRows);
 					vertexCount++;
 				}
 			}

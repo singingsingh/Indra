@@ -34,7 +34,7 @@ VertexOutputType WaterVertexShader(VertexInputType input)
 
 	float4 height = shaderTexture[input.tex*1024];
 
-	float4 pos = float4(input.position.x, height.y, input.position.y, 1.0);
+	float4 pos = float4(input.position.x + height.x, height.z, input.position.y + height.y, 1.0);
 
     output.position = mul(pos, worldMatrix);
     output.position = mul(output.position, viewMatrix);
