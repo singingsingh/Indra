@@ -307,7 +307,7 @@ namespace Engine
 			}
 
 			// Initialize the model object.
-			result = _waveParticlesRTTModel->initialize("Assets/Textures/seafloor.dds");
+			result = _waveParticlesRTTModel->initialize();
 			if (!result)
 			{
 				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the model object.", "Error", MB_OK);
@@ -501,7 +501,7 @@ namespace Engine
 			if (first)
 			{
 				first = false;
-				_instance->_waterModel->spawnParticles();
+				//_instance->_waterModel->spawnParticles();
 			}
 
 			return _instance->_render(rotation);
@@ -545,12 +545,13 @@ namespace Engine
 				//	_specularModel->getTexture(), _specularLight->getDirection(), _specularLight->getAmbientColor(), _specularLight->getDiffuseColor(), _currentCamera->getPosition(),
 				//	_specularLight->getSpecularColor(), _specularLight->getSpecularPower());
 
-				//GraphicsDX::RenderWireFrame();
-				//_waterModel->render();
-				//result = _waterShader->render(_waterModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,_specularLight->getDirection(),
-				//	_specularLight->getAmbientColor(), _specularLight->getDiffuseColor(), _currentCamera->getPosition(),
-				//	_specularLight->getSpecularColor(), _specularLight->getSpecularPower());
-				//GraphicsDX::RenderSolidFill();
+				
+				_waterModel->render();
+				GraphicsDX::RenderWireFrame();
+				result = _waterShader->render(_waterModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,_specularLight->getDirection(),
+					_specularLight->getAmbientColor(), _specularLight->getDiffuseColor(), _currentCamera->getPosition(),
+					_specularLight->getSpecularColor(), _specularLight->getSpecularPower(), _waterModel->getHeightField());
+				GraphicsDX::RenderSolidFill();
 
 				//_diffuseModel->render();
 				//result = _diffuseShader->render(_diffuseModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
@@ -561,8 +562,8 @@ namespace Engine
 				//	Assert(false);
 				//}
 
-				_buildWaveModel->render();
-				_buildWaveShader->render(_buildWaveModel->getIndexCount());
+				//_buildWaveModel->render();
+				//_buildWaveShader->render(_buildWaveModel->getIndexCount());
 			}
 
 			// render 2D stuff
@@ -590,7 +591,7 @@ namespace Engine
 					//	worldMatrix, orthoViewMatrix, orthoProjMatrix, _renderTexture->getRenderTargetTexture());
 
 					//_waveParticlesRTTModel->render();
-					//result = _waveParticlesRTTShader->render(_waveParticlesRTTModel->getVertexCount(), orthoViewMatrix, orthoProjMatrix, _renderTexture->getDepthTexture());
+					//result = _waveParticlesRTTShader->render(_waveParticlesRTTModel->getVertexCount(), _renderTexture->getDepthTexture());
 				}
 
 				// Font Rendering

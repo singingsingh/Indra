@@ -10,11 +10,10 @@ namespace Engine
 	{
 		WaveParticlesRTTShader::WaveParticlesRTTShader()
 		{
-			_vertexShader = 0;
-			_pixelShader = 0;
-			_layout = 0;
-			_matrixBuffer = 0;
-			_sampleState = 0;
+			_vertexShader = nullptr;
+			_pixelShader = nullptr;
+			_layout = nullptr;
+			_sampleState = nullptr;
 		}
 
 		WaveParticlesRTTShader::~WaveParticlesRTTShader()
@@ -39,18 +38,16 @@ namespace Engine
 			shutdownShader();
 		}
 
-		bool WaveParticlesRTTShader::render(int i_vertexCount, D3DXMATRIX i_viewMatrix, D3DXMATRIX i_orthoProjMatrix, ID3D11ShaderResourceView* i_texture)
+		bool WaveParticlesRTTShader::render(int i_vertexCount, ID3D11ShaderResourceView* i_texture)
 		{
 			bool result;
 
-			// Set the shader parameters that it will use for rendering.
-			result = setShaderParameters(i_viewMatrix, i_orthoProjMatrix, i_texture);
+			result = setShaderParameters(i_texture);
 			if (!result)
 			{
 				return false;
 			}
 
-			// Now render the prepared buffers with the shader.
 			renderShader(i_vertexCount);
 
 			return true;
@@ -65,7 +62,6 @@ namespace Engine
 			ID3D10Blob* pixelShaderBuffer;
 			D3D11_INPUT_ELEMENT_DESC polygonLayout[2];
 			unsigned int numElements;
-			D3D11_BUFFER_DESC matrixBufferDesc;
 			D3D11_SAMPLER_DESC samplerDesc;
 			errorMessage = 0;
 			vertexShaderBuffer = 0;
@@ -184,21 +180,6 @@ namespace Engine
 			pixelShaderBuffer->Release();
 			pixelShaderBuffer = 0;
 
-			// Setup the description of the dynamic matrix constant buffer that is in the vertex shader.
-			matrixBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-			matrixBufferDesc.ByteWidth = sizeof(MatrixBufferType);
-			matrixBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-			matrixBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-			matrixBufferDesc.MiscFlags = 0;
-			matrixBufferDesc.StructureByteStride = 0;
-
-			// Create the constant buffer pointer so we can access the vertex shader constant buffer from within this class.
-			result = device->CreateBuffer(&matrixBufferDesc, NULL, &_matrixBuffer);
-			if (FAILED(result))
-			{
-				return false;
-			}
-
 			// Create a texture sampler state description.
 			samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 			samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -231,13 +212,6 @@ namespace Engine
 			{
 				_sampleState->Release();
 				_sampleState = 0;
-			}
-
-			// Release the matrix constant buffer.
-			if (_matrixBuffer)
-			{
-				_matrixBuffer->Release();
-				_matrixBuffer = 0;
 			}
 
 			// Release the layout.
@@ -294,33 +268,10 @@ namespace Engine
 			MessageBox(System::Window::GetWindwsHandle(), "Error compiling shader.  Check shader-error.txt for message.", i_shaderFileName, MB_OK);
 		}
 
-		bool WaveParticlesRTTShader::setShaderParameters(D3DXMATRIX i_viewMatrix, D3DXMATRIX i_orthoProjMatrix, ID3D11ShaderResourceView * i_texture)
+		bool WaveParticlesRTTShader::setShaderParameters(ID3D11ShaderResourceView * i_texture)
 		{
-			HRESULT result;
-			D3D11_MAPPED_SUBRESOURCE mappedResource;
-			MatrixBufferType* dataPtr;
-			unsigned int bufferNumber;
-
-			D3DXMatrixTranspose(&i_viewMatrix, &i_viewMatrix);
-			D3DXMatrixTranspose(&i_orthoProjMatrix, &i_orthoProjMatrix);
-
 			ID3D11DeviceContext * deviceContext = GraphicsDX::GetDeviceContext();
-
-			result = deviceContext->Map(_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-			if (FAILED(result))
-			{
-				return false;
-			}
-
-			dataPtr = (MatrixBufferType*)mappedResource.pData;
-			dataPtr->viewProj = i_viewMatrix;
-			dataPtr->orthoProj = i_orthoProjMatrix;
-			deviceContext->Unmap(_matrixBuffer, 0);
-
-			bufferNumber = 0;
-			deviceContext->VSSetConstantBuffers(bufferNumber, 1, &_matrixBuffer);
 			deviceContext->PSSetShaderResources(0, 1, &i_texture);
-
 			return true;
 		}
 

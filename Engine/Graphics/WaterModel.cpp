@@ -1,9 +1,5 @@
 #include <Engine\Graphics\WaterModel.h>
 
-#include <External\Assimp\include\Importer.hpp>
-#include <External\Assimp\include\postprocess.h>
-#include <External\Assimp\include\scene.h>
-
 #include <Engine\Util\ConsolePrint.h>
 #include <Engine\Graphics\GraphicsDX.h>
 #include <Engine\System\Timer.h>
@@ -13,6 +9,7 @@
 #include <Engine\Graphics\RenderTexture.h>
 #include <Engine\Graphics\BuildWave.h>
 #include <Engine\Graphics\BuildWaveShader.h>
+#include <Engine\System\Window.h>
 
 #include <math.h>
 
@@ -30,30 +27,33 @@ namespace Engine
 		WaterModel::WaterModel()
 			:_numWaveParticles(400),
 			_waveParticleMemPool(static_cast<WaveParticle*>(MemoryMgr::getInstance()->allocMemory(_numWaveParticles * sizeof(WaveParticle)))),
-			_renderTexture( new RenderTexture(256, 256))
+			_singleWave(new RenderTexture(256, 256)),
+			_gridRows(64),
+			_gridCols(64),
+			_heightFieldRTT(new RenderTexture(1024, 1024))
 		{
+			D3DXVECTOR4 heightFieldClearColor(0.0, 0.0, 0.0, 1.0);
+			_heightFieldRTT->setClearColor(heightFieldClearColor);
+
 			_vertexBuffer = nullptr;
 			_indexBuffer = nullptr;
 			_vertices = nullptr;
 			_indices = nullptr;
-			_gridWidth = 0.1f;
-			_gridHeight = 0.1f;
-			_gridRows = 64;
-			_gridCols = 64;
+			_gridGap = 0.3f;
 			_activeParticles = 0;
 
 			_freeList = nullptr;
 			_activeList = nullptr;
 
-			_corner = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+			_corner = D3DXVECTOR2(0.0f, 0.0f);
 
-			float halfWidth = _gridCols*_gridWidth * 0.5f;
-			float halfHeight = _gridRows*_gridHeight * 0.5f;
+			float halfWidth = _gridCols*_gridGap * 0.5f;
+			float halfHeight = _gridRows*_gridGap * 0.5f;
 			_corner.x = -halfWidth;
-			_corner.z = halfHeight;
+			_corner.y = halfHeight;
 
-			initializeWaveParticles();
-			renderWaveParticle();
+			//initializeWaveParticlesList();
+			buildWaveParticle();
 		}
 
 		WaterModel::~WaterModel()
@@ -71,21 +71,50 @@ namespace Engine
 				return false;
 			}
 
+			_waveParticlesRTTModel = new WaveParticlesRTTModel();
+			if (!_waveParticlesRTTModel)
+			{
+				return false;
+			}
+
+			// Initialize the model object.
+			result = _waveParticlesRTTModel->initialize();
+			if (!result)
+			{
+				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the model object.", "Error", MB_OK);
+				return false;
+			}
+
+			// Create the texture shader object.
+			_waveParticlesRTTShader = new WaveParticlesRTTShader;
+			if (!_waveParticlesRTTShader)
+			{
+				return false;
+			}
+
+			// Initialize the texture shader object.
+			result = _waveParticlesRTTShader->initialize();
+			if (!result)
+			{
+				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the texture shader object.", "Error", MB_OK);
+				return false;
+			}
+
 			return true;
 		}
 
 		void WaterModel::shutdown()
 		{
 			shutdownBuffers();
-			releaseModel();
 			MemoryMgr::getInstance()->dellocMemory(static_cast<void*>(const_cast<WaveParticle*>(_waveParticleMemPool)));
 		}
 
 		void WaterModel::render()
 		{
 			currentTick = System::Timer::GetCurrentTick();
-			subDivideParticles();
-			updateBuffers();
+			//subDivideParticles();
+			updateHeightField();
+			//updateBuffers();
 			renderBuffers();
 		}
 
@@ -132,6 +161,11 @@ namespace Engine
 			pushToActiveList(first);
 		}
 
+		ID3D11ShaderResourceView * WaterModel::getHeightField()
+		{
+			return _heightFieldRTT->getRenderTargetTexture();;
+		}
+
 		bool WaterModel::initializeBuffers()
 		{
 			D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
@@ -154,12 +188,13 @@ namespace Engine
 			}
 
 			int vertexCount = 0;
+			
 			for (uint8_t row = 0; row <= _gridRows; row++)
 			{
 				for (uint8_t col = 0; col <= _gridCols; col++)
 				{
-					_vertices[vertexCount].position = D3DXVECTOR3(col*_gridWidth, 0.0f, -row*_gridHeight) + _corner;
-					_vertices[vertexCount].normal = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+					_vertices[vertexCount].pos = D3DXVECTOR2(col*_gridGap, -row*_gridGap) + _corner;
+					_vertices[vertexCount].tex = D3DXVECTOR2(float(row)/_gridRows, float(col)/_gridCols);
 					vertexCount++;
 				}
 			}
@@ -189,28 +224,24 @@ namespace Engine
 				}
 			}
 
-			// Set up the description of the static vertex buffer.
-			vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+			vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 			vertexBufferDesc.ByteWidth = sizeof(VertexType) * _vertexCount;
 			vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			vertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+			vertexBufferDesc.CPUAccessFlags = 0;
 			vertexBufferDesc.MiscFlags = 0;
 			vertexBufferDesc.StructureByteStride = 0;
 
-			// Give the subresource structure a pointer to the vertex data.
 			vertexData.pSysMem = _vertices;
 			vertexData.SysMemPitch = 0;
 			vertexData.SysMemSlicePitch = 0;
 
 			ID3D11Device* device = GraphicsDX::GetDevice();
-			// Now create the vertex buffer.
 			result = device->CreateBuffer(&vertexBufferDesc, &vertexData, &_vertexBuffer);
 			if (FAILED(result))
 			{
 				return false;
 			}
 
-			// Set up the description of the static index buffer.
 			indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 			indexBufferDesc.ByteWidth = sizeof(unsigned long) * _indexCount;
 			indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
@@ -218,40 +249,44 @@ namespace Engine
 			indexBufferDesc.MiscFlags = 0;
 			indexBufferDesc.StructureByteStride = 0;
 
-			// Give the subresource structure a pointer to the index data.
 			indexData.pSysMem = _indices;
 			indexData.SysMemPitch = 0;
 			indexData.SysMemSlicePitch = 0;
 
-			// Create the index buffer.
 			result = device->CreateBuffer(&indexBufferDesc, &indexData, &_indexBuffer);
 			if (FAILED(result))
 			{
 				return false;
 			}
 
+			delete[] _vertices;
+			_vertices = nullptr;
+
+			delete[] _indices;
+			_indices = nullptr;
+
 			return true;
 		}
 
 		void WaterModel::shutdownBuffers()
 		{
+			delete _waveParticlesRTTModel;
+			_waveParticlesRTTModel = nullptr;
+
+			delete _waveParticlesRTTShader;
+			_waveParticlesRTTShader = nullptr;
+
 			_indexBuffer->Release();
 			_indexBuffer = 0;
 
 			_vertexBuffer->Release();
 			_vertexBuffer = 0;
 
-			delete _renderTexture;
-			_renderTexture = nullptr;;
+			delete _singleWave;
+			_singleWave = nullptr;
 
-			// Release the arrays now that the vertex and index buffers have been created and loaded.
-			delete[] _vertices;
-			_vertices = 0;
-
-			delete[] _indices;
-			_indices = 0;
-
-			return;
+			delete _heightFieldRTT;
+			_heightFieldRTT = nullptr;
 		}
 
 		void WaterModel::renderBuffers()
@@ -266,10 +301,6 @@ namespace Engine
 			deviceContext->IASetVertexBuffers(0, 1, &_vertexBuffer, &stride, &offset);
 			deviceContext->IASetIndexBuffer(_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 			deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		}
-
-		void WaterModel::releaseModel()
-		{
 		}
 
 		void WaterModel::subDivideParticles()
@@ -327,59 +358,69 @@ namespace Engine
 
 		void WaterModel::updateBuffers()
 		{
-			WaveParticle* currentParticle = _activeList;
-			bool first = true;
+			//WaveParticle* currentParticle = _activeList;
+			//bool first = true;
 
-			while (currentParticle)
-			{
-				double elapsedTime = System::Timer::GetElapsedTimeMilliSec(currentParticle->spawnTick, currentTick, false);
-				D3DXVECTOR3 wavePos = currentParticle->origin + (currentParticle->direction * currentParticle->velocity * (float)elapsedTime);
-				int vertexCount = 0;
-				float invRadius = 1.0f / currentParticle->radius;
+			//while (currentParticle)
+			//{
+			//	double elapsedTime = System::Timer::GetElapsedTimeMilliSec(currentParticle->spawnTick, currentTick, false);
+			//	D3DXVECTOR3 wavePos = currentParticle->origin + (currentParticle->direction * currentParticle->velocity * (float)elapsedTime);
+			//	int vertexCount = 0;
+			//	float invRadius = 1.0f / currentParticle->radius;
 
-				for (uint8_t row = 0; row <= _gridRows; row++)
-				{
-					for (uint8_t col = 0; col <= _gridCols; col++)
-					{
-						if (first)
-						{
-							_vertices[vertexCount].position = D3DXVECTOR3(col*_gridWidth, 0.0f, -row*_gridHeight) + _corner;
-						}
+			//	for (uint8_t row = 0; row <= _gridRows; row++)
+			//	{
+			//		for (uint8_t col = 0; col <= _gridCols; col++)
+			//		{
+			//			if (first)
+			//			{
+			//				_vertices[vertexCount].position = D3DXVECTOR3(col*_gridGap, 0.0f, -row*_gridGap) + _corner;
+			//			}
 
-						float dist = sqrt(((_vertices[vertexCount].position.x - wavePos.x) * (_vertices[vertexCount].position.x - wavePos.x))
-							+ ((_vertices[vertexCount].position.z - wavePos.z) * (_vertices[vertexCount].position.z - wavePos.z)));
+			//			float dist = sqrt(((_vertices[vertexCount].position.x - wavePos.x) * (_vertices[vertexCount].position.x - wavePos.x))
+			//				+ ((_vertices[vertexCount].position.z - wavePos.z) * (_vertices[vertexCount].position.z - wavePos.z)));
 
-						float rectFunc = dist * invRadius;
-						if (rectFunc <= 1.0f)
-						{
-							_vertices[vertexCount].position.y += currentParticle->amplitude * 0.5f * (cos(MathUtils::PI * invRadius * dist) + 1.0f);
-						}
+			//			float rectFunc = dist * invRadius;
+			//			if (rectFunc <= 1.0f)
+			//			{
+			//				_vertices[vertexCount].position.y += currentParticle->amplitude * 0.5f * (cos(MathUtils::PI * invRadius * dist) + 1.0f);
+			//			}
 
-						vertexCount++;
-					}
-				}
+			//			vertexCount++;
+			//		}
+			//	}
 
-				first = false;
-				currentParticle = currentParticle->next;
-			}
+			//	first = false;
+			//	currentParticle = currentParticle->next;
+			//}
 
-			// update the buffers
+			//// update the buffers
 
-			ID3D11DeviceContext* deviceContext = GraphicsDX::GetDeviceContext();
-			HRESULT result;
-			D3D11_MAPPED_SUBRESOURCE mappedResource;
+			//ID3D11DeviceContext* deviceContext = GraphicsDX::GetDeviceContext();
+			//HRESULT result;
+			//D3D11_MAPPED_SUBRESOURCE mappedResource;
 
-			result = deviceContext->Map(_vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-			if (FAILED(result))
-			{
-				MessagedAssert(false, "Not able to map vertex buffer in water model.");
-			}
+			//result = deviceContext->Map(_vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+			//if (FAILED(result))
+			//{
+			//	MessagedAssert(false, "Not able to map vertex buffer in water model.");
+			//}
 
-			memcpy(mappedResource.pData, _vertices, sizeof(VertexType)*_vertexCount);
-			deviceContext->Unmap(_vertexBuffer, 0);
+			//memcpy(mappedResource.pData, _vertices, sizeof(VertexType)*_vertexCount);
+			//deviceContext->Unmap(_vertexBuffer, 0);
 		}
 
-		void WaterModel::initializeWaveParticles()
+		void WaterModel::updateHeightField()
+		{
+			_heightFieldRTT->beginRenderToTexture();
+			
+			_waveParticlesRTTModel->render();
+			_waveParticlesRTTShader->render(_waveParticlesRTTModel->getVertexCount(), _singleWave->getRenderTargetTexture());
+
+			_heightFieldRTT->endRenderToTexture();
+		}
+
+		void WaterModel::initializeWaveParticlesList()
 		{
 			_freeList = const_cast<WaveParticle*>(_waveParticleMemPool);
 			WaveParticle* currentPtr = _freeList;
@@ -477,17 +518,17 @@ namespace Engine
 			_freeList = i_waveParticle;
 		}
 
-		void WaterModel::renderWaveParticle()
+		void WaterModel::buildWaveParticle()
 		{
 			BuildWave* buildWaveModel = new BuildWave();
 			BuildWaveShader* buildWaveShader = new BuildWaveShader();
 
-			_renderTexture->beginRenderToTexture();
+			_singleWave->beginRenderToTexture();
 
 			buildWaveModel->render();
 			buildWaveShader->render(buildWaveModel->getIndexCount());
 
-			_renderTexture->endRenderToTexture();
+			_singleWave->endRenderToTexture();
 
 
 			delete buildWaveModel;

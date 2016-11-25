@@ -20,11 +20,11 @@ namespace Engine
 			HRESULT result;
 
 			ID3D11Device* device = GraphicsDX::GetDevice();
-			uint8_t _vertexCount = 4;
+			uint8_t vertexCount = 4;
 
 			_indexCount = 6;
 
-			vertices = new VertexType[_vertexCount];
+			vertices = new VertexType[vertexCount];
 			if (!vertices)
 			{
 				MessagedAssert(false, "Cannot allocate memory for Vertex data");
@@ -50,7 +50,7 @@ namespace Engine
 			indices[5] = 2;
 
 			vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-			vertexBufferDesc.ByteWidth = sizeof(VertexType) * _vertexCount;
+			vertexBufferDesc.ByteWidth = sizeof(VertexType) * vertexCount;
 			vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 			vertexBufferDesc.CPUAccessFlags = 0;
 			vertexBufferDesc.MiscFlags = 0;

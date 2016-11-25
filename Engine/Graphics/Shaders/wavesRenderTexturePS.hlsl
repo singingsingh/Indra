@@ -10,6 +10,6 @@ struct PixelInputType
 float4 WaveParticlesRTTPixelShader(PixelInputType input) : SV_TARGET
 {
 	float4 output;
-	output.rgba = shaderTexture.Sample(SampleType, input.tex).rrra;
+	output.rgba = shaderTexture.Sample(SampleType, input.tex);
 	return output;
 }

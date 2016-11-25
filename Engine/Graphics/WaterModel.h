@@ -2,6 +2,8 @@
 #define __WATER_MODEL_H__
 
 #include <Engine\Graphics\RenderTexture.h>
+#include <Engine\Graphics\WaveParticlesRTTModel.h>
+#include <Engine\Graphics\WaveParticlesRTTShader.h>
 
 #include <d3d11.h>
 #include <d3dx10math.h>
@@ -22,12 +24,13 @@ namespace Engine
 				void render();
 				int getIndexCount();
 				void spawnParticles();
+				ID3D11ShaderResourceView* getHeightField();
 
 			private:
 				struct VertexType
 				{
-					D3DXVECTOR3 position;
-					D3DXVECTOR3 normal;
+					D3DXVECTOR2 pos;
+					D3DXVECTOR2 tex;
 				};
 
 				struct WaveParticle
@@ -46,28 +49,33 @@ namespace Engine
 				bool initializeBuffers();
 				void shutdownBuffers();
 				void renderBuffers();
-				void releaseModel();
 				void subDivideParticles();
 				void updateBuffers();
-				void initializeWaveParticles();
+				void updateHeightField();
+				void initializeWaveParticlesList();
 				WaveParticle* getFreePartices(uint32_t numParticles);
 				void pushToActiveList( WaveParticle*  waveParticle);
 				void recycleParticles(WaveParticle* waveParticle);
-				void renderWaveParticle();
+				void buildWaveParticle();
 
 				ID3D11Buffer *_vertexBuffer, *_indexBuffer;
 				int _vertexCount, _indexCount;
-				float _gridWidth, _gridHeight;
 				uint8_t _gridRows, _gridCols;
-				RenderTexture* _renderTexture;
+				
+				const WaveParticle* _waveParticleMemPool;
+				RenderTexture* _singleWave;
+				float _gridGap;
+				RenderTexture* _heightFieldRTT;
 
 				VertexType* _vertices;
 				unsigned long* _indices;
 
 				uint32_t _numWaveParticles, _activeParticles;
-				const WaveParticle* _waveParticleMemPool;
 				WaveParticle *_freeList, *_activeList;
-				D3DXVECTOR3 _corner;
+				D3DXVECTOR2 _corner;
+
+				WaveParticlesRTTModel* _waveParticlesRTTModel;
+				WaveParticlesRTTShader* _waveParticlesRTTShader;
 		};
 	}	// Graphics
 }	// Engine

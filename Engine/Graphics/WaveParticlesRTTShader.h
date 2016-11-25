@@ -18,7 +18,7 @@ namespace Engine
 
 				bool initialize();
 				void shutdown();
-				bool render(int vertexCount, D3DXMATRIX viewMatrix, D3DXMATRIX projMatrix, ID3D11ShaderResourceView* texture);
+				bool render(int vertexCount, ID3D11ShaderResourceView* texture);
 
 			private:
 
@@ -32,17 +32,16 @@ namespace Engine
 				void shutdownShader();
 				void outputShaderErrorMessage(ID3D10Blob*, const char * shaderFileName);
 
-				bool setShaderParameters(D3DXMATRIX viewMatrix, D3DXMATRIX projMatrix, ID3D11ShaderResourceView* texture);
+				bool setShaderParameters(ID3D11ShaderResourceView* texture);
 				void renderShader(int vertexCount);
 
 				ID3D11VertexShader* _vertexShader;
 				ID3D11GeometryShader* _geometryShader;
 				ID3D11PixelShader* _pixelShader;
 				ID3D11InputLayout* _layout;
-				ID3D11Buffer* _matrixBuffer;
 				ID3D11SamplerState* _sampleState;
 		};
-	}
-}
+	}	// namespace Graphics
+}	// namespace Engine
 
 #endif	//__WAVE_PARTICLE_RTT_SHADER_H__

@@ -15,7 +15,7 @@ cbuffer WaterBuffer
 struct PixelInputType
 {
     float4 position : SV_POSITION;
-    float3 normal : NORMAL;
+    float3 tex : TEXCOORD;
     float3 viewDirection : TEXCOORD1;
 };
 
@@ -27,38 +27,38 @@ float4 WaterPixelShader(PixelInputType input) : SV_TARGET
     float3 reflection;
     float4 specular;
 
-	// Set the default output color to the ambient light value for all pixels.
-    color = ambientColor;
+	//// Set the default output color to the ambient light value for all pixels.
+ //   color = ambientColor;
 
-	// Initialize the specular color.
-    specular = float4(0.0f, 0.0f, 0.0f, 0.0f);
+	//// Initialize the specular color.
+ //   specular = float4(0.0f, 0.0f, 0.0f, 0.0f);
 	
-	// Invert the light direction for calculations.
-    lightDir = normalize(lightDirection);
+	//// Invert the light direction for calculations.
+ //   lightDir = normalize(lightDirection);
 
-    // Calculate the amount of light on this pixel.
-    lightIntensity = saturate(dot(input.normal, lightDir));
-	
-	if(lightIntensity > 0.0f)
-    {
-        // Determine the final diffuse color based on the diffuse color and the amount of light intensity.
-        color += (diffuseColor * lightIntensity);
-				
-        // Saturate the ambient and diffuse color.
-        color = saturate(color);
-		
-        // Calculate the reflection vector based on the light intensity, normal vector, and light direction.
-        reflection = normalize(2 * lightIntensity * input.normal - lightDir);
+ //   // Calculate the amount of light on this pixel.
+ //   lightIntensity = saturate(dot(input.normal, lightDir));
+	//
+	//if(lightIntensity > 0.0f)
+ //   {
+ //       // Determine the final diffuse color based on the diffuse color and the amount of light intensity.
+ //       color += (diffuseColor * lightIntensity);
+	//			
+ //       // Saturate the ambient and diffuse color.
+ //       color = saturate(color);
+	//	
+ //       // Calculate the reflection vector based on the light intensity, normal vector, and light direction.
+ //       reflection = normalize(2 * lightIntensity * input.normal - lightDir);
 
-        // Determine the amount of specular light based on the reflection vector, viewing direction, and specular power.
-        specular = pow(saturate(dot(reflection, input.viewDirection)), specularPower);		
-    }
+ //       // Determine the amount of specular light based on the reflection vector, viewing direction, and specular power.
+ //       specular = pow(saturate(dot(reflection, input.viewDirection)), specularPower);		
+ //   }
 
-    // Multiply the texture pixel and the input color to get the textured result.
-    color = color * waterColor;
+    //// Multiply the texture pixel and the input color to get the textured result.
+    //color = color * waterColor;
 
-    // Add the specular component last to the output color.
-    color = saturate(color + specular);
+    //// Add the specular component last to the output color.
+    //color = saturate(color + specular);
 
-    return color;
+    return float4(1.0, 1.0, 1.0, 1.0);
 }

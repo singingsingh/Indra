@@ -10,26 +10,17 @@ namespace Engine
 		WaveParticlesRTTModel::WaveParticlesRTTModel()
 		{
 			_vertexBuffer = nullptr;
-			_texture = nullptr;
 		}
 
 		WaveParticlesRTTModel::~WaveParticlesRTTModel()
 		{
 		}
 
-		bool WaveParticlesRTTModel::initialize(const char * i_textureFileName)
+		bool WaveParticlesRTTModel::initialize()
 		{
 			bool result;
 
-			// Initialize the vertex and index buffer that hold the geometry for the triangle.
 			result = initializeBuffers();
-			if (!result)
-			{
-				return false;
-			}
-
-			// Load the texture for this model.
-			result = loadTexture(i_textureFileName);
 			if (!result)
 			{
 				return false;
@@ -40,7 +31,6 @@ namespace Engine
 
 		void WaveParticlesRTTModel::shutdown()
 		{
-			//releaseTexture();
 			shutdownBuffers();
 		}
 
@@ -62,11 +52,6 @@ namespace Engine
 			return _vertexCount;
 		}
 
-		ID3D11ShaderResourceView * WaveParticlesRTTModel::getTexture()
-		{
-			return _texture->getTexture();;
-		}
-
 		bool WaveParticlesRTTModel::initializeBuffers()
 		{
 			VertexType* vertices;
@@ -84,13 +69,13 @@ namespace Engine
 			}
 
 			vertices[0].position = D3DXVECTOR2(0.0f, 0.0f);
-			vertices[0].texture = D3DXVECTOR2(0.5f, 0.5f);
+			vertices[0].size = D3DXVECTOR2(0.5f, 0.5f);
 
-			vertices[1].position = D3DXVECTOR2(0.0f, 200.0f);
-			vertices[1].texture = D3DXVECTOR2(0.5f, 0.5f);
+			vertices[1].position = D3DXVECTOR2(0.0f, 0.6f);
+			vertices[1].size = D3DXVECTOR2(0.5f, 0.5f);
 
-			vertices[2].position = D3DXVECTOR2(250.0f, 0.0f);
-			vertices[2].texture = D3DXVECTOR2(0.5f, 0.5f);
+			vertices[2].position = D3DXVECTOR2(0.6f, 0.0f);
+			vertices[2].size = D3DXVECTOR2(0.5f, 0.5f);
 
 			 // Set up the description of the vertex buffer.
 			vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -121,39 +106,8 @@ namespace Engine
 
 		void WaveParticlesRTTModel::shutdownBuffers()
 		{
-			if (_vertexBuffer)
-			{
-				_vertexBuffer->Release();
-				_vertexBuffer = 0;
-			}
-		}
-
-		bool WaveParticlesRTTModel::loadTexture(const char * i_textureFileName)
-		{
-			bool result;
-
-			// Create the texture object.
-			_texture = new Texture;
-			if (!_texture)
-			{
-				return false;
-			}
-
-			// Initialize the texture object.
-			result = _texture->initialize(i_textureFileName);
-			if (!result)
-			{
-				return false;
-			}
-
-			return true;
-		}
-
-		void WaveParticlesRTTModel::releaseTexture()
-		{
-			_texture->shutdown();
-			delete _texture;
-			_texture = nullptr;
+			_vertexBuffer->Release();
+			_vertexBuffer = 0;
 		}
 	}	// namespace Graphics
 }	// namespace Engine
