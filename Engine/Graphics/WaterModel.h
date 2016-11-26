@@ -76,6 +76,9 @@ namespace Engine
 
 				WaveParticlesRTTModel* _waveParticlesRTTModel;
 				WaveParticlesRTTShader* _waveParticlesRTTShader;
+
+				ID3D11BlendState *_additiveBlending, *_prevBlendingState;
+				ID3D11DepthStencilState* _disableDepthStencil, *_prevDepthStencil;
 		};
 	}	// Graphics
 }	// Engine

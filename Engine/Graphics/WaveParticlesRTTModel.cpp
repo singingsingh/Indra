@@ -74,7 +74,7 @@ namespace Engine
 			vertices[1].position = D3DXVECTOR2(0.0f, 0.6f);
 			vertices[1].size = D3DXVECTOR2(0.5f, 0.5f);
 
-			vertices[2].position = D3DXVECTOR2(0.6f, 0.0f);
+			vertices[2].position = D3DXVECTOR2(0.1f, 0.0f);
 			vertices[2].size = D3DXVECTOR2(0.5f, 0.5f);
 
 			 // Set up the description of the vertex buffer.

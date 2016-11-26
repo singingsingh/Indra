@@ -100,6 +100,51 @@ namespace Engine
 				return false;
 			}
 
+			D3D11_BLEND_DESC blendStateDescription;
+			ZeroMemory(&blendStateDescription, sizeof(D3D11_BLEND_DESC));
+			blendStateDescription.AlphaToCoverageEnable = FALSE;
+			blendStateDescription.IndependentBlendEnable = FALSE;
+			blendStateDescription.RenderTarget[0].BlendEnable = TRUE;
+			blendStateDescription.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+			blendStateDescription.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+			blendStateDescription.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+			blendStateDescription.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+			blendStateDescription.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+			blendStateDescription.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+			blendStateDescription.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+			// Create the blend state using the description.
+			ID3D11Device* device = GraphicsDX::GetDevice();
+			HRESULT result1 = device->CreateBlendState(&blendStateDescription, &_additiveBlending);
+			if (FAILED(result1))
+			{
+				return false;
+			}
+
+			D3D11_DEPTH_STENCIL_DESC depthDisabledStencilDesc;
+			ZeroMemory(&depthDisabledStencilDesc, sizeof(depthDisabledStencilDesc));
+
+			depthDisabledStencilDesc.DepthEnable = false;
+			depthDisabledStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+			depthDisabledStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+			depthDisabledStencilDesc.StencilEnable = false;
+			depthDisabledStencilDesc.StencilReadMask = 0xFF;
+			depthDisabledStencilDesc.StencilWriteMask = 0x0;
+			depthDisabledStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+			depthDisabledStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+			depthDisabledStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+			depthDisabledStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+			depthDisabledStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+			depthDisabledStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+			depthDisabledStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+			depthDisabledStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+			result1 = device->CreateDepthStencilState(&depthDisabledStencilDesc, &_disableDepthStencil);
+			if (FAILED(result1))
+			{
+				return false;
+			}
+
 			return true;
 		}
 
@@ -412,10 +457,24 @@ namespace Engine
 
 		void WaterModel::updateHeightField()
 		{
+			float blendFactor[4];
+			UINT blendSampleMask, stencilRefValue;
+
 			_heightFieldRTT->beginRenderToTexture();
+
+			ID3D11DeviceContext* deviceContext = GraphicsDX::GetDeviceContext();
+			
+			deviceContext->OMGetBlendState(&_prevBlendingState, blendFactor, &blendSampleMask);
+			deviceContext->OMSetBlendState(_additiveBlending, nullptr, 0xffffffff);
+
+			deviceContext->OMGetDepthStencilState(&_prevDepthStencil, &stencilRefValue);
+			deviceContext->OMSetDepthStencilState(_disableDepthStencil, 1);
 			
 			_waveParticlesRTTModel->render();
 			_waveParticlesRTTShader->render(_waveParticlesRTTModel->getVertexCount(), _singleWave->getRenderTargetTexture());
+
+			deviceContext->OMSetBlendState(_prevBlendingState, blendFactor, blendSampleMask);
+			deviceContext->OMSetDepthStencilState(_prevDepthStencil, stencilRefValue);
 
 			_heightFieldRTT->endRenderToTexture();
 		}
