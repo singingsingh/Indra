@@ -1,21 +1,29 @@
+//cbuffer LightBuffer
+//{
+//	double currentTick;
+//};
+
 struct VertexInputType
 {
-	float2 pos : POSITION;
-	float2 size : SIZE;
+	float4 data : DATA;	// x - SPAWNTICK, y - AMPLITUDE, z - RADIUS, w - VELOCITY
+	float2 origin : ORIGIN;
+	float2 direction : DIRECTION;
 };
 
 struct VertexOutputType
 {
-	float4 pos : POSITION;
-	float2 size : SIZE;
+	float2 pos : POSITION;
+	float amplitude : AMPLITUDE;
+	float radius : RADIUS;
 };
 
 VertexOutputType WaveParticlesRTTVertexShader(VertexInputType input)
 {
 	VertexOutputType output;
 
-	output.pos = float4(input.pos, 0.0, 1.0);
-	output.size = input.size;
+	output.pos = input.origin;
+	output.amplitude = input.data.y;
+	output.radius = input.data.z;
 
 	return output;
 }

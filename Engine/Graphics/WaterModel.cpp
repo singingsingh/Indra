@@ -166,6 +166,11 @@ namespace Engine
 			return _heightFieldRTT->getRenderTargetTexture();;
 		}
 
+		void WaterModel::spawnParticles()
+		{
+			_waveParticlesRTTModel->spawnParticles();
+		}
+
 		bool WaterModel::initializeBuffers()
 		{
 			D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;

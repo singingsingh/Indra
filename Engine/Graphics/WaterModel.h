@@ -25,6 +25,7 @@ namespace Engine
 
 				int getIndexCount();
 				ID3D11ShaderResourceView* getHeightField();
+				void spawnParticles();
 
 			private:
 				struct VertexType

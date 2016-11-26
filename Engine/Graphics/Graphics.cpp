@@ -501,7 +501,7 @@ namespace Engine
 			if (first)
 			{
 				first = false;
-				//_instance->_waterModel->spawnParticles();
+				_instance->_waterModel->spawnParticles();
 			}
 
 			return _instance->_render(rotation);

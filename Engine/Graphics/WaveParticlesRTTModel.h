@@ -25,8 +25,8 @@ namespace Engine
 
 				struct WaveParticle
 				{
-					D3DXVECTOR3 origin;
-					D3DXVECTOR3 direction;
+					D3DXVECTOR2 origin;
+					D3DXVECTOR2 direction;
 					uint64_t spawnTick;
 					uint64_t actionTick;
 					float angle;
@@ -38,11 +38,12 @@ namespace Engine
 
 				struct VertexType
 				{
-					D3DXVECTOR2 position;
-					D3DXVECTOR2 size;
+					D3DXVECTOR4 data;
+					D3DXVECTOR2 origin;
+					D3DXVECTOR2 direction;
 				};
 
-				bool initializeBuffers();
+				bool createBuffers();
 				void initializeWaveParticlesList();
 
 				void subDivideParticles();
@@ -53,11 +54,11 @@ namespace Engine
 				void recycleParticles(WaveParticle* waveParticle);
 
 				uint32_t _numParticles, _activeParticles;
-				const WaveParticle* _waveParticleMemPool;
+				WaveParticle* const _waveParticleMemPool;
 				WaveParticle *_freeList, *_activeList;
 
 				ID3D11Buffer *_vertexBuffer;
-				int _vertexCount;
+				VertexType* const _vertices;
 
 				uint64_t _currentTick;
 		};

@@ -12,29 +12,30 @@ namespace Engine
 	{
 
 		WaveParticlesRTTModel::WaveParticlesRTTModel()
-			:_numParticles(400),
-			_waveParticleMemPool(static_cast<WaveParticle*>(MemoryMgr::getInstance()->allocMemory(_numParticles * sizeof(WaveParticle))))
-			
+			:_numParticles(4),
+			_waveParticleMemPool(static_cast<WaveParticle*>(MemoryMgr::getInstance()->allocMemory(_numParticles * sizeof(WaveParticle)))),
+			_vertices (static_cast<VertexType*>(MemoryMgr::getInstance()->allocMemory(_numParticles*sizeof(VertexType))))
 		{
 			_vertexBuffer = nullptr;
 			_activeParticles = 0;
 
 			_freeList = nullptr;
 			_activeList = nullptr;
-
-			//initializeWaveParticlesList();
 		}
 
 		WaveParticlesRTTModel::~WaveParticlesRTTModel()
 		{
 			MemoryMgr::getInstance()->dellocMemory(static_cast<void*>(const_cast<WaveParticle*>(_waveParticleMemPool)));
+			MemoryMgr::getInstance()->dellocMemory(static_cast<void*>(const_cast<VertexType*>(_vertices)));
 		}
 
 		bool WaveParticlesRTTModel::initialize()
 		{
 			bool result;
 
-			result = initializeBuffers();
+			initializeWaveParticlesList();
+
+			result = createBuffers();
 			if (!result)
 			{
 				return false;
@@ -54,7 +55,6 @@ namespace Engine
 			_currentTick = System::Timer::GetCurrentTick();
 
 			//subDivideParticles();
-			//updateBuffers();
 
 			unsigned int stride;
 			unsigned int offset;
@@ -69,7 +69,7 @@ namespace Engine
 
 		int WaveParticlesRTTModel::getVertexCount()
 		{
-			return _vertexCount;
+			return _activeParticles;
 		}
 
 		void WaveParticlesRTTModel::spawnParticles()
@@ -77,45 +77,50 @@ namespace Engine
 			WaveParticle* newParticles = getFreePartices(3);
 			WaveParticle* first = newParticles;
 
-			newParticles->origin = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-			newParticles->direction = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
+			newParticles->origin = D3DXVECTOR2(0.0f, 0.0f);
+			newParticles->direction = D3DXVECTOR2(0.0f, 1.0f);
 			newParticles->velocity = 0.002f;
-			newParticles->amplitude = 0.2f;
-			newParticles->radius = 0.5f;
+			newParticles->amplitude = 1.5f;
+			newParticles->radius = 0.2f;
 			newParticles->angle = 30.0f;
 			newParticles->spawnTick = System::Timer::GetCurrentTick();
 			newParticles->actionTick = newParticles->spawnTick + System::Timer::ConvertMilliSecToTick(newParticles->radius / (4.0 * sin((newParticles->angle / 2.0)*MathUtils::DegToRad) * newParticles->velocity));
 
 			newParticles = newParticles->next;
-			newParticles->origin = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-			newParticles->direction = D3DXVECTOR3((float)sin(30.0f*MathUtils::DegToRad), 0.0f, (float)cos(30.0f*MathUtils::DegToRad));
+			newParticles->origin = D3DXVECTOR2(0.6f, 0.0f);
+			newParticles->direction = D3DXVECTOR2((float)sin(30.0f*MathUtils::DegToRad), (float)cos(30.0f*MathUtils::DegToRad));
 			newParticles->velocity = 0.002f;
-			newParticles->amplitude = 0.2f;
-			newParticles->radius = 0.5f;
+			newParticles->amplitude = 1.5f;
+			newParticles->radius = 0.2f;
 			newParticles->angle = 30.0f;
 			newParticles->spawnTick = System::Timer::GetCurrentTick();
 			newParticles->actionTick = newParticles->spawnTick + System::Timer::ConvertMilliSecToTick(newParticles->radius / (4.0 * sin((newParticles->angle / 2.0)*MathUtils::DegToRad) * newParticles->velocity));
 
 			newParticles = newParticles->next;
-			newParticles->origin = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-			newParticles->direction = D3DXVECTOR3((float)sin(-30.0f*MathUtils::DegToRad), 0.0f, (float)cos(-30.0f*MathUtils::DegToRad));
+			newParticles->origin = D3DXVECTOR2(0.0f, 0.6f);
+			newParticles->direction = D3DXVECTOR2((float)sin(-30.0f*MathUtils::DegToRad), (float)cos(-30.0f*MathUtils::DegToRad));
 			newParticles->velocity = 0.002f;
-			newParticles->amplitude = 0.2f;
-			newParticles->radius = 0.5f;
+			newParticles->amplitude = 1.5f;
+			newParticles->radius = 0.2f;
 			newParticles->angle = 30.0f;
 			newParticles->spawnTick = System::Timer::GetCurrentTick();
 			newParticles->actionTick = newParticles->spawnTick + System::Timer::ConvertMilliSecToTick(newParticles->radius / (4.0 * sin((newParticles->angle / 2.0)*MathUtils::DegToRad) * newParticles->velocity));
 			newParticles->next = nullptr;
 
 			pushToActiveList(first);
+
+			updateBuffers();
 		}
 
 		void WaveParticlesRTTModel::subDivideParticles()
 		{
 			WaveParticle* currentParticle = _activeList;
 
+			bool particlesSubdiveded = false;
+
 			while (currentParticle && currentParticle->actionTick < _currentTick)
 			{
+				particlesSubdiveded = true;
 				_activeList = currentParticle->next;
 
 				WaveParticle* newParticles = getFreePartices(2);
@@ -140,11 +145,11 @@ namespace Engine
 					temp = temp->next;
 				}
 
-				D3DXVECTOR3 direction = currentParticle->direction;
-				D3DXVECTOR3 newDirection = direction;
+				D3DXVECTOR2 direction = currentParticle->direction;
+				D3DXVECTOR2 newDirection = direction;
 				float angle = currentParticle->angle*MathUtils::DegToRad;
-				newDirection.x = direction.x * (float)cos(angle) - direction.z * (float)sin(angle);
-				newDirection.z = direction.x * (float)sin(angle) + direction.z * (float)cos(angle);
+				newDirection.x = direction.x * (float)cos(angle) - direction.y * (float)sin(angle);
+				newDirection.y = direction.x * (float)sin(angle) + direction.y * (float)cos(angle);
 				temp = newParticles;
 				temp->direction = newDirection;
 
@@ -153,13 +158,18 @@ namespace Engine
 				direction = currentParticle->direction;
 				newDirection = currentParticle->direction;
 				angle = -currentParticle->angle*MathUtils::DegToRad;
-				newDirection.x = direction.x * (float)cos(angle) - direction.z * (float)sin(angle);
-				newDirection.z = direction.x * (float)sin(angle) + direction.z * (float)cos(angle);
+				newDirection.x = direction.x * (float)cos(angle) - direction.y * (float)sin(angle);
+				newDirection.y = direction.x * (float)sin(angle) + direction.y * (float)cos(angle);
 				temp->direction = newDirection;
 
 				pushToActiveList(currentParticle);
 
 				currentParticle = _activeList;
+			}
+
+			if (particlesSubdiveded)
+			{
+				updateBuffers();
 			}
 		}
 
@@ -170,7 +180,7 @@ namespace Engine
 
 			//while (currentParticle)
 			//{
-			//	double elapsedTime = System::Timer::GetElapsedTimeMilliSec(currentParticle->spawnTick, currentTick, false);
+			//	double elapsedTime = System::Timer::GetElapsedTimeMilliSec(currentParticle->spawnTick, _currentTick, false);
 			//	D3DXVECTOR3 wavePos = currentParticle->origin + (currentParticle->direction * currentParticle->velocity * (float)elapsedTime);
 			//	int vertexCount = 0;
 			//	float invRadius = 1.0f / currentParticle->radius;
@@ -201,20 +211,34 @@ namespace Engine
 			//	currentParticle = currentParticle->next;
 			//}
 
-			//// update the buffers
+			WaveParticle* currentParticle = _activeList;
+			uint32_t particleCount = 0;
+			
+			while (currentParticle)
+			{
+				_vertices[particleCount].data.x = static_cast<float>(currentParticle->spawnTick);
+				_vertices[particleCount].data.y = currentParticle->amplitude;
+				_vertices[particleCount].data.z = currentParticle->radius;
+				_vertices[particleCount].data.w = currentParticle->velocity;
+				_vertices[particleCount].origin = currentParticle->origin;
+				_vertices[particleCount].direction = currentParticle->direction;
 
-			//ID3D11DeviceContext* deviceContext = GraphicsDX::GetDeviceContext();
-			//HRESULT result;
-			//D3D11_MAPPED_SUBRESOURCE mappedResource;
+				currentParticle = currentParticle->next;
+				particleCount++;
+			}
 
-			//result = deviceContext->Map(_vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-			//if (FAILED(result))
-			//{
-			//	MessagedAssert(false, "Not able to map vertex buffer in water model.");
-			//}
+			ID3D11DeviceContext* deviceContext = GraphicsDX::GetDeviceContext();
+			HRESULT result;
+			D3D11_MAPPED_SUBRESOURCE mappedResource;
 
-			//memcpy(mappedResource.pData, _vertices, sizeof(VertexType)*_vertexCount);
-			//deviceContext->Unmap(_vertexBuffer, 0);
+			result = deviceContext->Map(_vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+			if (FAILED(result))
+			{
+				MessagedAssert(false, "Not able to map vertex buffer in water model.");
+			}
+
+			memcpy(mappedResource.pData, _vertices, sizeof(VertexType)*_activeParticles);
+			deviceContext->Unmap(_vertexBuffer, 0);
 		}
 
 		void WaveParticlesRTTModel::initializeWaveParticlesList()
@@ -256,6 +280,7 @@ namespace Engine
 			{
 				prev->next = nullptr;
 				_freeList = current;
+				_activeParticles += i_numParticles;
 				return first;
 			}
 			else
@@ -289,8 +314,8 @@ namespace Engine
 				}
 				else
 				{
+					currentParticle->next = _activeList;
 					_activeList = currentParticle;
-					currentParticle->next = nullptr;
 				}
 
 				currentParticle = nextParticle;
@@ -301,6 +326,7 @@ namespace Engine
 		{
 			if (i_waveParticle == nullptr)
 			{
+				MessagedAssert(false, "Trying to recylce nullptr.");
 				return;
 			}
 
@@ -315,54 +341,25 @@ namespace Engine
 			_freeList = i_waveParticle;
 		}
 
-		bool WaveParticlesRTTModel::initializeBuffers()
+		bool WaveParticlesRTTModel::createBuffers()
 		{
-			VertexType* vertices;
 			D3D11_BUFFER_DESC vertexBufferDesc;
-			D3D11_SUBRESOURCE_DATA vertexData;
 			HRESULT result;
 
 			ID3D11Device* device = GraphicsDX::GetDevice();
-			_vertexCount = 3;
 
-			vertices = new VertexType[_vertexCount];
-			if (!vertices)
-			{
-				return false;
-			}
-
-			vertices[0].position = D3DXVECTOR2(0.0f, 0.0f);
-			vertices[0].size = D3DXVECTOR2(0.5f, 0.5f);
-
-			vertices[1].position = D3DXVECTOR2(0.0f, 0.6f);
-			vertices[1].size = D3DXVECTOR2(0.5f, 0.5f);
-
-			vertices[2].position = D3DXVECTOR2(0.1f, 0.0f);
-			vertices[2].size = D3DXVECTOR2(0.5f, 0.5f);
-
-			 // Set up the description of the vertex buffer.
-			vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-			vertexBufferDesc.ByteWidth = sizeof(VertexType) * _vertexCount;
+			vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+			vertexBufferDesc.ByteWidth = sizeof(VertexType) * _numParticles;
 			vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			vertexBufferDesc.CPUAccessFlags = 0;
+			vertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 			vertexBufferDesc.MiscFlags = 0;
 			vertexBufferDesc.StructureByteStride = 0;
 
-			// Give the subresource structure a pointer to the vertex data.
-			vertexData.pSysMem = vertices;
-			vertexData.SysMemPitch = 0;
-			vertexData.SysMemSlicePitch = 0;
-
-			// Now create the vertex buffer.
-			result = device->CreateBuffer(&vertexBufferDesc, &vertexData, &_vertexBuffer);
+			result = device->CreateBuffer(&vertexBufferDesc, nullptr, &_vertexBuffer);
 			if (FAILED(result))
 			{
 				return false;
 			}
-
-			// Release the arrays now that the vertex and index buffers have been created and loaded.
-			delete[] vertices;
-			vertices = 0;
 
 			return true;
 		}
