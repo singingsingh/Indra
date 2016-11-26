@@ -35,7 +35,33 @@ namespace Engine
 
 		void WaveParticlesRTTShader::shutdown()
 		{
-			shutdownShader();
+			// Release the sampler state.
+			if (_sampleState)
+			{
+				_sampleState->Release();
+				_sampleState = 0;
+			}
+
+			// Release the layout.
+			if (_layout)
+			{
+				_layout->Release();
+				_layout = 0;
+			}
+
+			// Release the pixel shader.
+			if (_pixelShader)
+			{
+				_pixelShader->Release();
+				_pixelShader = 0;
+			}
+
+			// Release the vertex shader.
+			if (_vertexShader)
+			{
+				_vertexShader->Release();
+				_vertexShader = 0;
+			}
 		}
 
 		bool WaveParticlesRTTShader::render(int i_vertexCount, ID3D11ShaderResourceView* i_texture)
@@ -203,37 +229,6 @@ namespace Engine
 			}
 
 			return true;
-		}
-
-		void WaveParticlesRTTShader::shutdownShader()
-		{
-			// Release the sampler state.
-			if (_sampleState)
-			{
-				_sampleState->Release();
-				_sampleState = 0;
-			}
-
-			// Release the layout.
-			if (_layout)
-			{
-				_layout->Release();
-				_layout = 0;
-			}
-
-			// Release the pixel shader.
-			if (_pixelShader)
-			{
-				_pixelShader->Release();
-				_pixelShader = 0;
-			}
-
-			// Release the vertex shader.
-			if (_vertexShader)
-			{
-				_vertexShader->Release();
-				_vertexShader = 0;
-			}
 		}
 
 		void WaveParticlesRTTShader::outputShaderErrorMessage(ID3D10Blob* i_errorMessage, const char * i_shaderFileName)

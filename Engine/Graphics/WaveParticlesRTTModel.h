@@ -3,6 +3,7 @@
 
 #include <d3d11.h>
 #include <d3dx10math.h>
+#include <stdint.h>
 
 namespace Engine
 {
@@ -18,8 +19,23 @@ namespace Engine
 				void shutdown();
 				void render();
 				int getVertexCount();
+				void spawnParticles();
 
 			private :
+
+				struct WaveParticle
+				{
+					D3DXVECTOR3 origin;
+					D3DXVECTOR3 direction;
+					uint64_t spawnTick;
+					uint64_t actionTick;
+					float angle;
+					float amplitude;
+					float radius;
+					float velocity;
+					WaveParticle* next;
+				};
+
 				struct VertexType
 				{
 					D3DXVECTOR2 position;
@@ -27,10 +43,23 @@ namespace Engine
 				};
 
 				bool initializeBuffers();
-				void shutdownBuffers();
+				void initializeWaveParticlesList();
+
+				void subDivideParticles();
+				void updateBuffers();
+
+				WaveParticle* getFreePartices(uint32_t numParticles);
+				void pushToActiveList(WaveParticle*  waveParticle);
+				void recycleParticles(WaveParticle* waveParticle);
+
+				uint32_t _numParticles, _activeParticles;
+				const WaveParticle* _waveParticleMemPool;
+				WaveParticle *_freeList, *_activeList;
 
 				ID3D11Buffer *_vertexBuffer;
 				int _vertexCount;
+
+				uint64_t _currentTick;
 		};
 	}	// namespace Graphics
 }	// namespace Engine

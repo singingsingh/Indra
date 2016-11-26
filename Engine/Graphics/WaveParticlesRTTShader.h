@@ -29,7 +29,6 @@ namespace Engine
 				};
 
 				bool initializeShader(const char *vsFileName, const char *gsFileName, const char * psFileName);
-				void shutdownShader();
 				void outputShaderErrorMessage(ID3D10Blob*, const char * shaderFileName);
 
 				bool setShaderParameters(ID3D11ShaderResourceView* texture);
