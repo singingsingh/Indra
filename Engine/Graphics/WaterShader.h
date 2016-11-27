@@ -38,6 +38,7 @@ namespace Engine
 			struct WaterBufferType
 			{
 				D3DXVECTOR4 waterColor;
+				D3DXMATRIX world;
 			};
 
 		public:

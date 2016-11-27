@@ -16,7 +16,7 @@ namespace Engine
 			_lightBuffer = nullptr;
 			_cameraBuffer = nullptr;
 			_waterBuffer = nullptr;
-			_waterColor = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
+			_waterColor = D3DXVECTOR4(0.015f, 0.313f, 0.313f, 1.0f);
 		}
 
 		WaterShader::~WaterShader()
@@ -442,6 +442,7 @@ namespace Engine
 
 			// Copy the lighting variables into the constant buffer.
 			dataPtr4->waterColor = _waterColor;
+			dataPtr4->world = i_worldMatrix;
 
 			// Unlock the constant buffer.
 			deviceContext->Unmap(_waterBuffer, 0);
@@ -453,6 +454,7 @@ namespace Engine
 			deviceContext->PSSetConstantBuffers(bufferNumber, 1, &_waterBuffer);
 
 			deviceContext->VSSetShaderResources(0, 1, &i_texture);
+			deviceContext->PSSetShaderResources(0, 1, &i_texture);
 
 			return true;
 		}

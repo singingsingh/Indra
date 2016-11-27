@@ -12,7 +12,7 @@ namespace Engine
 	{
 
 		WaveParticlesRTTModel::WaveParticlesRTTModel()
-			:_numParticles(4),
+			:_numParticles(400),
 			_waveParticleMemPool(static_cast<WaveParticle*>(MemoryMgr::getInstance()->allocMemory(_numParticles * sizeof(WaveParticle)))),
 			_vertices (static_cast<VertexType*>(MemoryMgr::getInstance()->allocMemory(_numParticles*sizeof(VertexType))))
 		{
@@ -54,7 +54,7 @@ namespace Engine
 		{
 			_currentTimeMS = static_cast<float>(System::Timer::GetCurrentTimeMS());
 
-			//subDivideParticles();
+			subDivideParticles();
 
 			unsigned int stride;
 			unsigned int offset;
@@ -74,7 +74,7 @@ namespace Engine
 
 		void WaveParticlesRTTModel::spawnParticles()
 		{
-			WaveParticle* newParticles = getFreePartices(3);
+			WaveParticle* newParticles = getFreePartices(12);
 			WaveParticle* first = newParticles;
 
 			newParticles->origin = D3DXVECTOR2(0.0f, 0.0f);
@@ -88,6 +88,7 @@ namespace Engine
 				(newParticles->radius / (4.0f * (float)sin(newParticles->angle / 2.0f*MathUtils::DegToRad) * newParticles->velocity));
 
 			newParticles = newParticles->next;
+
 			newParticles->origin = D3DXVECTOR2(0.0f, 0.0f);
 			newParticles->direction = D3DXVECTOR2((float)sin(30.0f*MathUtils::DegToRad), (float)cos(30.0f*MathUtils::DegToRad));
 			newParticles->velocity = 0.0001f;
@@ -99,6 +100,7 @@ namespace Engine
 				(newParticles->radius / (4.0f * (float)sin(newParticles->angle / 2.0f*MathUtils::DegToRad) * newParticles->velocity));
 
 			newParticles = newParticles->next;
+
 			newParticles->origin = D3DXVECTOR2(0.0f, 0.0f);
 			newParticles->direction = D3DXVECTOR2((float)sin(-30.0f*MathUtils::DegToRad), (float)cos(-30.0f*MathUtils::DegToRad));
 			newParticles->velocity = 0.0001f;
@@ -108,10 +110,118 @@ namespace Engine
 			newParticles->spawnTimeMS = static_cast<float>(System::Timer::GetCurrentTimeMS());
 			newParticles->actionTimeMS = newParticles->spawnTimeMS + 
 				(newParticles->radius / (4.0f * (float)sin(newParticles->angle / 2.0f*MathUtils::DegToRad) * newParticles->velocity));
+
+			newParticles = newParticles->next;
+
+			newParticles->origin = D3DXVECTOR2(0.0f, 0.0f);
+			newParticles->direction = D3DXVECTOR2((float)sin(60.0f*MathUtils::DegToRad), (float)cos(60.0f*MathUtils::DegToRad));
+			newParticles->velocity = 0.0001f;
+			newParticles->amplitude = 1.5f;
+			newParticles->radius = 0.2f;
+			newParticles->angle = 30.0f;
+			newParticles->spawnTimeMS = static_cast<float>(System::Timer::GetCurrentTimeMS());
+			newParticles->actionTimeMS = newParticles->spawnTimeMS +
+				(newParticles->radius / (4.0f * (float)sin(newParticles->angle / 2.0f*MathUtils::DegToRad) * newParticles->velocity));
+
+			newParticles = newParticles->next;
+
+			newParticles->origin = D3DXVECTOR2(0.0f, 0.0f);
+			newParticles->direction = D3DXVECTOR2((float)sin(-60.0f*MathUtils::DegToRad), (float)cos(-60.0f*MathUtils::DegToRad));
+			newParticles->velocity = 0.0001f;
+			newParticles->amplitude = 1.5f;
+			newParticles->radius = 0.2f;
+			newParticles->angle = 30.0f;
+			newParticles->spawnTimeMS = static_cast<float>(System::Timer::GetCurrentTimeMS());
+			newParticles->actionTimeMS = newParticles->spawnTimeMS +
+				(newParticles->radius / (4.0f * (float)sin(newParticles->angle / 2.0f*MathUtils::DegToRad) * newParticles->velocity));
+
+			newParticles = newParticles->next;
+
+			newParticles->origin = D3DXVECTOR2(0.0f, 0.0f);
+			newParticles->direction = D3DXVECTOR2((float)sin(90.0f*MathUtils::DegToRad), (float)cos(90.0f*MathUtils::DegToRad));
+			newParticles->velocity = 0.0001f;
+			newParticles->amplitude = 1.5f;
+			newParticles->radius = 0.2f;
+			newParticles->angle = 30.0f;
+			newParticles->spawnTimeMS = static_cast<float>(System::Timer::GetCurrentTimeMS());
+			newParticles->actionTimeMS = newParticles->spawnTimeMS +
+				(newParticles->radius / (4.0f * (float)sin(newParticles->angle / 2.0f*MathUtils::DegToRad) * newParticles->velocity));
+
+			newParticles = newParticles->next;
+
+			newParticles->origin = D3DXVECTOR2(0.0f, 0.0f);
+			newParticles->direction = D3DXVECTOR2((float)sin(-90.0f*MathUtils::DegToRad), (float)cos(-90.0f*MathUtils::DegToRad));
+			newParticles->velocity = 0.0001f;
+			newParticles->amplitude = 1.5f;
+			newParticles->radius = 0.2f;
+			newParticles->angle = 30.0f;
+			newParticles->spawnTimeMS = static_cast<float>(System::Timer::GetCurrentTimeMS());
+			newParticles->actionTimeMS = newParticles->spawnTimeMS +
+				(newParticles->radius / (4.0f * (float)sin(newParticles->angle / 2.0f*MathUtils::DegToRad) * newParticles->velocity));
+
+			newParticles = newParticles->next;
+
+			newParticles->origin = D3DXVECTOR2(0.0f, 0.0f);
+			newParticles->direction = D3DXVECTOR2((float)sin(120.0f*MathUtils::DegToRad), (float)cos(120.0f*MathUtils::DegToRad));
+			newParticles->velocity = 0.0001f;
+			newParticles->amplitude = 1.5f;
+			newParticles->radius = 0.2f;
+			newParticles->angle = 30.0f;
+			newParticles->spawnTimeMS = static_cast<float>(System::Timer::GetCurrentTimeMS());
+			newParticles->actionTimeMS = newParticles->spawnTimeMS +
+				(newParticles->radius / (4.0f * (float)sin(newParticles->angle / 2.0f*MathUtils::DegToRad) * newParticles->velocity));
+
+			newParticles = newParticles->next;
+
+			newParticles->origin = D3DXVECTOR2(0.0f, 0.0f);
+			newParticles->direction = D3DXVECTOR2((float)sin(-120.0f*MathUtils::DegToRad), (float)cos(-120.0f*MathUtils::DegToRad));
+			newParticles->velocity = 0.0001f;
+			newParticles->amplitude = 1.5f;
+			newParticles->radius = 0.2f;
+			newParticles->angle = 30.0f;
+			newParticles->spawnTimeMS = static_cast<float>(System::Timer::GetCurrentTimeMS());
+			newParticles->actionTimeMS = newParticles->spawnTimeMS +
+				(newParticles->radius / (4.0f * (float)sin(newParticles->angle / 2.0f*MathUtils::DegToRad) * newParticles->velocity));
+
+			newParticles = newParticles->next;
+
+			newParticles->origin = D3DXVECTOR2(0.0f, 0.0f);
+			newParticles->direction = D3DXVECTOR2((float)sin(150.0f*MathUtils::DegToRad), (float)cos(150.0f*MathUtils::DegToRad));
+			newParticles->velocity = 0.0001f;
+			newParticles->amplitude = 1.5f;
+			newParticles->radius = 0.2f;
+			newParticles->angle = 30.0f;
+			newParticles->spawnTimeMS = static_cast<float>(System::Timer::GetCurrentTimeMS());
+			newParticles->actionTimeMS = newParticles->spawnTimeMS +
+				(newParticles->radius / (4.0f * (float)sin(newParticles->angle / 2.0f*MathUtils::DegToRad) * newParticles->velocity));
+
+			newParticles = newParticles->next;
+
+			newParticles->origin = D3DXVECTOR2(0.0f, 0.0f);
+			newParticles->direction = D3DXVECTOR2((float)sin(-150.0f*MathUtils::DegToRad), (float)cos(-150.0f*MathUtils::DegToRad));
+			newParticles->velocity = 0.0001f;
+			newParticles->amplitude = 1.5f;
+			newParticles->radius = 0.2f;
+			newParticles->angle = 30.0f;
+			newParticles->spawnTimeMS = static_cast<float>(System::Timer::GetCurrentTimeMS());
+			newParticles->actionTimeMS = newParticles->spawnTimeMS +
+				(newParticles->radius / (4.0f * (float)sin(newParticles->angle / 2.0f*MathUtils::DegToRad) * newParticles->velocity));
+
+			newParticles = newParticles->next;
+
+			newParticles->origin = D3DXVECTOR2(0.0f, 0.0f);
+			newParticles->direction = D3DXVECTOR2((float)sin(180.0f*MathUtils::DegToRad), (float)cos(180.0f*MathUtils::DegToRad));
+			newParticles->velocity = 0.0001f;
+			newParticles->amplitude = 1.5f;
+			newParticles->radius = 0.2f;
+			newParticles->angle = 30.0f;
+			newParticles->spawnTimeMS = static_cast<float>(System::Timer::GetCurrentTimeMS());
+			newParticles->actionTimeMS = newParticles->spawnTimeMS +
+				(newParticles->radius / (4.0f * (float)sin(newParticles->angle / 2.0f*MathUtils::DegToRad) * newParticles->velocity));
+
 			newParticles->next = nullptr;
 
 			pushToActiveList(first);
-
 			updateBuffers();
 		}
 
@@ -132,7 +242,14 @@ namespace Engine
 				_activeList = currentParticle->next;
 
 				// check to see if the amplitude is less than threshold and discard accordingly
-				// TBD
+				if (currentParticle->amplitude < 0.5)
+				{
+					currentParticle->next = nullptr;
+					recycleParticles(currentParticle);
+
+					currentParticle = _activeList;
+					continue;
+				}
 
 				WaveParticle* newParticles = getFreePartices(2);
 				currentParticle->next = newParticles;
@@ -186,42 +303,6 @@ namespace Engine
 
 		void WaveParticlesRTTModel::updateBuffers()
 		{
-			//WaveParticle* currentParticle = _activeList;
-			//bool first = true;
-
-			//while (currentParticle)
-			//{
-			//	double elapsedTime = System::Timer::GetElapsedTimeMilliSec(currentParticle->spawnTick, _currentTick, false);
-			//	D3DXVECTOR3 wavePos = currentParticle->origin + (currentParticle->direction * currentParticle->velocity * (float)elapsedTime);
-			//	int vertexCount = 0;
-			//	float invRadius = 1.0f / currentParticle->radius;
-
-			//	for (uint8_t row = 0; row <= _gridRows; row++)
-			//	{
-			//		for (uint8_t col = 0; col <= _gridCols; col++)
-			//		{
-			//			if (first)
-			//			{
-			//				_vertices[vertexCount].position = D3DXVECTOR3(col*_gridGap, 0.0f, -row*_gridGap) + _corner;
-			//			}
-
-			//			float dist = sqrt(((_vertices[vertexCount].position.x - wavePos.x) * (_vertices[vertexCount].position.x - wavePos.x))
-			//				+ ((_vertices[vertexCount].position.z - wavePos.z) * (_vertices[vertexCount].position.z - wavePos.z)));
-
-			//			float rectFunc = dist * invRadius;
-			//			if (rectFunc <= 1.0f)
-			//			{
-			//				_vertices[vertexCount].position.y += currentParticle->amplitude * 0.5f * (cos(MathUtils::PI * invRadius * dist) + 1.0f);
-			//			}
-
-			//			vertexCount++;
-			//		}
-			//	}
-
-			//	first = false;
-			//	currentParticle = currentParticle->next;
-			//}
-
 			WaveParticle* currentParticle = _activeList;
 			uint32_t particleCount = 0;
 			
@@ -342,12 +423,15 @@ namespace Engine
 			}
 
 			WaveParticle* last = i_waveParticle;
+			uint32_t numParticles = 1;
 
 			while (last->next != nullptr)
 			{
 				last = last->next;
+				numParticles++;
 			}
 
+			_activeParticles -= numParticles;
 			last->next = _freeList;
 			_freeList = i_waveParticle;
 		}

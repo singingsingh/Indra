@@ -33,7 +33,6 @@ VertexOutputType WaterVertexShader(VertexInputType input)
     float4 worldPosition;
 
 	float4 height = shaderTexture[input.tex*1024];
-
 	float4 pos = float4(input.position.x + height.x, height.z, input.position.y + height.y, 1.0);
 
     output.position = mul(pos, worldMatrix);
@@ -42,7 +41,7 @@ VertexOutputType WaterVertexShader(VertexInputType input)
     
     output.tex = input.tex;
 	
-    worldPosition = mul(float4(input.position, 0.0, 1.0), worldMatrix);
+    worldPosition = mul(pos, worldMatrix);
 
     output.viewDirection = cameraPosition.xyz - worldPosition.xyz;
 	
