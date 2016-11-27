@@ -20,6 +20,7 @@ namespace Engine
 				void render();
 				int getVertexCount();
 				void spawnParticles();
+				float getCurrentTime();
 
 			private :
 
@@ -27,8 +28,8 @@ namespace Engine
 				{
 					D3DXVECTOR2 origin;
 					D3DXVECTOR2 direction;
-					uint64_t spawnTick;
-					uint64_t actionTick;
+					float spawnTimeMS;
+					float actionTimeMS;
 					float angle;
 					float amplitude;
 					float radius;
@@ -60,7 +61,7 @@ namespace Engine
 				ID3D11Buffer *_vertexBuffer;
 				VertexType* const _vertices;
 
-				uint64_t _currentTick;
+				float _currentTimeMS;
 		};
 	}	// namespace Graphics
 }	// namespace Engine

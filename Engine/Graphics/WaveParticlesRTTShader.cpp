@@ -1,6 +1,7 @@
 #include <Engine\Graphics\WaveParticlesRTTShader.h>
-#include <Engine\System\Window.h>
 
+#include <Engine\System\Window.h>
+#include <Engine\System\Timer.h>
 #include <Engine\Graphics\GraphicsDX.h>
 #include <fstream>
 
@@ -14,6 +15,7 @@ namespace Engine
 			_pixelShader = nullptr;
 			_layout = nullptr;
 			_sampleState = nullptr;
+			_vsConstBuffer = nullptr;
 		}
 
 		WaveParticlesRTTShader::~WaveParticlesRTTShader()
@@ -35,40 +37,27 @@ namespace Engine
 
 		void WaveParticlesRTTShader::shutdown()
 		{
-			// Release the sampler state.
-			if (_sampleState)
-			{
-				_sampleState->Release();
-				_sampleState = 0;
-			}
+			_sampleState->Release();
+			_sampleState = nullptr;
 
-			// Release the layout.
-			if (_layout)
-			{
-				_layout->Release();
-				_layout = 0;
-			}
+			_layout->Release();
+			_layout = nullptr;
 
-			// Release the pixel shader.
-			if (_pixelShader)
-			{
-				_pixelShader->Release();
-				_pixelShader = 0;
-			}
+			_pixelShader->Release();
+			_pixelShader = nullptr;
 
-			// Release the vertex shader.
-			if (_vertexShader)
-			{
-				_vertexShader->Release();
-				_vertexShader = 0;
-			}
+			_vertexShader->Release();
+			_vertexShader = nullptr;
+
+			_vsConstBuffer->Release();
+			_vsConstBuffer = nullptr;
 		}
 
-		bool WaveParticlesRTTShader::render(int i_vertexCount, ID3D11ShaderResourceView* i_texture)
+		bool WaveParticlesRTTShader::render(int i_vertexCount, ID3D11ShaderResourceView* i_texture, float currentTime)
 		{
 			bool result;
 
-			result = setShaderParameters(i_texture);
+			result = setShaderParameters(i_texture, currentTime);
 			if (!result)
 			{
 				return false;
@@ -234,6 +223,20 @@ namespace Engine
 				return false;
 			}
 
+			D3D11_BUFFER_DESC vsConstBufferDesc;
+			vsConstBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+			vsConstBufferDesc.ByteWidth = sizeof(VSConstBufferType);
+			vsConstBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+			vsConstBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+			vsConstBufferDesc.MiscFlags = 0;
+			vsConstBufferDesc.StructureByteStride = 0;
+
+			result = device->CreateBuffer(&vsConstBufferDesc, NULL, &_vsConstBuffer);
+			if (FAILED(result))
+			{
+				return false;
+			}
+
 			return true;
 		}
 
@@ -269,9 +272,29 @@ namespace Engine
 			MessageBox(System::Window::GetWindwsHandle(), "Error compiling shader.  Check shader-error.txt for message.", i_shaderFileName, MB_OK);
 		}
 
-		bool WaveParticlesRTTShader::setShaderParameters(ID3D11ShaderResourceView * i_texture)
+		bool WaveParticlesRTTShader::setShaderParameters(ID3D11ShaderResourceView * i_texture, float currentTime)
 		{
+			HRESULT result;
+			D3D11_MAPPED_SUBRESOURCE mappedResource;
+			VSConstBufferType* dataPtr;
+			unsigned int bufferNumber;
 			ID3D11DeviceContext * deviceContext = GraphicsDX::GetDeviceContext();
+
+			result = deviceContext->Map(_vsConstBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+			if (FAILED(result))
+			{
+				return false;
+			}
+
+			dataPtr = (VSConstBufferType*)mappedResource.pData;
+			dataPtr->currentTime = currentTime;
+
+			deviceContext->Unmap(_vsConstBuffer, 0);
+
+			bufferNumber = 0;
+
+			deviceContext->VSSetConstantBuffers(bufferNumber, 1, &_vsConstBuffer);
+
 			deviceContext->PSSetShaderResources(0, 1, &i_texture);
 			return true;
 		}

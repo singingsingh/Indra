@@ -306,7 +306,7 @@ namespace Engine
 			deviceContext->OMSetDepthStencilState(_disableDepthStencil, 1);
 			
 			_waveParticlesRTTModel->render();
-			_waveParticlesRTTShader->render(_waveParticlesRTTModel->getVertexCount(), _singleWaveRTT->getRenderTargetTexture());
+			_waveParticlesRTTShader->render(_waveParticlesRTTModel->getVertexCount(), _singleWaveRTT->getRenderTargetTexture(), _waveParticlesRTTModel->getCurrentTime());
 
 			deviceContext->OMSetBlendState(_prevBlendingState, blendFactor, blendSampleMask);
 			deviceContext->OMSetDepthStencilState(_prevDepthStencil, stencilRefValue);

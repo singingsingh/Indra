@@ -44,13 +44,13 @@ namespace Engine
 
 		bool WaterShader::render(int i_indexCount, D3DXMATRIX i_worldMatrix, D3DXMATRIX i_viewMatrix,
 			D3DXMATRIX i_projMatrix, D3DXVECTOR3 i_lightDirection, D3DXVECTOR4 i_ambientColor,
-			D3DXVECTOR4 i_diffuseColor, D3DXVECTOR3 i_cameraPosition, D3DXVECTOR4 i_specularColor, float i_specularPower, ID3D11ShaderResourceView* i_texture)
+			D3DXVECTOR4 i_diffuseColor, D3DXVECTOR3 i_cameraPosition, D3DXVECTOR4 i_specularColor, float i_specularPower, ID3D11ShaderResourceView * texture)
 		{
 			bool result;
 
 			// Set the shader parameters that it will use for rendering.
 			result = setShaderParameters(i_worldMatrix, i_viewMatrix, i_projMatrix, i_lightDirection, i_ambientColor, i_diffuseColor,
-				i_cameraPosition, i_specularColor, i_specularPower, i_texture);
+				i_cameraPosition, i_specularColor, i_specularPower, texture);
 
 			if (!result)
 			{

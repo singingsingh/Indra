@@ -52,7 +52,7 @@ namespace Engine
 
 		void WaveParticlesRTTModel::render()
 		{
-			_currentTick = System::Timer::GetCurrentTick();
+			_currentTimeMS = static_cast<float>(System::Timer::GetCurrentTimeMS());
 
 			//subDivideParticles();
 
@@ -79,37 +79,45 @@ namespace Engine
 
 			newParticles->origin = D3DXVECTOR2(0.0f, 0.0f);
 			newParticles->direction = D3DXVECTOR2(0.0f, 1.0f);
-			newParticles->velocity = 0.002f;
+			newParticles->velocity = 0.0001f;
 			newParticles->amplitude = 1.5f;
 			newParticles->radius = 0.2f;
 			newParticles->angle = 30.0f;
-			newParticles->spawnTick = System::Timer::GetCurrentTick();
-			newParticles->actionTick = newParticles->spawnTick + System::Timer::ConvertMilliSecToTick(newParticles->radius / (4.0 * sin((newParticles->angle / 2.0)*MathUtils::DegToRad) * newParticles->velocity));
+			newParticles->spawnTimeMS = static_cast<float>(System::Timer::GetCurrentTimeMS());
+			newParticles->actionTimeMS = newParticles->spawnTimeMS + 
+				(newParticles->radius / (4.0f * (float)sin(newParticles->angle / 2.0f*MathUtils::DegToRad) * newParticles->velocity));
 
 			newParticles = newParticles->next;
-			newParticles->origin = D3DXVECTOR2(0.6f, 0.0f);
+			newParticles->origin = D3DXVECTOR2(0.0f, 0.0f);
 			newParticles->direction = D3DXVECTOR2((float)sin(30.0f*MathUtils::DegToRad), (float)cos(30.0f*MathUtils::DegToRad));
-			newParticles->velocity = 0.002f;
+			newParticles->velocity = 0.0001f;
 			newParticles->amplitude = 1.5f;
 			newParticles->radius = 0.2f;
 			newParticles->angle = 30.0f;
-			newParticles->spawnTick = System::Timer::GetCurrentTick();
-			newParticles->actionTick = newParticles->spawnTick + System::Timer::ConvertMilliSecToTick(newParticles->radius / (4.0 * sin((newParticles->angle / 2.0)*MathUtils::DegToRad) * newParticles->velocity));
+			newParticles->spawnTimeMS = static_cast<float>(System::Timer::GetCurrentTimeMS());
+			newParticles->actionTimeMS = newParticles->spawnTimeMS + 
+				(newParticles->radius / (4.0f * (float)sin(newParticles->angle / 2.0f*MathUtils::DegToRad) * newParticles->velocity));
 
 			newParticles = newParticles->next;
-			newParticles->origin = D3DXVECTOR2(0.0f, 0.6f);
+			newParticles->origin = D3DXVECTOR2(0.0f, 0.0f);
 			newParticles->direction = D3DXVECTOR2((float)sin(-30.0f*MathUtils::DegToRad), (float)cos(-30.0f*MathUtils::DegToRad));
-			newParticles->velocity = 0.002f;
+			newParticles->velocity = 0.0001f;
 			newParticles->amplitude = 1.5f;
 			newParticles->radius = 0.2f;
 			newParticles->angle = 30.0f;
-			newParticles->spawnTick = System::Timer::GetCurrentTick();
-			newParticles->actionTick = newParticles->spawnTick + System::Timer::ConvertMilliSecToTick(newParticles->radius / (4.0 * sin((newParticles->angle / 2.0)*MathUtils::DegToRad) * newParticles->velocity));
+			newParticles->spawnTimeMS = static_cast<float>(System::Timer::GetCurrentTimeMS());
+			newParticles->actionTimeMS = newParticles->spawnTimeMS + 
+				(newParticles->radius / (4.0f * (float)sin(newParticles->angle / 2.0f*MathUtils::DegToRad) * newParticles->velocity));
 			newParticles->next = nullptr;
 
 			pushToActiveList(first);
 
 			updateBuffers();
+		}
+
+		float WaveParticlesRTTModel::getCurrentTime()
+		{
+			return _currentTimeMS;
 		}
 
 		void WaveParticlesRTTModel::subDivideParticles()
@@ -118,25 +126,28 @@ namespace Engine
 
 			bool particlesSubdiveded = false;
 
-			while (currentParticle && currentParticle->actionTick < _currentTick)
+			while (currentParticle && currentParticle->actionTimeMS < _currentTimeMS)
 			{
 				particlesSubdiveded = true;
 				_activeList = currentParticle->next;
+
+				// check to see if the amplitude is less than threshold and discard accordingly
+				// TBD
 
 				WaveParticle* newParticles = getFreePartices(2);
 				currentParticle->next = newParticles;
 
 				currentParticle->amplitude = currentParticle->amplitude * 0.33333333f;
 				currentParticle->angle = currentParticle->angle * 0.33333333f;
-				currentParticle->actionTick = currentParticle->actionTick +
-					System::Timer::ConvertMilliSecToTick(currentParticle->radius / (4.0 * sin((currentParticle->angle * 0.5)*MathUtils::DegToRad) * currentParticle->velocity));
+				currentParticle->actionTimeMS = currentParticle->actionTimeMS +
+					(currentParticle->radius / (4.0f * (float)sin((currentParticle->angle * 0.5f)*MathUtils::DegToRad) * currentParticle->velocity));
 
 				WaveParticle* temp = newParticles;
 				while (temp)
 				{
 					temp->origin = currentParticle->origin;
-					temp->spawnTick = currentParticle->spawnTick;
-					temp->actionTick = currentParticle->actionTick;
+					temp->spawnTimeMS = currentParticle->spawnTimeMS;
+					temp->actionTimeMS = currentParticle->actionTimeMS;
 					temp->angle = currentParticle->angle;
 					temp->amplitude = currentParticle->amplitude;
 					temp->radius = currentParticle->radius;
@@ -216,7 +227,7 @@ namespace Engine
 			
 			while (currentParticle)
 			{
-				_vertices[particleCount].data.x = static_cast<float>(currentParticle->spawnTick);
+				_vertices[particleCount].data.x = currentParticle->spawnTimeMS;
 				_vertices[particleCount].data.y = currentParticle->amplitude;
 				_vertices[particleCount].data.z = currentParticle->radius;
 				_vertices[particleCount].data.w = currentParticle->velocity;
@@ -301,7 +312,7 @@ namespace Engine
 				WaveParticle* currentPtr = _activeList;
 				WaveParticle* prevPtr = nullptr;
 
-				while (currentPtr && currentParticle->actionTick > currentPtr->actionTick)
+				while (currentPtr && currentParticle->actionTimeMS > currentPtr->actionTimeMS)
 				{
 					prevPtr = currentPtr;
 					currentPtr = currentPtr->next;

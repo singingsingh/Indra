@@ -18,20 +18,20 @@ namespace Engine
 
 				bool initialize();
 				void shutdown();
-				bool render(int vertexCount, ID3D11ShaderResourceView* texture);
+				bool render(int vertexCount, ID3D11ShaderResourceView* texture, float currentTime);
 
 			private:
 
-				struct MatrixBufferType
+				struct VSConstBufferType
 				{
-					D3DXMATRIX viewProj;
-					D3DXMATRIX orthoProj;
+					float currentTime;
+					float padding[3];
 				};
 
 				bool initializeShader(const char *vsFileName, const char *gsFileName, const char * psFileName);
 				void outputShaderErrorMessage(ID3D10Blob*, const char * shaderFileName);
 
-				bool setShaderParameters(ID3D11ShaderResourceView* texture);
+				bool setShaderParameters(ID3D11ShaderResourceView* texture, float currentTime);
 				void renderShader(int vertexCount);
 
 				ID3D11VertexShader* _vertexShader;
@@ -39,6 +39,7 @@ namespace Engine
 				ID3D11PixelShader* _pixelShader;
 				ID3D11InputLayout* _layout;
 				ID3D11SamplerState* _sampleState;
+				ID3D11Buffer* _vsConstBuffer;
 		};
 	}	// namespace Graphics
 }	// namespace Engine

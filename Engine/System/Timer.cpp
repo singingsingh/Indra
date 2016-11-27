@@ -27,6 +27,11 @@ namespace Engine
 			return static_cast<uint64_t>(i_milliSec * 0.001 * static_cast<double>(_ticksPerSecond));
 		}
 
+		double Timer::ConvertTickToMilliSec(uint64_t tick)
+		{
+			return double(tick)/ _ticksPerSecond * 1000.0;
+		}
+
 		double Timer::GetElapsedTimeMilliSec(uint64_t i_previousTick, uint64_t i_currentTick, bool i_normalized)
 		{
 			double retVal = double(i_currentTick - i_previousTick) / _ticksPerSecond * 1000.0;
@@ -51,6 +56,11 @@ namespace Engine
 			LARGE_INTEGER li;
 			QueryPerformanceCounter(&li);
 			return li.QuadPart;
+		}
+
+		double Timer::GetCurrentTimeMS()
+		{
+			return ConvertTickToMilliSec(GetCurrentTick());
 		}
 
 		double Timer::GetDeltaTime()

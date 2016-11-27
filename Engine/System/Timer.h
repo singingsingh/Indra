@@ -14,9 +14,11 @@ namespace Engine
 				static double GetElapsedTimeMilliSec(uint64_t previouTick, uint64_t currentTick, bool normalized);
 				static uint64_t GetTicksPerSecond();
 				static uint64_t GetCurrentTick();
+				static double GetCurrentTimeMS();
 				static double GetDeltaTime();
 				static void SetDeltaTime(double deltaTime);
 				static uint64_t ConvertMilliSecToTick(double milliSec);
+				static double ConvertTickToMilliSec( uint64_t tick );
 
 			private:
 				Timer();
