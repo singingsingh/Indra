@@ -44,13 +44,13 @@ namespace Engine
 
 		bool WaterShader::render(int i_indexCount, D3DXMATRIX i_worldMatrix, D3DXMATRIX i_viewMatrix,
 			D3DXMATRIX i_projMatrix, D3DXVECTOR3 i_lightDirection, D3DXVECTOR4 i_ambientColor,
-			D3DXVECTOR4 i_diffuseColor, D3DXVECTOR3 i_cameraPosition, D3DXVECTOR4 i_specularColor, float i_specularPower, ID3D11ShaderResourceView * texture)
+			D3DXVECTOR4 i_diffuseColor, D3DXVECTOR3 i_cameraPosition, D3DXVECTOR4 i_specularColor, float i_specularPower, ID3D11ShaderResourceView * heightTexture, ID3D11ShaderResourceView* cubeMap)
 		{
 			bool result;
 
 			// Set the shader parameters that it will use for rendering.
 			result = setShaderParameters(i_worldMatrix, i_viewMatrix, i_projMatrix, i_lightDirection, i_ambientColor, i_diffuseColor,
-				i_cameraPosition, i_specularColor, i_specularPower, texture);
+				i_cameraPosition, i_specularColor, i_specularPower, heightTexture, cubeMap);
 
 			if (!result)
 			{
@@ -347,7 +347,7 @@ namespace Engine
 		bool WaterShader::setShaderParameters(D3DXMATRIX i_worldMatrix, D3DXMATRIX i_viewMatrix,
 			D3DXMATRIX i_projectionMatrix, D3DXVECTOR3 i_lightDirection,
 			D3DXVECTOR4 i_ambientColor, D3DXVECTOR4 i_diffuseColor, D3DXVECTOR3 i_cameraPosition, D3DXVECTOR4 i_specularColor,
-			float i_specularPower, ID3D11ShaderResourceView * i_texture)
+			float i_specularPower, ID3D11ShaderResourceView * i_heigthTexture, ID3D11ShaderResourceView * i_cubeMap)
 		{
 			HRESULT result;
 			D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -357,94 +357,63 @@ namespace Engine
 			CameraBufferType* dataPtr3;
 			WaterBufferType* dataPtr4;
 
-			// Transpose the matrices to prepare them for the shader.
 			D3DXMatrixTranspose(&i_worldMatrix, &i_worldMatrix);
 			D3DXMatrixTranspose(&i_viewMatrix, &i_viewMatrix);
 			D3DXMatrixTranspose(&i_projectionMatrix, &i_projectionMatrix);
 
 			ID3D11DeviceContext* deviceContext = GraphicsDX::GetDeviceContext();
-			// Lock the constant buffer so it can be written to.
 			result = deviceContext->Map(_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 			if (FAILED(result))
 			{
 				return false;
 			}
 
-			// Get a pointer to the data in the constant buffer.
 			dataPtr = (MatrixBufferType*)mappedResource.pData;
-
-			// Copy the matrices into the constant buffer.
 			dataPtr->world = i_worldMatrix;
 			dataPtr->view = i_viewMatrix;
 			dataPtr->projection = i_projectionMatrix;
-
-			// Unlock the constant buffer.
 			deviceContext->Unmap(_matrixBuffer, 0);
-
-			// Set the position of the constant buffer in the vertex shader.
+			
 			bufferNumber = 0;
-
-			// Now set the constant buffer in the vertex shader with the updated values.
 			deviceContext->VSSetConstantBuffers(bufferNumber, 1, &_matrixBuffer);
-
-			// Lock the camera constant buffer so it can be written to.
 			result = deviceContext->Map(_cameraBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 			if (FAILED(result))
 			{
 				return false;
 			}
 
-			// Get a pointer to the data in the constant buffer.
 			dataPtr3 = (CameraBufferType*)mappedResource.pData;
-
-			// Copy the camera position into the constant buffer.
 			dataPtr3->cameraPosition = i_cameraPosition;
 			dataPtr3->padding = 0.0f;
-
-			// Unlock the camera constant buffer.
 			deviceContext->Unmap(_cameraBuffer, 0);
 
-			// Set the position of the camera constant buffer in the vertex shader.
 			bufferNumber = 1;
 
-			// Now set the camera constant buffer in the vertex shader with the updated values.
 			deviceContext->VSSetConstantBuffers(bufferNumber, 1, &_cameraBuffer);
 
-			// Lock the light constant buffer so it can be written to.
 			result = deviceContext->Map(_lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 			if (FAILED(result))
 			{
 				return false;
 			}
 
-			// Get a pointer to the data in the constant buffer.
 			dataPtr2 = (LightBufferType*)mappedResource.pData;
-
-			// Copy the lighting variables into the constant buffer.
 			dataPtr2->ambientColor = i_ambientColor;
 			dataPtr2->diffuseColor = i_diffuseColor;
 			dataPtr2->lightDirection = i_lightDirection;
 			dataPtr2->specularColor = i_specularColor;
 			dataPtr2->specularPower = i_specularPower;
-
-			// Unlock the constant buffer.
 			deviceContext->Unmap(_lightBuffer, 0);
 
-			// Lock the light constant buffer so it can be written to.
 			result = deviceContext->Map(_waterBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 			if (FAILED(result))
 			{
 				return false;
 			}
 
-			// Get a pointer to the data in the constant buffer.
 			dataPtr4 = (WaterBufferType*)mappedResource.pData;
-
-			// Copy the lighting variables into the constant buffer.
 			dataPtr4->waterColor = _waterColor;
 			dataPtr4->world = i_worldMatrix;
-
-			// Unlock the constant buffer.
 			deviceContext->Unmap(_waterBuffer, 0);
 
 			bufferNumber = 0;
@@ -453,8 +422,9 @@ namespace Engine
 			bufferNumber = 1;
 			deviceContext->PSSetConstantBuffers(bufferNumber, 1, &_waterBuffer);
 
-			deviceContext->VSSetShaderResources(0, 1, &i_texture);
-			deviceContext->PSSetShaderResources(0, 1, &i_texture);
+			deviceContext->VSSetShaderResources(0, 1, &i_heigthTexture);
+			deviceContext->PSSetShaderResources(0, 1, &i_heigthTexture);
+			deviceContext->PSSetShaderResources(1, 1, &i_cubeMap);
 
 			return true;
 		}

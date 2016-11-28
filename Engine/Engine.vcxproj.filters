@@ -211,6 +211,12 @@
     <ClCompile Include="Graphics\BuildWaveShader.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\CubeMap.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\CubeMapShader.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\BitArray.h">
@@ -447,6 +453,12 @@
     <ClInclude Include="Graphics\BuildWaveShader.h">
       <Filter>Source Files\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\CubeMapShader.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\CubeMap.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Graphics\Shaders\colorShaderPS.hlsl">
@@ -512,6 +524,12 @@
       <Filter>Source Files\Graphics\shaders</Filter>
     </FxCompile>
     <FxCompile Include="Graphics\Shaders\buildWaveVS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Graphics\Shaders\cubeMapPS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Graphics\Shaders\cubeMapVS.hlsl">
       <Filter>Source Files\Graphics\shaders</Filter>
     </FxCompile>
   </ItemGroup>

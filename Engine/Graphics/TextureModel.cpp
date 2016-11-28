@@ -104,7 +104,7 @@ namespace Engine
 			indices[1] = 1;  // Top middle.
 			indices[2] = 2;  // Bottom right.
 
-							 // Set up the description of the vertex buffer.
+			// Set up the description of the vertex buffer.
 			vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 			vertexBufferDesc.ByteWidth = sizeof(VertexType) * _vertexCount;
 			vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;

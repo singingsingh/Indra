@@ -25,6 +25,8 @@
 #include <Engine\Graphics\WaveParticlesRTTShader.h>
 #include <Engine\Graphics\BuildWave.h>
 #include <Engine\Graphics\BuildWaveShader.h>
+#include <Engine\Graphics\CubeMap.h>
+#include <Engine\Graphics\CubeMapShader.h>
 
 //#include <Engine\Graphics\TessellationShader.h>
 
@@ -77,6 +79,8 @@ namespace Engine
 			int _tessellationAmount;
 			RenderTexture* _renderTexture;
 			DebugWindow* _debugWindow;
+			CubeMap* _cubeMap;
+			CubeMapShader* _cubeMapShader;
 
 			static Graphics* _instance;
 		};

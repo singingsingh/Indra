@@ -49,7 +49,7 @@ namespace Engine
 			void shutdown();
 			bool render(int indexCount, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix,
 				D3DXMATRIX projectionMatrix, D3DXVECTOR3 lightDirection, D3DXVECTOR4 ambientColor,
-				D3DXVECTOR4 diffuseColor, D3DXVECTOR3 cameraPosition, D3DXVECTOR4 specularColor, float specularPower, ID3D11ShaderResourceView * texture);
+				D3DXVECTOR4 diffuseColor, D3DXVECTOR3 cameraPosition, D3DXVECTOR4 specularColor, float specularPower, ID3D11ShaderResourceView * heightTexture, ID3D11ShaderResourceView * cubeMap);
 
 		private:
 			bool initializeShader(const char * vsFilename, const char * psFilename);
@@ -59,7 +59,7 @@ namespace Engine
 			bool setShaderParameters(D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix,
 				D3DXMATRIX projectionMatrix, D3DXVECTOR3 lightDirection,
 				D3DXVECTOR4 ambientColor, D3DXVECTOR4 diffuseColor, D3DXVECTOR3 cameraPosition, D3DXVECTOR4 specularColor,
-				float specularPower, ID3D11ShaderResourceView * texture);
+				float specularPower, ID3D11ShaderResourceView * heightTexture, ID3D11ShaderResourceView * cubeMap);
 			void renderShader(int indexCount);
 
 		private:

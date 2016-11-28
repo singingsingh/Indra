@@ -357,7 +357,7 @@ namespace Engine
 		depthDisabledStencilDesc.DepthEnable = false;
 		depthDisabledStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 		depthDisabledStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
-		depthDisabledStencilDesc.StencilEnable = true;
+		depthDisabledStencilDesc.StencilEnable = false;
 		depthDisabledStencilDesc.StencilReadMask = 0xFF;
 		depthDisabledStencilDesc.StencilWriteMask = 0xFF;
 		depthDisabledStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;

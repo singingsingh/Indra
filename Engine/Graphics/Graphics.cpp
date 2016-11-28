@@ -43,6 +43,9 @@ namespace Engine
 
 			_buildWaveModel = nullptr;
 			_buildWaveShader = nullptr;
+
+			_cubeMap = nullptr;
+			_cubeMapShader = nullptr;
 		}
 
 		bool Graphics::Initialize(HINSTANCE i_hInstance, const char * i_windowName, unsigned int i_windowWidth, unsigned int i_windowHeight, const WORD* i_icon)
@@ -332,6 +335,9 @@ namespace Engine
 			_buildWaveModel = new BuildWave();
 			_buildWaveShader = new BuildWaveShader();
 
+			_cubeMap = new CubeMap("Assets/Textures/desertcube1024.dds");
+			_cubeMapShader = new CubeMapShader();
+
 			return true;
 		}
 
@@ -470,6 +476,9 @@ namespace Engine
 				_text = nullptr;
 			}
 
+			delete _cubeMap;
+			delete _cubeMapShader;
+
 			GraphicsDX::Shutdown();
 
 			System::Window::Destory();
@@ -532,6 +541,13 @@ namespace Engine
 
 			GraphicsDX::BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 
+			// cube map
+			{
+				GraphicsDX::TurnZBufferOff();
+				_cubeMapShader->render(_cubeMap);
+				GraphicsDX::TurnZBufferOn();
+			}
+
 			// render 3D stuff
 			{
 				//GraphicsDX::RenderWireFrame();
@@ -550,7 +566,7 @@ namespace Engine
 				//GraphicsDX::RenderWireFrame();
 				result = _waterShader->render(_waterModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,_specularLight->getDirection(),
 					_specularLight->getAmbientColor(), _specularLight->getDiffuseColor(), _currentCamera->getPosition(),
-					_specularLight->getSpecularColor(), _specularLight->getSpecularPower(), _waterModel->getHeightField());
+					_specularLight->getSpecularColor(), _specularLight->getSpecularPower(), _waterModel->getHeightField(), _cubeMap->getTexture());
 				//GraphicsDX::RenderSolidFill();
 
 				//_diffuseModel->render();

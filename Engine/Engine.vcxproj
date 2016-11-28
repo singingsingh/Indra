@@ -50,6 +50,8 @@
     <ClCompile Include="Graphics\BuildWaveShader.cpp" />
     <ClCompile Include="Graphics\Camera.cpp" />
     <ClCompile Include="Graphics\ColorShader.cpp" />
+    <ClCompile Include="Graphics\CubeMap.cpp" />
+    <ClCompile Include="Graphics\CubeMapShader.cpp" />
     <ClCompile Include="Graphics\DebugWindow.cpp" />
     <ClCompile Include="Graphics\DiffuseLight.cpp" />
     <ClCompile Include="Graphics\DiffuseModel.cpp" />
@@ -127,6 +129,8 @@
     <ClInclude Include="Graphics\BuildWaveShader.h" />
     <ClInclude Include="Graphics\Camera.h" />
     <ClInclude Include="Graphics\ColorShader.h" />
+    <ClInclude Include="Graphics\CubeMap.h" />
+    <ClInclude Include="Graphics\CubeMapShader.h" />
     <ClInclude Include="Graphics\DebugWindow.h" />
     <ClInclude Include="Graphics\DiffuseLight.h" />
     <ClInclude Include="Graphics\DiffuseModel.h" />
@@ -245,6 +249,14 @@
       <FileType>Document</FileType>
     </None>
     <None Include="Graphics\Shaders\buildWaveVS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphics\Shaders\cubeMapPS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Graphics\Shaders\cubeMapVS.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
