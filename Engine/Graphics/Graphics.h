@@ -55,12 +55,12 @@ namespace Engine
 			//Model* _colorModel;
 			//ColorShader* _colorShader;
 			//TextureModel* _textureModel;
-			TextureShader* _textureShader;
+			//TextureShader* _textureShader;
 			//DiffuseModel* _diffuseModel;
 			//DiffuseShader* _diffuseShader;
 			//DiffuseLight* _diffuseLight;
-			SpecularModel* _specularModel;
-			SpecularShader* _specularShader;
+			//SpecularModel* _specularModel;
+			//SpecularShader* _specularShader;
 			WaterModel* _waterModel;
 			WaterShader* _waterShader;
 			SpecularLight* _specularLight;
@@ -78,7 +78,7 @@ namespace Engine
 			System::CPU* _cpuUsage;
 			int _tessellationAmount;
 			RenderTexture* _renderTexture;
-			DebugWindow* _debugWindow;
+			//DebugWindow* _debugWindow;
 			CubeMap* _cubeMap;
 			CubeMapShader* _cubeMapShader;
 

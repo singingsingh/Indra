@@ -518,19 +518,17 @@
     <None Include="Graphics\Shaders\wavesRenderTextureVS.hlsl">
       <Filter>Source Files\Graphics\shaders</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Graphics\Shaders\buildWavePS.hlsl">
+    <None Include="Graphics\Shaders\cubeMapVS.hlsl">
       <Filter>Source Files\Graphics\shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Graphics\Shaders\buildWaveVS.hlsl">
+    </None>
+    <None Include="Graphics\Shaders\cubeMapPS.hlsl">
       <Filter>Source Files\Graphics\shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Graphics\Shaders\cubeMapPS.hlsl">
+    </None>
+    <None Include="Graphics\Shaders\buildWaveVS.hlsl">
       <Filter>Source Files\Graphics\shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Graphics\Shaders\cubeMapVS.hlsl">
+    </None>
+    <None Include="Graphics\Shaders\buildWavePS.hlsl">
       <Filter>Source Files\Graphics\shaders</Filter>
-    </FxCompile>
+    </None>
   </ItemGroup>
 </Project>

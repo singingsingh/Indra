@@ -76,10 +76,10 @@ namespace Engine
 		{
 			WaveParticle* newParticles = getFreePartices(12);
 			WaveParticle* first = newParticles;
-
+			float waveVelocity = 0.0007f;
 			newParticles->origin = D3DXVECTOR2(0.0f, 0.0f);
 			newParticles->direction = D3DXVECTOR2(0.0f, 1.0f);
-			newParticles->velocity = 0.0001f;
+			newParticles->velocity = waveVelocity;
 			newParticles->amplitude = 1.5f;
 			newParticles->radius = 0.2f;
 			newParticles->angle = 30.0f;
@@ -91,7 +91,7 @@ namespace Engine
 
 			newParticles->origin = D3DXVECTOR2(0.0f, 0.0f);
 			newParticles->direction = D3DXVECTOR2((float)sin(30.0f*MathUtils::DegToRad), (float)cos(30.0f*MathUtils::DegToRad));
-			newParticles->velocity = 0.0001f;
+			newParticles->velocity = waveVelocity;
 			newParticles->amplitude = 1.5f;
 			newParticles->radius = 0.2f;
 			newParticles->angle = 30.0f;
@@ -103,7 +103,7 @@ namespace Engine
 
 			newParticles->origin = D3DXVECTOR2(0.0f, 0.0f);
 			newParticles->direction = D3DXVECTOR2((float)sin(-30.0f*MathUtils::DegToRad), (float)cos(-30.0f*MathUtils::DegToRad));
-			newParticles->velocity = 0.0001f;
+			newParticles->velocity = waveVelocity;
 			newParticles->amplitude = 1.5f;
 			newParticles->radius = 0.2f;
 			newParticles->angle = 30.0f;
@@ -115,7 +115,7 @@ namespace Engine
 
 			newParticles->origin = D3DXVECTOR2(0.0f, 0.0f);
 			newParticles->direction = D3DXVECTOR2((float)sin(60.0f*MathUtils::DegToRad), (float)cos(60.0f*MathUtils::DegToRad));
-			newParticles->velocity = 0.0001f;
+			newParticles->velocity = waveVelocity;
 			newParticles->amplitude = 1.5f;
 			newParticles->radius = 0.2f;
 			newParticles->angle = 30.0f;
@@ -127,7 +127,7 @@ namespace Engine
 
 			newParticles->origin = D3DXVECTOR2(0.0f, 0.0f);
 			newParticles->direction = D3DXVECTOR2((float)sin(-60.0f*MathUtils::DegToRad), (float)cos(-60.0f*MathUtils::DegToRad));
-			newParticles->velocity = 0.0001f;
+			newParticles->velocity = waveVelocity;
 			newParticles->amplitude = 1.5f;
 			newParticles->radius = 0.2f;
 			newParticles->angle = 30.0f;
@@ -139,7 +139,7 @@ namespace Engine
 
 			newParticles->origin = D3DXVECTOR2(0.0f, 0.0f);
 			newParticles->direction = D3DXVECTOR2((float)sin(90.0f*MathUtils::DegToRad), (float)cos(90.0f*MathUtils::DegToRad));
-			newParticles->velocity = 0.0001f;
+			newParticles->velocity = waveVelocity;
 			newParticles->amplitude = 1.5f;
 			newParticles->radius = 0.2f;
 			newParticles->angle = 30.0f;
@@ -151,7 +151,7 @@ namespace Engine
 
 			newParticles->origin = D3DXVECTOR2(0.0f, 0.0f);
 			newParticles->direction = D3DXVECTOR2((float)sin(-90.0f*MathUtils::DegToRad), (float)cos(-90.0f*MathUtils::DegToRad));
-			newParticles->velocity = 0.0001f;
+			newParticles->velocity = waveVelocity;
 			newParticles->amplitude = 1.5f;
 			newParticles->radius = 0.2f;
 			newParticles->angle = 30.0f;
@@ -163,7 +163,7 @@ namespace Engine
 
 			newParticles->origin = D3DXVECTOR2(0.0f, 0.0f);
 			newParticles->direction = D3DXVECTOR2((float)sin(120.0f*MathUtils::DegToRad), (float)cos(120.0f*MathUtils::DegToRad));
-			newParticles->velocity = 0.0001f;
+			newParticles->velocity = waveVelocity;
 			newParticles->amplitude = 1.5f;
 			newParticles->radius = 0.2f;
 			newParticles->angle = 30.0f;
@@ -175,7 +175,7 @@ namespace Engine
 
 			newParticles->origin = D3DXVECTOR2(0.0f, 0.0f);
 			newParticles->direction = D3DXVECTOR2((float)sin(-120.0f*MathUtils::DegToRad), (float)cos(-120.0f*MathUtils::DegToRad));
-			newParticles->velocity = 0.0001f;
+			newParticles->velocity = waveVelocity;
 			newParticles->amplitude = 1.5f;
 			newParticles->radius = 0.2f;
 			newParticles->angle = 30.0f;
@@ -187,7 +187,7 @@ namespace Engine
 
 			newParticles->origin = D3DXVECTOR2(0.0f, 0.0f);
 			newParticles->direction = D3DXVECTOR2((float)sin(150.0f*MathUtils::DegToRad), (float)cos(150.0f*MathUtils::DegToRad));
-			newParticles->velocity = 0.0001f;
+			newParticles->velocity = waveVelocity;
 			newParticles->amplitude = 1.5f;
 			newParticles->radius = 0.2f;
 			newParticles->angle = 30.0f;
@@ -199,7 +199,7 @@ namespace Engine
 
 			newParticles->origin = D3DXVECTOR2(0.0f, 0.0f);
 			newParticles->direction = D3DXVECTOR2((float)sin(-150.0f*MathUtils::DegToRad), (float)cos(-150.0f*MathUtils::DegToRad));
-			newParticles->velocity = 0.0001f;
+			newParticles->velocity = waveVelocity;
 			newParticles->amplitude = 1.5f;
 			newParticles->radius = 0.2f;
 			newParticles->angle = 30.0f;
@@ -211,7 +211,7 @@ namespace Engine
 
 			newParticles->origin = D3DXVECTOR2(0.0f, 0.0f);
 			newParticles->direction = D3DXVECTOR2((float)sin(180.0f*MathUtils::DegToRad), (float)cos(180.0f*MathUtils::DegToRad));
-			newParticles->velocity = 0.0001f;
+			newParticles->velocity = waveVelocity;
 			newParticles->amplitude = 1.5f;
 			newParticles->radius = 0.2f;
 			newParticles->angle = 30.0f;

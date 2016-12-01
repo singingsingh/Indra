@@ -21,13 +21,13 @@ namespace Engine
 			//_colorShader = nullptr;
 			//_tessellationShader = nullptr;
 			VSYNC_ENABLED = false;
-			_textureShader = nullptr;
+			//_textureShader = nullptr;
 			//_textureModel = nullptr;
 			//_diffuseModel = nullptr;
 			//_diffuseShader = nullptr;
 			//_diffuseLight = nullptr;
-			_specularModel = nullptr;
-			_specularShader = nullptr;
+			//_specularModel = nullptr;
+			//_specularShader = nullptr;
 			_waterModel = nullptr;
 			_waterShader = nullptr;
 			_specularLight = nullptr;
@@ -35,7 +35,7 @@ namespace Engine
 			_text = nullptr;
 			_cpuUsage = nullptr;
 			_fps = nullptr;
-			_debugWindow = nullptr;
+			//_debugWindow = nullptr;
 			_renderTexture = nullptr;
 			//_tessellationAmount = 5;
 			_waveParticlesRTTModel = nullptr;
@@ -93,20 +93,20 @@ namespace Engine
 			//	return false;
 			//}
 
-			// Create the texture shader object.
-			_textureShader = new TextureShader;
-			if (!_textureShader)
-			{
-				return false;
-			}
+			//// Create the texture shader object.
+			//_textureShader = new TextureShader;
+			//if (!_textureShader)
+			//{
+			//	return false;
+			//}
 
-			// Initialize the texture shader object.
-			result = _textureShader->initialize(GraphicsDX::GetDevice());
-			if (!result)
-			{
-				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the texture shader object.", "Error", MB_OK);
-				return false;
-			}
+			//// Initialize the texture shader object.
+			//result = _textureShader->initialize(GraphicsDX::GetDevice());
+			//if (!result)
+			//{
+			//	MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the texture shader object.", "Error", MB_OK);
+			//	return false;
+			//}
 
 			//// Create the model object.
 			//_colorModel = new Model();
@@ -195,29 +195,29 @@ namespace Engine
 			//_diffuseLight->setDiffuseColor(1.0f, 1.0f, 0.7f, 1.0f);
 			//_diffuseLight->setDirection(0.0f, 0.0f, 1.0f);
 
-			_specularModel = new SpecularModel;
+			//_specularModel = new SpecularModel;
 
-			result = _specularModel->initialize("Assets/Meshes/neptune.ply", "Assets/Textures/161.dds");
-			if (!result)
-			{
-				MessageBox(System::Window::GetWindwsHandle(), "Could not load the assmip the model object.", "Error", MB_OK);
-				return false;
-			}
+			//result = _specularModel->initialize("Assets/Meshes/neptune.ply", "Assets/Textures/161.dds");
+			//if (!result)
+			//{
+			//	MessageBox(System::Window::GetWindwsHandle(), "Could not load the assmip the model object.", "Error", MB_OK);
+			//	return false;
+			//}
 
-			// Create the light shader object.
-			_specularShader = new SpecularShader;
-			if (!_specularShader)
-			{
-				return false;
-			}
+			//// Create the light shader object.
+			//_specularShader = new SpecularShader;
+			//if (!_specularShader)
+			//{
+			//	return false;
+			//}
 
-			// Initialize the light shader object.
-			result = _specularShader->initialize();
-			if (!result)
-			{
-				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the light shader object.", "Error", MB_OK);
-				return false;
-			}
+			//// Initialize the light shader object.
+			//result = _specularShader->initialize();
+			//if (!result)
+			//{
+			//	MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the light shader object.", "Error", MB_OK);
+			//	return false;
+			//}
 
 			_waterModel = new WaterModel;
 
@@ -300,7 +300,7 @@ namespace Engine
 			_cpuUsage->initialize();
 
 			_renderTexture = new RenderTexture(256, 256);
-			_debugWindow = new DebugWindow(256, 256);
+			//_debugWindow = new DebugWindow(256, 256);
 
 			// Create the wave rtt object.
 			_waveParticlesRTTModel = new WaveParticlesRTTModel();
@@ -335,7 +335,7 @@ namespace Engine
 			_buildWaveModel = new BuildWave();
 			_buildWaveShader = new BuildWaveShader();
 
-			_cubeMap = new CubeMap("Assets/Textures/desertcube1024.dds");
+			_cubeMap = new CubeMap("Assets/Textures/sunsetcube1024.dds");
 			_cubeMapShader = new CubeMapShader();
 
 			return true;
@@ -362,8 +362,8 @@ namespace Engine
 			delete _waveParticlesRTTShader;
 			_waveParticlesRTTShader = nullptr;
 
-			delete _debugWindow;
-			_debugWindow = nullptr;
+			//delete _debugWindow;
+			//_debugWindow = nullptr;
 
 			delete _renderTexture;
 			_renderTexture = nullptr;
@@ -404,13 +404,13 @@ namespace Engine
 			//	_colorModel = nullptr;
 			//}
 
-			// Release the color shader object.
-			if (_textureShader)
-			{
-				_textureShader->shutdown();
-				delete _textureShader;
-				_textureShader = nullptr;
-			}
+			//// Release the color shader object.
+			//if (_textureShader)
+			//{
+			//	_textureShader->shutdown();
+			//	delete _textureShader;
+			//	_textureShader = nullptr;
+			//}
 
 			//// Release the model object.
 			//if (_textureModel)
@@ -453,13 +453,13 @@ namespace Engine
 			delete _specularLight;
 			_specularLight = nullptr;
 
-			_specularModel->shutdown();
-			delete _specularModel;
-			_specularModel = nullptr;
+			//_specularModel->shutdown();
+			//delete _specularModel;
+			//_specularModel = nullptr;
 
-			_specularShader->shutdown();
-			delete _specularShader;
-			_specularShader = nullptr;
+			//_specularShader->shutdown();
+			//delete _specularShader;
+			//_specularShader = nullptr;
 
 			_waterModel->shutdown();
 			delete _waterModel;
