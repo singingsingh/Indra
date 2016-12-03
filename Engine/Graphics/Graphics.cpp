@@ -38,11 +38,11 @@ namespace Engine
 			//_debugWindow = nullptr;
 			_renderTexture = nullptr;
 			//_tessellationAmount = 5;
-			_waveParticlesRTTModel = nullptr;
-			_waveParticlesRTTShader = nullptr;
+			//_waveParticlesRTTModel = nullptr;
+			//_waveParticlesRTTShader = nullptr;
 
-			_buildWaveModel = nullptr;
-			_buildWaveShader = nullptr;
+			//_buildWaveModel = nullptr;
+			//_buildWaveShader = nullptr;
 
 			_cubeMap = nullptr;
 			_cubeMapShader = nullptr;
@@ -302,38 +302,38 @@ namespace Engine
 			_renderTexture = new RenderTexture(256, 256);
 			//_debugWindow = new DebugWindow(256, 256);
 
-			// Create the wave rtt object.
-			_waveParticlesRTTModel = new WaveParticlesRTTModel();
-			if (!_waveParticlesRTTModel)
-			{
-				return false;
-			}
+			//// Create the wave rtt object.
+			//_waveParticlesRTTModel = new WaveParticlesRTTModel();
+			//if (!_waveParticlesRTTModel)
+			//{
+			//	return false;
+			//}
 
-			// Initialize the model object.
-			result = _waveParticlesRTTModel->initialize();
-			if (!result)
-			{
-				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the model object.", "Error", MB_OK);
-				return false;
-			}
+			//// Initialize the model object.
+			//result = _waveParticlesRTTModel->initialize();
+			//if (!result)
+			//{
+			//	MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the model object.", "Error", MB_OK);
+			//	return false;
+			//}
 
-			// Create the texture shader object.
-			_waveParticlesRTTShader = new WaveParticlesRTTShader;
-			if (!_waveParticlesRTTShader)
-			{
-				return false;
-			}
+			//// Create the texture shader object.
+			//_waveParticlesRTTShader = new WaveParticlesRTTShader;
+			//if (!_waveParticlesRTTShader)
+			//{
+			//	return false;
+			//}
 
-			// Initialize the texture shader object.
-			result = _waveParticlesRTTShader->initialize();
-			if (!result)
-			{
-				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the texture shader object.", "Error", MB_OK);
-				return false;
-			}
+			//// Initialize the texture shader object.
+			//result = _waveParticlesRTTShader->initialize();
+			//if (!result)
+			//{
+			//	MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the texture shader object.", "Error", MB_OK);
+			//	return false;
+			//}
 
-			_buildWaveModel = new BuildWave();
-			_buildWaveShader = new BuildWaveShader();
+			//_buildWaveModel = new BuildWave();
+			//_buildWaveShader = new BuildWaveShader();
 
 			_cubeMap = new CubeMap("Assets/Textures/sunsetcube1024.dds");
 			_cubeMapShader = new CubeMapShader();
@@ -350,17 +350,17 @@ namespace Engine
 
 		void Graphics::_shutdown()
 		{
-			delete _buildWaveModel;
-			_buildWaveModel = nullptr;
+			//delete _buildWaveModel;
+			//_buildWaveModel = nullptr;
 
-			delete _buildWaveShader;
-			_buildWaveShader = nullptr;
+			//delete _buildWaveShader;
+			//_buildWaveShader = nullptr;
 
-			delete _waveParticlesRTTModel;
-			_waveParticlesRTTModel = nullptr;
+			//delete _waveParticlesRTTModel;
+			//_waveParticlesRTTModel = nullptr;
 
-			delete _waveParticlesRTTShader;
-			_waveParticlesRTTShader = nullptr;
+			//delete _waveParticlesRTTShader;
+			//_waveParticlesRTTShader = nullptr;
 
 			//delete _debugWindow;
 			//_debugWindow = nullptr;

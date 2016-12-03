@@ -12,7 +12,7 @@ namespace Engine
 		class WaveParticlesRTTModel
 		{
 			public:
-				WaveParticlesRTTModel();
+				WaveParticlesRTTModel(float i_xMin, float i_xMax, float i_yMin, float i_yMax);
 				~WaveParticlesRTTModel();
 
 				bool initialize();
@@ -48,20 +48,24 @@ namespace Engine
 				void initializeWaveParticlesList();
 
 				void subDivideParticles();
+				void reflectParticles();
 				void updateBuffers();
 
 				WaveParticle* getFreePartices(uint32_t numParticles);
-				void pushToActiveList(WaveParticle*  waveParticle);
+				void pushToList(WaveParticle*  waveParticle, WaveParticle*& i_list);
 				void recycleParticles(WaveParticle* waveParticle);
 
 				uint32_t _numParticles, _activeParticles;
 				WaveParticle* const _waveParticleMemPool;
-				WaveParticle *_freeList, *_activeList;
+				WaveParticle *_freeList, *_subDivList, *_reflecList;
 
 				ID3D11Buffer *_vertexBuffer;
 				VertexType* const _vertices;
 
 				float _currentTimeMS;
+				float _xMin, _xMax, _yMin, _yMax;
+
+				float _minAmp;
 		};
 	}	// namespace Graphics
 }	// namespace Engine

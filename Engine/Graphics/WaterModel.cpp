@@ -44,13 +44,19 @@ namespace Engine
 			bool result;
 
 			// Initialize the vertex and index buffer that hold the geometry for the triangle.
-			result = initializeBuffers();
+
+			float xMin = 0;
+			float xMax = 0;
+			float yMin = 0;
+			float yMax = 0;
+
+			result = initializeBuffers( xMin, xMax, yMin, yMax );
 			if (!result)
 			{
 				return false;
 			}
 
-			_waveParticlesRTTModel = new WaveParticlesRTTModel();
+			_waveParticlesRTTModel = new WaveParticlesRTTModel(xMin, xMax, yMin, yMax);
 			if (!_waveParticlesRTTModel)
 			{
 				return false;
@@ -171,7 +177,7 @@ namespace Engine
 			_waveParticlesRTTModel->spawnParticles();
 		}
 
-		bool WaterModel::initializeBuffers()
+		bool WaterModel::initializeBuffers(float& o_xMin, float& o_xMax, float& o_yMin, float& o_yMax)
 		{
 			D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
 			D3D11_SUBRESOURCE_DATA vertexData, indexData;
@@ -195,8 +201,14 @@ namespace Engine
 				return false;
 			}
 
+			o_xMin = _corner.x;
+			o_xMax = _gridCols*_gridGap + _corner.x;
+
+			o_yMin = -_gridRows*_gridGap + _corner.y;
+			o_yMax = _corner.y;
+
 			int vertexCount = 0;
-			
+
 			for (uint8_t row = 0; row <= _gridRows; row++)
 			{
 				for (uint8_t col = 0; col <= _gridCols; col++)

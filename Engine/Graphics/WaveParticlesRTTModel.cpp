@@ -11,7 +11,7 @@ namespace Engine
 	namespace Graphics
 	{
 
-		WaveParticlesRTTModel::WaveParticlesRTTModel()
+		WaveParticlesRTTModel::WaveParticlesRTTModel(float i_xMin, float i_xMax, float i_yMin, float i_yMax)
 			:_numParticles(400),
 			_waveParticleMemPool(static_cast<WaveParticle*>(MemoryMgr::getInstance()->allocMemory(_numParticles * sizeof(WaveParticle)))),
 			_vertices (static_cast<VertexType*>(MemoryMgr::getInstance()->allocMemory(_numParticles*sizeof(VertexType))))
@@ -20,7 +20,15 @@ namespace Engine
 			_activeParticles = 0;
 
 			_freeList = nullptr;
-			_activeList = nullptr;
+			_subDivList = nullptr;
+			_reflecList = nullptr;
+
+			_xMin = i_xMin;
+			_xMax = i_xMax;
+			_yMin = i_yMin;
+			_yMax = i_yMax;
+
+			_minAmp = 0.5f;
 		}
 
 		WaveParticlesRTTModel::~WaveParticlesRTTModel()
@@ -54,6 +62,7 @@ namespace Engine
 		{
 			_currentTimeMS = static_cast<float>(System::Timer::GetCurrentTimeMS());
 
+			reflectParticles();
 			subDivideParticles();
 
 			unsigned int stride;
@@ -221,7 +230,7 @@ namespace Engine
 
 			newParticles->next = nullptr;
 
-			pushToActiveList(first);
+			pushToList(first, _subDivList);
 			updateBuffers();
 		}
 
@@ -232,22 +241,22 @@ namespace Engine
 
 		void WaveParticlesRTTModel::subDivideParticles()
 		{
-			WaveParticle* currentParticle = _activeList;
+			WaveParticle* currentParticle = _subDivList;
 
 			bool particlesSubdiveded = false;
 
 			while (currentParticle && currentParticle->actionTimeMS < _currentTimeMS)
 			{
 				particlesSubdiveded = true;
-				_activeList = currentParticle->next;
+				_subDivList = currentParticle->next;
 
 				// check to see if the amplitude is less than threshold and discard accordingly
-				if (currentParticle->amplitude < 0.5)
+				if (currentParticle->amplitude < _minAmp)
 				{
 					currentParticle->next = nullptr;
 					recycleParticles(currentParticle);
 
-					currentParticle = _activeList;
+					currentParticle = _subDivList;
 					continue;
 				}
 
@@ -290,9 +299,9 @@ namespace Engine
 				newDirection.y = direction.x * (float)sin(angle) + direction.y * (float)cos(angle);
 				temp->direction = newDirection;
 
-				pushToActiveList(currentParticle);
+				pushToList(currentParticle, _subDivList);
 
-				currentParticle = _activeList;
+				currentParticle = _subDivList;
 			}
 
 			if (particlesSubdiveded)
@@ -301,9 +310,28 @@ namespace Engine
 			}
 		}
 
+		void WaveParticlesRTTModel::reflectParticles()
+		{
+			WaveParticle* currentParticle = _reflecList;
+
+			bool particlesReflected = false;
+
+			while (currentParticle && currentParticle->actionTimeMS < _currentTimeMS)
+			{
+				particlesReflected = true;
+
+				//if (  )
+			}
+
+			if (particlesReflected)
+			{
+				updateBuffers();
+			}
+		}
+
 		void WaveParticlesRTTModel::updateBuffers()
 		{
-			WaveParticle* currentParticle = _activeList;
+			WaveParticle* currentParticle = _subDivList;
 			uint32_t particleCount = 0;
 			
 			while (currentParticle)
@@ -382,7 +410,7 @@ namespace Engine
 			}
 		}
 
-		void WaveParticlesRTTModel::pushToActiveList(WaveParticle * i_waveParticle)
+		void WaveParticlesRTTModel::pushToList(WaveParticle * i_waveParticle, WaveParticle*& i_list)
 		{
 			WaveParticle* currentParticle = i_waveParticle;
 			WaveParticle* nextParticle = nullptr;
@@ -390,7 +418,7 @@ namespace Engine
 			while (currentParticle)
 			{
 				nextParticle = currentParticle->next;
-				WaveParticle* currentPtr = _activeList;
+				WaveParticle* currentPtr = i_list;
 				WaveParticle* prevPtr = nullptr;
 
 				while (currentPtr && currentParticle->actionTimeMS > currentPtr->actionTimeMS)
@@ -406,8 +434,8 @@ namespace Engine
 				}
 				else
 				{
-					currentParticle->next = _activeList;
-					_activeList = currentParticle;
+					currentParticle->next = i_list;
+					i_list = currentParticle;
 				}
 
 				currentParticle = nextParticle;

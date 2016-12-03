@@ -65,10 +65,10 @@ namespace Engine
 			WaterShader* _waterShader;
 			SpecularLight* _specularLight;
 			//Bitmap* _bitmap;
-			WaveParticlesRTTModel* _waveParticlesRTTModel;
-			WaveParticlesRTTShader* _waveParticlesRTTShader;
-			BuildWave* _buildWaveModel;
-			BuildWaveShader* _buildWaveShader;
+			//WaveParticlesRTTModel* _waveParticlesRTTModel;
+			//WaveParticlesRTTShader* _waveParticlesRTTShader;
+			//BuildWave* _buildWaveModel;
+			//BuildWaveShader* _buildWaveShader;
 
 			//TessellationShader* _tessellationShader;
 

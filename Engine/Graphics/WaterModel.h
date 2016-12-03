@@ -34,7 +34,7 @@ namespace Engine
 					D3DXVECTOR2 tex;
 				};
 
-				bool initializeBuffers();
+				bool initializeBuffers( float& o_xMin, float& o_xMax, float& o_yMin, float& o_yMax );
 
 				void renderBuffers();
 				void updateHeightField();
