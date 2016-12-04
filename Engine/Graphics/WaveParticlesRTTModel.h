@@ -44,6 +44,12 @@ namespace Engine
 					D3DXVECTOR2 direction;
 				};
 
+				enum NextActionType
+				{
+					SUB_DIVISION,
+					REFLECTION
+				};
+
 				bool createBuffers();
 				void initializeWaveParticlesList();
 
@@ -51,9 +57,13 @@ namespace Engine
 				void reflectParticles();
 				void updateBuffers();
 
+				D3DXVECTOR2 reflect(const D3DXVECTOR2& i_incidentVec, const D3DXVECTOR2& i_normalVec);
+
 				WaveParticle* getFreePartices(uint32_t numParticles);
 				void pushToList(WaveParticle*  waveParticle, WaveParticle*& i_list);
 				void recycleParticles(WaveParticle* waveParticle);
+				WaveParticlesRTTModel::NextActionType getNextActionTime(WaveParticle* i_particle);
+				char getLineIntersection(const D3DXVECTOR2& p0, const D3DXVECTOR2& p1, const D3DXVECTOR2& p2, const D3DXVECTOR2& p3, D3DXVECTOR2&  i_intersection);
 
 				uint32_t _numParticles, _activeParticles;
 				WaveParticle* const _waveParticleMemPool;
@@ -64,6 +74,12 @@ namespace Engine
 
 				float _currentTimeMS;
 				float _xMin, _xMax, _yMin, _yMax;
+				float _gridWidth;
+				float _gridHeight;
+
+				int _numSubDiv, _numReflect;
+
+				D3DXVECTOR2 _topRight, _topLeft, _bottomRight, _bottomLeft;
 
 				float _minAmp;
 		};
