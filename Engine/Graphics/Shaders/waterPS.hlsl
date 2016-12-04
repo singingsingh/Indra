@@ -63,11 +63,11 @@ float4 WaterPixelShader(PixelInputType input) : SV_TARGET
 		specularColor = pow(saturate(dot(reflection, normal)), specularPower);
     }
 
-	reflectionColor = cubeMap.Sample(SampleType, reflection) ;
+	reflectionColor = cubeMap.Sample(SampleType, reflection) * 0.5 ;
 
 	//reflectionColor = float4(normal.z, normal.z, normal.z, 1.0);
 
 	retVal = ((ambientColor + diffuseColor) * reflectionColor) + specularColor;
-	retVal.a = 1.0;
+	retVal.a = 0.5;
     return retVal;
 }

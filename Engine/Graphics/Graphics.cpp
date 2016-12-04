@@ -563,10 +563,12 @@ namespace Engine
 
 				
 				_waterModel->render();
+				GraphicsDX::TurnOnAlphaBlending();
 				//GraphicsDX::RenderWireFrame();
 				result = _waterShader->render(_waterModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,_specularLight->getDirection(),
 					_specularLight->getAmbientColor(), _specularLight->getDiffuseColor(), _currentCamera->getPosition(),
 					_specularLight->getSpecularColor(), _specularLight->getSpecularPower(), _waterModel->getHeightField(), _cubeMap->getTexture());
+				GraphicsDX::TurnOffAlphaBlending();
 				//GraphicsDX::RenderSolidFill();
 
 				//_diffuseModel->render();
