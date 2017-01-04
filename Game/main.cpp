@@ -5,10 +5,14 @@
 #include <Engine\Engine\PhysicsTickNotifier.h>
 #include <Engine\Engine\AIUpdateNotifier.h>
 #include <Engine\Core\ThreadedFileProcessor.h>
-
-#include <GraphicsDX\Renderer\Sprite\SpriteRenderer.h>
+#include <Engine\System\Window.h>
+#include <Engine\Graphics\Graphics.h>
+#include <Engine\Graphics\Camera.h>
+#include <Engine\Util\MathUtils.h>
 
 #include <Game\Lua\LuaLoadTask.h>
+#include <Game\Config.h>
+#include <Game\resource.h>
 
 #include <stdio.h>
 #include <stdint.h>
@@ -19,24 +23,11 @@
 #include <crtdbg.h>
 #endif // _DEBUG
 
-bool bQuit = false;
-
-void updateKeyboard()
-{
-	GraphicsDX::Service(bQuit);
-}
 
 void updateEngine(double i_deltaTime)
 {
 	Engine::AIUpdateNotifier::UpdateAITick( i_deltaTime );
 	Engine::PhysicsTickNotifier::UpdatePhysicsTick( i_deltaTime );
-}
-
-void updateRenderer()
-{
-	GraphicsDX::BeginRendering();
-	GraphicsDX::SpriteRenderer::Render();
-	GraphicsDX::EndRendering();
 }
 
 void loadCompletedGO()
@@ -67,58 +58,64 @@ struct AtExit
 int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_lpCmdLine, int i_nCmdShow)
 {
 	//#if defined _DEBUG
-	//	_CrtSetBreakAlloc(1735);
+	//	_CrtSetBreakAlloc(262);
 	//#endif // _DEBUG
-
-	Engine::Initialize("Data/SaveData.dat");
-	GraphicsDX::Initialize(i_hInstance, i_nCmdShow, "GhostKid ( Escape the ghost )", -1, 800, 600);
+	Engine::System::Timer::Initialize();
+	const WORD icon = IDI_EAEGAMEPAD;
+	Engine::Initialize("Data/SaveData.dat", i_hInstance, "WaterSimulation", Game::WINDOW_WIDTH, Game::WINDOW_HEIGHT, &icon);
 	Game::Initialize();
 
-	Engine::ThreadedFileProcessor &Processor = Engine::ThreadedFileProcessor::GetInstance();
+	//Engine::ThreadedFileProcessor &Processor = Engine::ThreadedFileProcessor::GetInstance();
 
-	Processor.AddToLoadQueue(*(new Game::LuaLoadTask("data\\luaFiles\\player.lua")));
-	Processor.AddToLoadQueue(*(new Game::LuaLoadTask("data\\luaFiles\\monster.lua")));
+	//Processor.AddToLoadQueue(*(new Game::LuaLoadTask("data\\luaFiles\\player.lua")));
+	//Processor.AddToLoadQueue(*(new Game::LuaLoadTask("data\\luaFiles\\monster.lua")));
 
-	Engine::SmartPtr<Engine::Timer> timer = new Engine::Timer();
-	uint64_t currentTick = timer->getCurrentTick();
+	uint64_t currentTick = Engine::System::Timer::GetCurrentTick();
 	uint64_t prevEngineTick = currentTick;
 	const uint8_t ENGINE_FPS = 50;
-	uint64_t engineFrameTicks = timer->getTicksPerSecond() / ENGINE_FPS;
+	uint64_t engineFrameTicks = Engine::System::Timer::GetTicksPerSecond() / ENGINE_FPS;
 	uint64_t nextEngineTick = currentTick;
 	const uint8_t MAX_FRAME_SKIP = 10;
 	uint8_t continuesEngineUpdate = 0;
+	bool bQuit = false;
+	
+	Engine::Graphics::Camera* camera = new Engine::Graphics::Camera(0.1f, 100.0f, Engine::MathUtils::DegToRad * 60.0f, float (Game::WINDOW_WIDTH)/ Game::WINDOW_HEIGHT);
+	Engine::Graphics::Graphics::SetCamera(camera);
+	camera->setPosition(0.0f, 3.0f, -12.0f);
+	camera->setRotation(15.0f, 0.0f, 0.0f);
 
-	// render loop
 	do
 	{
-		loadCompletedGO();
-		currentTick = timer->getCurrentTick();
+		//loadCompletedGO();
+		currentTick = Engine::System::Timer::GetCurrentTick();
 
 		continuesEngineUpdate = 0;
 		while (currentTick > nextEngineTick && continuesEngineUpdate < MAX_FRAME_SKIP)
 		{
 			continuesEngineUpdate++;
 
-			updateKeyboard();
+			bQuit = Engine::KeyboardUpdate();
 			if (bQuit)
 			{
 				break;
 			}
 
-			updateEngine(timer->getElapsedTime_ms(prevEngineTick, currentTick));
+			double deltaTime = Engine::System::Timer::GetElapsedTimeMilliSec(prevEngineTick, currentTick, true);
+			Engine::System::Timer::SetDeltaTime(deltaTime);
+			updateEngine(deltaTime);
 
 			nextEngineTick += engineFrameTicks;
 			prevEngineTick = currentTick;
-			currentTick = timer->getCurrentTick();
+			currentTick = Engine::System::Timer::GetCurrentTick();
 		}
 
-		updateRenderer();
+		Engine::Graphics::Graphics::Render();
 	} while (bQuit == false);
 
 	Engine::ThreadedFileProcessor::Shutdown();
 
+	delete camera;
 	Game::Shutdown();
-	GraphicsDX::Shutdown();
 	Engine::Shutdown();
 
 	// dont call _CrtDumpMemoryLeaks here

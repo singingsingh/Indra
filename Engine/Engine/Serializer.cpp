@@ -36,24 +36,40 @@ namespace Engine
 		_instance->_list.push_back( i_iSerializable );
 	}
 
-	void Serializer::keyboardUpdate(unsigned int i_key, bool i_down)
+	void Serializer::keyboardUpdate(uint8_t i_key, bool i_down, uint16_t i_x, uint16_t i_y)
 	{
-		switch (i_key)
-		{
-		case 0x4B:	// k
-			if (i_down)
-			{
-				serializeObjects();
-			}
-			break;
+		//switch (i_key)
+		//{
+		//case 0x4B:	// k
+		//	if (i_down)
+		//	{
+		//		serializeObjects();
+		//	}
+		//	break;
 
-		case 0x4C:	// l
-			if (i_down)
-			{
-				deSerializeObjects();
-			}
-			break;
-		}
+		//case 0x4C:	// l
+		//	if (i_down)
+		//	{
+		//		deSerializeObjects();
+		//	}
+		//	break;
+		//}
+	}
+
+	void Serializer::mouseClickUpdate(uint8_t i_button, bool i_down, uint16_t i_x, uint16_t i_y)
+	{
+	}
+
+	void Serializer::mouseMoveUpdate(bool i_leftBt, bool i_rightBt, bool i_middleBt, uint16_t i_x, uint16_t i_y)
+	{
+	}
+
+	void Serializer::mousePassiveMoveUpdate(uint16_t i_x, uint16_t i_y)
+	{
+	}
+
+	void Serializer::mouseWheelUpdate(bool i_direction, uint16_t i_x, uint16_t i_y)
+	{
 	}
 
 	Serializer::Serializer(const char* i_savaFileName)

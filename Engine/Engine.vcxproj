@@ -45,8 +45,39 @@
     <ClCompile Include="Engine\PhysicsTickNotifier.cpp" />
     <ClCompile Include="Engine\Serializer.cpp" />
     <ClCompile Include="Engine\World.cpp" />
-    <ClCompile Include="System\Keyboard.cpp" />
+    <ClCompile Include="Graphics\Bitmap.cpp" />
+    <ClCompile Include="Graphics\BuildWave.cpp" />
+    <ClCompile Include="Graphics\BuildWaveShader.cpp" />
+    <ClCompile Include="Graphics\Camera.cpp" />
+    <ClCompile Include="Graphics\ColorShader.cpp" />
+    <ClCompile Include="Graphics\CubeMap.cpp" />
+    <ClCompile Include="Graphics\CubeMapShader.cpp" />
+    <ClCompile Include="Graphics\DebugWindow.cpp" />
+    <ClCompile Include="Graphics\DiffuseLight.cpp" />
+    <ClCompile Include="Graphics\DiffuseModel.cpp" />
+    <ClCompile Include="Graphics\DiffuseShader.cpp" />
+    <ClCompile Include="Graphics\Font.cpp" />
+    <ClCompile Include="Graphics\FontShader.cpp" />
+    <ClCompile Include="Graphics\Graphics.cpp" />
+    <ClCompile Include="Graphics\GraphicsDX.cpp" />
+    <ClCompile Include="Graphics\Model.cpp" />
+    <ClCompile Include="Graphics\RenderTexture.cpp" />
+    <ClCompile Include="Graphics\SpecularLight.cpp" />
+    <ClCompile Include="Graphics\SpecularModel.cpp" />
+    <ClCompile Include="Graphics\SpecularShader.cpp" />
+    <ClCompile Include="Graphics\TessellationShader.cpp" />
+    <ClCompile Include="Graphics\Text.cpp" />
+    <ClCompile Include="Graphics\Texture.cpp" />
+    <ClCompile Include="Graphics\TextureModel.cpp" />
+    <ClCompile Include="Graphics\TextureShader.cpp" />
+    <ClCompile Include="Graphics\WaterModel.cpp" />
+    <ClCompile Include="Graphics\WaterShader.cpp" />
+    <ClCompile Include="Graphics\WaveParticlesRTTModel.cpp" />
+    <ClCompile Include="Graphics\WaveParticlesRTTShader.cpp" />
+    <ClCompile Include="System\CPU.cpp" />
     <ClCompile Include="System\Timer.cpp" />
+    <ClCompile Include="System\FPS.cpp" />
+    <ClCompile Include="System\Window.cpp" />
     <ClCompile Include="Util\Assert.Win32.cpp" />
     <ClCompile Include="Util\ConsolePrint.Win32.cpp" />
     <ClCompile Include="Util\FileUtils.cpp" />
@@ -93,44 +124,171 @@
     <ClInclude Include="Engine\PhysicsTickNotifier.h" />
     <ClInclude Include="Engine\Serializer.h" />
     <ClInclude Include="Engine\World.h" />
-    <ClInclude Include="System\Keyboard.h" />
+    <ClInclude Include="Graphics\Bitmap.h" />
+    <ClInclude Include="Graphics\BuildWave.h" />
+    <ClInclude Include="Graphics\BuildWaveShader.h" />
+    <ClInclude Include="Graphics\Camera.h" />
+    <ClInclude Include="Graphics\ColorShader.h" />
+    <ClInclude Include="Graphics\CubeMap.h" />
+    <ClInclude Include="Graphics\CubeMapShader.h" />
+    <ClInclude Include="Graphics\DebugWindow.h" />
+    <ClInclude Include="Graphics\DiffuseLight.h" />
+    <ClInclude Include="Graphics\DiffuseModel.h" />
+    <ClInclude Include="Graphics\DiffuseShader.h" />
+    <ClInclude Include="Graphics\Font.h" />
+    <ClInclude Include="Graphics\FontShader.h" />
+    <ClInclude Include="Graphics\Graphics.h" />
+    <ClInclude Include="Graphics\GraphicsDX.h" />
+    <ClInclude Include="Graphics\Model.h" />
+    <ClInclude Include="Graphics\RenderTexture.h" />
+    <ClInclude Include="Graphics\SpecularLight.h" />
+    <ClInclude Include="Graphics\SpecularModel.h" />
+    <ClInclude Include="Graphics\SpecularShader.h" />
+    <ClInclude Include="Graphics\TessellationShader.h" />
+    <ClInclude Include="Graphics\Text.h" />
+    <ClInclude Include="Graphics\Texture.h" />
+    <ClInclude Include="Graphics\TextureModel.h" />
+    <ClInclude Include="Graphics\TextureShader.h" />
+    <ClInclude Include="Graphics\WaterModel.h" />
+    <ClInclude Include="Graphics\WaterShader.h" />
+    <ClInclude Include="Graphics\WaveParticlesRTTModel.h" />
+    <ClInclude Include="Graphics\WaveParticlesRTTShader.h" />
+    <ClInclude Include="System\CPU.h" />
+    <ClInclude Include="System\Timer.h" />
+    <ClInclude Include="System\FPS.h" />
     <ClInclude Include="System\Target.h" />
     <ClInclude Include="System\Target.Win32.h" />
     <ClInclude Include="System\Target.Win64.h" />
-    <ClInclude Include="System\Timer.h" />
+    <ClInclude Include="System\Window.h" />
     <ClInclude Include="Util\Assert.h" />
     <ClInclude Include="Util\ConsolePrint.h" />
     <ClInclude Include="Util\FileUtils.h" />
     <ClInclude Include="Util\MathUtils.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphics\Shaders\colorShaderPS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Graphics\Shaders\colorShaderVS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphics\Shaders\textureShaderPS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Graphics\Shaders\textureShaderVS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphics\Shaders\diffuseLightPS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Graphics\Shaders\diffuseLightVS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphics\Shaders\specularLightPS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Graphics\Shaders\specularLightVS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphics\Shaders\fontPS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Graphics\Shaders\fontVS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphics\Shaders\tessellationPS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Graphics\Shaders\tessellationVS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphics\Shaders\tessellationHS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphics\Shaders\tessellationDS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphics\Shaders\waterPS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Graphics\Shaders\waterVS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphics\Shaders\wavesRenderTexturePS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Graphics\Shaders\wavesRenderTextureVS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphics\Shaders\wavesRenderTextureGS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphics\Shaders\buildWavePS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Graphics\Shaders\buildWaveVS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphics\Shaders\cubeMapPS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Graphics\Shaders\cubeMapVS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{BA598A12-D560-4E96-816C-2D443D6ED6FD}</ProjectGuid>
     <RootNamespace>Engine</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -139,15 +297,19 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\defaultProp.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\defaultProp.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\defaultProp.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\defaultProp.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -171,16 +333,18 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>winmm.lib</AdditionalDependencies>
+      <AdditionalDependencies>assimp.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)External\Assimp\lib\$(PlatformTarget)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -188,16 +352,18 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>winmm.lib</AdditionalDependencies>
+      <AdditionalDependencies>assimp.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)External\Assimp\lib\$(PlatformTarget)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -207,9 +373,10 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -217,7 +384,8 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>winmm.lib</AdditionalDependencies>
+      <AdditionalDependencies>assimp.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)External\Assimp\lib\$(PlatformTarget)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -227,9 +395,10 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -237,7 +406,8 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>winmm.lib</AdditionalDependencies>
+      <AdditionalDependencies>assimp.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)External\Assimp\lib\$(PlatformTarget)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,21 +1,33 @@
-#ifndef __TIME_H__
-#define __TIME_H__
+#ifndef __ENGINE_TIMER_H__
+#define	__ENGINE_TIMER_H__
 
 #include <stdint.h>
 
 namespace Engine
 {
-	class Timer
+	namespace System
 	{
-		public:
-			Timer();
-			uint64_t getCurrentTick();
-			double getElapsedTime_ms(uint64_t prevTick, uint64_t currentTick);
-			uint64_t getTicksPerSecond();
+		class Timer
+		{
+			public:
+				static void Initialize();
+				static double GetElapsedTimeMilliSec(uint64_t previouTick, uint64_t currentTick, bool normalized);
+				static uint64_t GetTicksPerSecond();
+				static uint64_t GetCurrentTick();
+				static double GetCurrentTimeMS();
+				static double GetDeltaTime();
+				static void SetDeltaTime(double deltaTime);
+				static uint64_t ConvertMilliSecToTick(double milliSec);
+				static double ConvertTickToMilliSec( uint64_t tick );
 
-		private:
-			uint64_t _ticksPerSecond;
-	};
+			private:
+				Timer();
+				~Timer();
+
+				static uint64_t _ticksPerSecond;
+				static double _deltaTime;
+		};
+	}
 }
 
-#endif //__TIME_H__
+#endif	//__ENGINE_TIMER_H__

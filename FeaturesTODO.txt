@@ -1,0 +1,37 @@
+Matrix font
+camera zoom
+smooth camera movement over the frames
+Subsurface scattering.
+
+Post processing shaders
+-Bloom
+-flimic tonemapping
+- motion blur
+- depth of field
+- vinegette
+- SSAO, HBAO
+- HDR dynamic exposure to expose the dark and light parts.
+- color grading
+- film grain 
+- anti aliasing
+- bokeh
+- desaturation
+
+Instancing
+Lens flares
+
+Emmisive particles
+spot lights with a mask
+Differed Shading
+Compute shaders (tile based lighting)
+particle system
+	- sprite particles
+	- mesh particles
+	
+
+
+glitch shaders
+smoke 
+perlin noise
+procedural virtual textures
+procedural instancing

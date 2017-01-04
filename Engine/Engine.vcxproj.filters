@@ -5,14 +5,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="Source Files\System">
       <UniqueIdentifier>{ba54d005-2b50-4e44-b1c6-b1dda1b83275}</UniqueIdentifier>
     </Filter>
@@ -27,6 +19,12 @@
     </Filter>
     <Filter Include="Source Files\Core\Math">
       <UniqueIdentifier>{3262e763-200b-48bf-aa1c-003776df9f54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics">
+      <UniqueIdentifier>{ec4cb7ea-9691-4496-958e-23878f0f1a2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\shaders">
+      <UniqueIdentifier>{0e734b55-a4a2-4a2c-a871-c053f0668ee9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -48,14 +46,8 @@
     <ClCompile Include="Util\MathUtils.cpp">
       <Filter>Source Files\Util</Filter>
     </ClCompile>
-    <ClCompile Include="System\Timer.cpp">
-      <Filter>Source Files\System</Filter>
-    </ClCompile>
     <ClCompile Include="Util\FileUtils.cpp">
       <Filter>Source Files\Util</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Core\StringPool.cpp">
       <Filter>Source Files\Core</Filter>
@@ -120,11 +112,110 @@
     <ClCompile Include="Engine\Serializer.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="System\Keyboard.cpp">
-      <Filter>Source Files\System</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\KeyboardNotifier.cpp">
       <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\ColorShader.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Camera.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Graphics.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\GraphicsDX.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Model.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Window.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\TextureModel.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Texture.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\TextureShader.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\DiffuseShader.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\DiffuseModel.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\DiffuseLight.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\SpecularShader.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\SpecularLight.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\SpecularModel.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Bitmap.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Font.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\FontShader.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Text.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="System\CPU.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\FPS.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\TessellationShader.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Timer.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\WaterModel.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\WaterShader.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\DebugWindow.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\RenderTexture.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\WaveParticlesRTTModel.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\WaveParticlesRTTShader.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\BuildWave.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\BuildWaveShader.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\CubeMap.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\CubeMapShader.cpp">
+      <Filter>Source Files\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -158,14 +249,8 @@
     <ClInclude Include="System\Target.Win64.h">
       <Filter>Source Files\System</Filter>
     </ClInclude>
-    <ClInclude Include="System\Timer.h">
-      <Filter>Source Files\System</Filter>
-    </ClInclude>
     <ClInclude Include="Util\FileUtils.h">
       <Filter>Source Files\Util</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine.h">
-      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Core\SmartPtr.h">
       <Filter>Source Files\Core</Filter>
@@ -266,14 +351,184 @@
     <ClInclude Include="Engine\ISerializable.h">
       <Filter>Source Files\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="System\Keyboard.h">
-      <Filter>Source Files\System</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\IKeyboardListener.h">
       <Filter>Source Files\Engine</Filter>
     </ClInclude>
     <ClInclude Include="Engine\KeyboardNotifier.h">
       <Filter>Source Files\Engine</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\ColorShader.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Camera.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Graphics.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\GraphicsDX.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Model.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Window.h">
+      <Filter>Source Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\TextureModel.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Texture.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\TextureShader.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DiffuseShader.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DiffuseModel.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DiffuseLight.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\SpecularShader.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\SpecularLight.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\SpecularModel.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Bitmap.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Font.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\FontShader.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Text.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="System\CPU.h">
+      <Filter>Source Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\FPS.h">
+      <Filter>Source Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\TessellationShader.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Timer.h">
+      <Filter>Source Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\WaterModel.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\WaterShader.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DebugWindow.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\RenderTexture.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\WaveParticlesRTTModel.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\WaveParticlesRTTShader.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\BuildWave.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\BuildWaveShader.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\CubeMapShader.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\CubeMap.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphics\Shaders\colorShaderPS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
+    <None Include="Graphics\Shaders\colorShaderVS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
+    <None Include="Graphics\Shaders\diffuseLightPS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
+    <None Include="Graphics\Shaders\diffuseLightVS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
+    <None Include="Graphics\Shaders\specularLightPS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
+    <None Include="Graphics\Shaders\specularLightVS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
+    <None Include="Graphics\Shaders\textureShaderPS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
+    <None Include="Graphics\Shaders\textureShaderVS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
+    <None Include="Graphics\Shaders\tessellationHS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
+    <None Include="Graphics\Shaders\tessellationDS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
+    <None Include="Graphics\Shaders\fontPS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
+    <None Include="Graphics\Shaders\fontVS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
+    <None Include="Graphics\Shaders\tessellationPS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
+    <None Include="Graphics\Shaders\tessellationVS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
+    <None Include="Graphics\Shaders\waterPS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
+    <None Include="Graphics\Shaders\waterVS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
+    <None Include="Graphics\Shaders\wavesRenderTextureGS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
+    <None Include="Graphics\Shaders\wavesRenderTexturePS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
+    <None Include="Graphics\Shaders\wavesRenderTextureVS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
+    <None Include="Graphics\Shaders\cubeMapVS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
+    <None Include="Graphics\Shaders\cubeMapPS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
+    <None Include="Graphics\Shaders\buildWaveVS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
+    <None Include="Graphics\Shaders\buildWavePS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
