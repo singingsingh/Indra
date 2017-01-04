@@ -1,3 +1,12 @@
+01/04/2017
+-----------
+Render to texture
+Cube maps
+Cube map reflections
+Transparency of water
+Geometric shaders
+Water simulation
+
 11/11/2016
 ----------
 Fly through camera
