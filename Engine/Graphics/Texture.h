@@ -14,7 +14,6 @@ namespace Engine
 		{
 		public:
 			Texture();
-			Texture(const Texture&);
 			~Texture();
 
 			bool initialize(const char *);

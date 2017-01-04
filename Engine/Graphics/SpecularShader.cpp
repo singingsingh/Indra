@@ -440,6 +440,7 @@ namespace Engine
 			deviceContext->VSSetShader(_vertexShader, NULL, 0);
 			deviceContext->HSSetShader(nullptr, NULL, 0);
 			deviceContext->DSSetShader(nullptr, NULL, 0);
+			deviceContext->GSSetShader(nullptr, NULL, 0);
 			deviceContext->PSSetShader(_pixelShader, NULL, 0);
 
 			deviceContext->PSSetSamplers(0, 1, &_sampleState);

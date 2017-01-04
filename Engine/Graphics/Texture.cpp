@@ -10,10 +10,6 @@ namespace Engine
 			_texture = 0;
 		}
 
-		Texture::Texture(const Texture& other)
-		{
-		}
-
 		Texture::~Texture()
 		{
 		}

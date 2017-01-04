@@ -132,11 +132,6 @@ namespace Engine
 			lookAt.y = 0.0f;
 			lookAt.z = 1.0f;
 
-			// Setup Look at again for view matrix
-			lookAt.x = 0.0f;
-			lookAt.y = 0.0f;
-			lookAt.z = 1.0f;
-
 			// Set the yaw (Y axis), pitch (X axis), and roll (Z axis) rotations in radians.
 			pitch = _rotation.x * MathUtils::DegToRad;
 			yaw = _rotation.y * MathUtils::DegToRad;

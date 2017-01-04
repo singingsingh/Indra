@@ -241,29 +241,22 @@ namespace Engine
 			std::ofstream fout;
 
 
-			// Get a pointer to the error message text buffer.
 			compileErrors = (char*)(i_errorMessage->GetBufferPointer());
 
-			// Get the length of the message.
 			bufferSize = i_errorMessage->GetBufferSize();
 
-			// Open a file to write the error message to.
 			fout.open("shader-error.txt");
 
-			// Write out the error message.
 			for (i = 0; i<bufferSize; i++)
 			{
 				fout << compileErrors[i];
 			}
 
-			// Close the file.
 			fout.close();
 
-			// Release the error message.
 			i_errorMessage->Release();
 			i_errorMessage = 0;
 
-			// Pop a message up on the screen to notify the user to check the text file for compile errors.
 			MessageBox(System::Window::GetWindwsHandle(), "Error compiling shader.  Check shader-error.txt for message.", i_shaderFileName, MB_OK);
 		}
 
@@ -274,37 +267,27 @@ namespace Engine
 			MatrixBufferType* dataPtr;
 			unsigned int bufferNumber;
 
-
-			// Transpose the matrices to prepare them for the shader.
 			D3DXMatrixTranspose(&i_worldMatrix, &i_worldMatrix);
 			D3DXMatrixTranspose(&i_viewMatrix, &i_viewMatrix);
 			D3DXMatrixTranspose(&i_projMatrix, &i_projMatrix);
 
-			// Lock the constant buffer so it can be written to.
 			result = i_deviceContext->Map(_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 			if (FAILED(result))
 			{
 				return false;
 			}
 
-			// Get a pointer to the data in the constant buffer.
 			dataPtr = (MatrixBufferType*)mappedResource.pData;
 
-			// Copy the matrices into the constant buffer.
 			dataPtr->world = i_worldMatrix;
 			dataPtr->view = i_viewMatrix;
 			dataPtr->projection = i_projMatrix;
 
-			// Unlock the constant buffer.
 			i_deviceContext->Unmap(_matrixBuffer, 0);
 
-			// Set the position of the constant buffer in the vertex shader.
 			bufferNumber = 0;
 
-			// Now set the constant buffer in the vertex shader with the updated values.
 			i_deviceContext->VSSetConstantBuffers(bufferNumber, 1, &_matrixBuffer);
-
-			// Set shader texture resource in the pixel shader.
 			i_deviceContext->PSSetShaderResources(0, 1, &i_texture);
 
 			return true;
@@ -312,17 +295,16 @@ namespace Engine
 
 		void TextureShader::renderShader(ID3D11DeviceContext * i_deviceContext, int i_indexCount)
 		{
-			// Set the vertex input layout.
 			i_deviceContext->IASetInputLayout(_layout);
 
-			// Set the vertex and pixel shaders that will be used to render this triangle.
 			i_deviceContext->VSSetShader(_vertexShader, NULL, 0);
+			i_deviceContext->HSSetShader(nullptr, NULL, 0);
+			i_deviceContext->DSSetShader(nullptr, NULL, 0);
+			i_deviceContext->GSSetShader(nullptr, NULL, 0);
 			i_deviceContext->PSSetShader(_pixelShader, NULL, 0);
 
-			// Set the sampler state in the pixel shader.
 			i_deviceContext->PSSetSamplers(0, 1, &_sampleState);
 
-			// Render the triangle.
 			i_deviceContext->DrawIndexed(i_indexCount, 0, 0);
 		}
 	}

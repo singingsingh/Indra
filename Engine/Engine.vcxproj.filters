@@ -193,6 +193,30 @@
     <ClCompile Include="Graphics\WaterShader.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\DebugWindow.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\RenderTexture.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\WaveParticlesRTTModel.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\WaveParticlesRTTShader.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\BuildWave.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\BuildWaveShader.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\CubeMap.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\CubeMapShader.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\BitArray.h">
@@ -411,6 +435,30 @@
     <ClInclude Include="Graphics\WaterShader.h">
       <Filter>Source Files\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\DebugWindow.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\RenderTexture.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\WaveParticlesRTTModel.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\WaveParticlesRTTShader.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\BuildWave.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\BuildWaveShader.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\CubeMapShader.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\CubeMap.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Graphics\Shaders\colorShaderPS.hlsl">
@@ -459,6 +507,27 @@
       <Filter>Source Files\Graphics\shaders</Filter>
     </None>
     <None Include="Graphics\Shaders\waterVS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
+    <None Include="Graphics\Shaders\wavesRenderTextureGS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
+    <None Include="Graphics\Shaders\wavesRenderTexturePS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
+    <None Include="Graphics\Shaders\wavesRenderTextureVS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
+    <None Include="Graphics\Shaders\cubeMapVS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
+    <None Include="Graphics\Shaders\cubeMapPS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
+    <None Include="Graphics\Shaders\buildWaveVS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
+    <None Include="Graphics\Shaders\buildWavePS.hlsl">
       <Filter>Source Files\Graphics\shaders</Filter>
     </None>
   </ItemGroup>

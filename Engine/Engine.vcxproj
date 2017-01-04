@@ -46,8 +46,13 @@
     <ClCompile Include="Engine\Serializer.cpp" />
     <ClCompile Include="Engine\World.cpp" />
     <ClCompile Include="Graphics\Bitmap.cpp" />
+    <ClCompile Include="Graphics\BuildWave.cpp" />
+    <ClCompile Include="Graphics\BuildWaveShader.cpp" />
     <ClCompile Include="Graphics\Camera.cpp" />
     <ClCompile Include="Graphics\ColorShader.cpp" />
+    <ClCompile Include="Graphics\CubeMap.cpp" />
+    <ClCompile Include="Graphics\CubeMapShader.cpp" />
+    <ClCompile Include="Graphics\DebugWindow.cpp" />
     <ClCompile Include="Graphics\DiffuseLight.cpp" />
     <ClCompile Include="Graphics\DiffuseModel.cpp" />
     <ClCompile Include="Graphics\DiffuseShader.cpp" />
@@ -56,6 +61,7 @@
     <ClCompile Include="Graphics\Graphics.cpp" />
     <ClCompile Include="Graphics\GraphicsDX.cpp" />
     <ClCompile Include="Graphics\Model.cpp" />
+    <ClCompile Include="Graphics\RenderTexture.cpp" />
     <ClCompile Include="Graphics\SpecularLight.cpp" />
     <ClCompile Include="Graphics\SpecularModel.cpp" />
     <ClCompile Include="Graphics\SpecularShader.cpp" />
@@ -66,6 +72,8 @@
     <ClCompile Include="Graphics\TextureShader.cpp" />
     <ClCompile Include="Graphics\WaterModel.cpp" />
     <ClCompile Include="Graphics\WaterShader.cpp" />
+    <ClCompile Include="Graphics\WaveParticlesRTTModel.cpp" />
+    <ClCompile Include="Graphics\WaveParticlesRTTShader.cpp" />
     <ClCompile Include="System\CPU.cpp" />
     <ClCompile Include="System\Timer.cpp" />
     <ClCompile Include="System\FPS.cpp" />
@@ -117,8 +125,13 @@
     <ClInclude Include="Engine\Serializer.h" />
     <ClInclude Include="Engine\World.h" />
     <ClInclude Include="Graphics\Bitmap.h" />
+    <ClInclude Include="Graphics\BuildWave.h" />
+    <ClInclude Include="Graphics\BuildWaveShader.h" />
     <ClInclude Include="Graphics\Camera.h" />
     <ClInclude Include="Graphics\ColorShader.h" />
+    <ClInclude Include="Graphics\CubeMap.h" />
+    <ClInclude Include="Graphics\CubeMapShader.h" />
+    <ClInclude Include="Graphics\DebugWindow.h" />
     <ClInclude Include="Graphics\DiffuseLight.h" />
     <ClInclude Include="Graphics\DiffuseModel.h" />
     <ClInclude Include="Graphics\DiffuseShader.h" />
@@ -127,6 +140,7 @@
     <ClInclude Include="Graphics\Graphics.h" />
     <ClInclude Include="Graphics\GraphicsDX.h" />
     <ClInclude Include="Graphics\Model.h" />
+    <ClInclude Include="Graphics\RenderTexture.h" />
     <ClInclude Include="Graphics\SpecularLight.h" />
     <ClInclude Include="Graphics\SpecularModel.h" />
     <ClInclude Include="Graphics\SpecularShader.h" />
@@ -137,6 +151,8 @@
     <ClInclude Include="Graphics\TextureShader.h" />
     <ClInclude Include="Graphics\WaterModel.h" />
     <ClInclude Include="Graphics\WaterShader.h" />
+    <ClInclude Include="Graphics\WaveParticlesRTTModel.h" />
+    <ClInclude Include="Graphics\WaveParticlesRTTShader.h" />
     <ClInclude Include="System\CPU.h" />
     <ClInclude Include="System\Timer.h" />
     <ClInclude Include="System\FPS.h" />
@@ -212,6 +228,35 @@
       <FileType>Document</FileType>
     </None>
     <None Include="Graphics\Shaders\waterVS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphics\Shaders\wavesRenderTexturePS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Graphics\Shaders\wavesRenderTextureVS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphics\Shaders\wavesRenderTextureGS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphics\Shaders\buildWavePS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Graphics\Shaders\buildWaveVS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphics\Shaders\cubeMapPS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Graphics\Shaders\cubeMapVS.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

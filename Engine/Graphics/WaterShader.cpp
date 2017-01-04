@@ -16,7 +16,7 @@ namespace Engine
 			_lightBuffer = nullptr;
 			_cameraBuffer = nullptr;
 			_waterBuffer = nullptr;
-			_waterColor = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
+			_waterColor = D3DXVECTOR4(0.015f, 0.313f, 0.313f, 1.0f);
 		}
 
 		WaterShader::~WaterShader()
@@ -44,13 +44,13 @@ namespace Engine
 
 		bool WaterShader::render(int i_indexCount, D3DXMATRIX i_worldMatrix, D3DXMATRIX i_viewMatrix,
 			D3DXMATRIX i_projMatrix, D3DXVECTOR3 i_lightDirection, D3DXVECTOR4 i_ambientColor,
-			D3DXVECTOR4 i_diffuseColor, D3DXVECTOR3 i_cameraPosition, D3DXVECTOR4 i_specularColor, float i_specularPower)
+			D3DXVECTOR4 i_diffuseColor, D3DXVECTOR3 i_cameraPosition, D3DXVECTOR4 i_specularColor, float i_specularPower, ID3D11ShaderResourceView * heightTexture, ID3D11ShaderResourceView* cubeMap)
 		{
 			bool result;
 
 			// Set the shader parameters that it will use for rendering.
 			result = setShaderParameters(i_worldMatrix, i_viewMatrix, i_projMatrix, i_lightDirection, i_ambientColor, i_diffuseColor,
-				i_cameraPosition, i_specularColor, i_specularPower);
+				i_cameraPosition, i_specularColor, i_specularPower, heightTexture, cubeMap);
 
 			if (!result)
 			{
@@ -76,6 +76,7 @@ namespace Engine
 			D3D11_BUFFER_DESC cameraBufferDesc;
 			D3D11_BUFFER_DESC lightBufferDesc;
 			D3D11_BUFFER_DESC waterBufferDesc;
+			D3D11_SAMPLER_DESC samplerDesc;
 
 			// Initialize the pointers this function will use to null.
 			errorMessage = 0;
@@ -139,15 +140,15 @@ namespace Engine
 			// This setup needs to match the VertexType stucture in the ModelClass and in the shader.
 			polygonLayout[0].SemanticName = "POSITION";
 			polygonLayout[0].SemanticIndex = 0;
-			polygonLayout[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+			polygonLayout[0].Format = DXGI_FORMAT_R32G32_FLOAT;
 			polygonLayout[0].InputSlot = 0;
 			polygonLayout[0].AlignedByteOffset = 0;
 			polygonLayout[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 			polygonLayout[0].InstanceDataStepRate = 0;
 
-			polygonLayout[1].SemanticName = "NORMAL";
+			polygonLayout[1].SemanticName = "TEXCOORD";
 			polygonLayout[1].SemanticIndex = 0;
-			polygonLayout[1].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+			polygonLayout[1].Format = DXGI_FORMAT_R32G32_FLOAT;
 			polygonLayout[1].InputSlot = 0;
 			polygonLayout[1].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
 			polygonLayout[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
@@ -231,6 +232,28 @@ namespace Engine
 				return false;
 			}
 
+			// Create a texture sampler state description.
+			samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+			samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+			samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+			samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+			samplerDesc.MipLODBias = 0.0f;
+			samplerDesc.MaxAnisotropy = 1;
+			samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+			samplerDesc.BorderColor[0] = 0;
+			samplerDesc.BorderColor[1] = 0;
+			samplerDesc.BorderColor[2] = 0;
+			samplerDesc.BorderColor[3] = 0;
+			samplerDesc.MinLOD = 0;
+			samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+			// Create the texture sampler state.
+			result = device->CreateSamplerState(&samplerDesc, &_sampleState);
+			if (FAILED(result))
+			{
+				return false;
+			}
+
 			return true;
 		}
 
@@ -283,6 +306,9 @@ namespace Engine
 				_vertexShader->Release();
 				_vertexShader = nullptr;
 			}
+
+			_sampleState->Release();
+			_sampleState = nullptr;
 		}
 
 		void WaterShader::outputShaderErrorMessage(ID3D10Blob* i_errorMessage, const char* i_shaderFileName)
@@ -321,7 +347,7 @@ namespace Engine
 		bool WaterShader::setShaderParameters(D3DXMATRIX i_worldMatrix, D3DXMATRIX i_viewMatrix,
 			D3DXMATRIX i_projectionMatrix, D3DXVECTOR3 i_lightDirection,
 			D3DXVECTOR4 i_ambientColor, D3DXVECTOR4 i_diffuseColor, D3DXVECTOR3 i_cameraPosition, D3DXVECTOR4 i_specularColor,
-			float i_specularPower)
+			float i_specularPower, ID3D11ShaderResourceView * i_heigthTexture, ID3D11ShaderResourceView * i_cubeMap)
 		{
 			HRESULT result;
 			D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -331,93 +357,63 @@ namespace Engine
 			CameraBufferType* dataPtr3;
 			WaterBufferType* dataPtr4;
 
-			// Transpose the matrices to prepare them for the shader.
 			D3DXMatrixTranspose(&i_worldMatrix, &i_worldMatrix);
 			D3DXMatrixTranspose(&i_viewMatrix, &i_viewMatrix);
 			D3DXMatrixTranspose(&i_projectionMatrix, &i_projectionMatrix);
 
 			ID3D11DeviceContext* deviceContext = GraphicsDX::GetDeviceContext();
-			// Lock the constant buffer so it can be written to.
 			result = deviceContext->Map(_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 			if (FAILED(result))
 			{
 				return false;
 			}
 
-			// Get a pointer to the data in the constant buffer.
 			dataPtr = (MatrixBufferType*)mappedResource.pData;
-
-			// Copy the matrices into the constant buffer.
 			dataPtr->world = i_worldMatrix;
 			dataPtr->view = i_viewMatrix;
 			dataPtr->projection = i_projectionMatrix;
-
-			// Unlock the constant buffer.
 			deviceContext->Unmap(_matrixBuffer, 0);
-
-			// Set the position of the constant buffer in the vertex shader.
+			
 			bufferNumber = 0;
-
-			// Now set the constant buffer in the vertex shader with the updated values.
 			deviceContext->VSSetConstantBuffers(bufferNumber, 1, &_matrixBuffer);
-
-			// Lock the camera constant buffer so it can be written to.
 			result = deviceContext->Map(_cameraBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 			if (FAILED(result))
 			{
 				return false;
 			}
 
-			// Get a pointer to the data in the constant buffer.
 			dataPtr3 = (CameraBufferType*)mappedResource.pData;
-
-			// Copy the camera position into the constant buffer.
 			dataPtr3->cameraPosition = i_cameraPosition;
 			dataPtr3->padding = 0.0f;
-
-			// Unlock the camera constant buffer.
 			deviceContext->Unmap(_cameraBuffer, 0);
 
-			// Set the position of the camera constant buffer in the vertex shader.
 			bufferNumber = 1;
 
-			// Now set the camera constant buffer in the vertex shader with the updated values.
 			deviceContext->VSSetConstantBuffers(bufferNumber, 1, &_cameraBuffer);
 
-			// Lock the light constant buffer so it can be written to.
 			result = deviceContext->Map(_lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 			if (FAILED(result))
 			{
 				return false;
 			}
 
-			// Get a pointer to the data in the constant buffer.
 			dataPtr2 = (LightBufferType*)mappedResource.pData;
-
-			// Copy the lighting variables into the constant buffer.
 			dataPtr2->ambientColor = i_ambientColor;
 			dataPtr2->diffuseColor = i_diffuseColor;
 			dataPtr2->lightDirection = i_lightDirection;
 			dataPtr2->specularColor = i_specularColor;
 			dataPtr2->specularPower = i_specularPower;
-
-			// Unlock the constant buffer.
 			deviceContext->Unmap(_lightBuffer, 0);
 
-			// Lock the light constant buffer so it can be written to.
 			result = deviceContext->Map(_waterBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 			if (FAILED(result))
 			{
 				return false;
 			}
 
-			// Get a pointer to the data in the constant buffer.
 			dataPtr4 = (WaterBufferType*)mappedResource.pData;
-
-			// Copy the lighting variables into the constant buffer.
 			dataPtr4->waterColor = _waterColor;
-
-			// Unlock the constant buffer.
+			dataPtr4->world = i_worldMatrix;
 			deviceContext->Unmap(_waterBuffer, 0);
 
 			bufferNumber = 0;
@@ -425,6 +421,10 @@ namespace Engine
 
 			bufferNumber = 1;
 			deviceContext->PSSetConstantBuffers(bufferNumber, 1, &_waterBuffer);
+
+			deviceContext->VSSetShaderResources(0, 1, &i_heigthTexture);
+			deviceContext->PSSetShaderResources(0, 1, &i_heigthTexture);
+			deviceContext->PSSetShaderResources(1, 1, &i_cubeMap);
 
 			return true;
 		}
@@ -438,7 +438,10 @@ namespace Engine
 			deviceContext->VSSetShader(_vertexShader, NULL, 0);
 			deviceContext->HSSetShader(nullptr, NULL, 0);
 			deviceContext->DSSetShader(nullptr, NULL, 0);
+			deviceContext->GSSetShader(nullptr, NULL, 0);
 			deviceContext->PSSetShader(_pixelShader, NULL, 0);
+
+			deviceContext->VSSetSamplers(0, 1, &_sampleState);
 
 			deviceContext->DrawIndexed(i_indexCount, 0, 0);
 		}

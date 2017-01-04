@@ -60,7 +60,7 @@ namespace Engine
 		if (_instance == NULL)
 		{
 			_instance = new MemoryMgr();
-			_instance->initialize(1024 * 1024, 100);
+			_instance->initialize(1024 * 1024 * 2, 100);
 		}
 		else
 		{

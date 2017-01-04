@@ -1,9 +1,12 @@
 #ifndef __WATER_MODEL_H__
 #define __WATER_MODEL_H__
 
+#include <Engine\Graphics\RenderTexture.h>
+#include <Engine\Graphics\WaveParticlesRTTModel.h>
+#include <Engine\Graphics\WaveParticlesRTTShader.h>
+
 #include <d3d11.h>
 #include <d3dx10math.h>
-
 #include <stdint.h>
 
 namespace Engine
@@ -19,52 +22,39 @@ namespace Engine
 				bool initialize();
 				void shutdown();
 				void render();
+
 				int getIndexCount();
+				ID3D11ShaderResourceView* getHeightField();
 				void spawnParticles();
 
 			private:
 				struct VertexType
 				{
-					D3DXVECTOR3 position;
-					D3DXVECTOR3 normal;
+					D3DXVECTOR2 pos;
+					D3DXVECTOR2 tex;
 				};
 
-				struct WaveParticle
-				{
-					D3DXVECTOR3 origin;
-					D3DXVECTOR3 direction;
-					uint64_t spawnTick;
-					uint64_t actionTick;
-					float angle;
-					float amplitude;
-					float radius;
-					float velocity;
-					WaveParticle* next;
-				};
+				bool initializeBuffers( float& o_xMin, float& o_xMax, float& o_yMin, float& o_yMax );
 
-				bool initializeBuffers();
-				void shutdownBuffers();
 				void renderBuffers();
-				void releaseModel();
-				void subDivideParticles();
-				void updateBuffers();
-				void initializeWaveParticles();
-				WaveParticle* getFreePartices(uint32_t numParticles);
-				void pushToActiveList( WaveParticle*  waveParticle);
-				void recycleParticles(WaveParticle* waveParticle);
+				void updateHeightField();
+				void buildWaveParticle();
 
 				ID3D11Buffer *_vertexBuffer, *_indexBuffer;
 				int _vertexCount, _indexCount;
-				float _gridWidth, _gridHeight;
 				uint8_t _gridRows, _gridCols;
+				float _gridGap;
 
-				VertexType* _vertices;
-				unsigned long* _indices;
+				RenderTexture* _singleWaveRTT;
+				RenderTexture* _heightFieldRTT;
 
-				uint32_t _numWaveParticles, _activeParticles;
-				const WaveParticle* _waveParticleMemPool;
-				WaveParticle *_freeList, *_activeList;
-				D3DXVECTOR3 _corner;
+				D3DXVECTOR2 _corner;
+
+				WaveParticlesRTTModel* _waveParticlesRTTModel;
+				WaveParticlesRTTShader* _waveParticlesRTTShader;
+
+				ID3D11BlendState *_additiveBlending, *_prevBlendingState;
+				ID3D11DepthStencilState* _disableDepthStencil, *_prevDepthStencil;
 		};
 	}	// Graphics
 }	// Engine

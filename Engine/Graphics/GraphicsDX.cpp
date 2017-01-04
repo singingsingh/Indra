@@ -357,7 +357,7 @@ namespace Engine
 		depthDisabledStencilDesc.DepthEnable = false;
 		depthDisabledStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 		depthDisabledStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
-		depthDisabledStencilDesc.StencilEnable = true;
+		depthDisabledStencilDesc.StencilEnable = false;
 		depthDisabledStencilDesc.StencilReadMask = 0xFF;
 		depthDisabledStencilDesc.StencilWriteMask = 0xFF;
 		depthDisabledStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
@@ -379,6 +379,8 @@ namespace Engine
 		// Clear the blend state description.
 		ZeroMemory(&blendStateDescription, sizeof(D3D11_BLEND_DESC));
 		// Create an alpha enabled blend state description.
+		blendStateDescription.AlphaToCoverageEnable = FALSE;
+		blendStateDescription.IndependentBlendEnable = FALSE;
 		blendStateDescription.RenderTarget[0].BlendEnable = TRUE;
 		blendStateDescription.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
 		blendStateDescription.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
@@ -386,7 +388,7 @@ namespace Engine
 		blendStateDescription.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
 		blendStateDescription.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
 		blendStateDescription.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-		blendStateDescription.RenderTarget[0].RenderTargetWriteMask = 0x0f;
+		blendStateDescription.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
 		// Create the blend state using the description.
 		result = GetDevice()->CreateBlendState(&blendStateDescription, &_alphaEnableBlendingState);
@@ -526,30 +528,22 @@ namespace Engine
 	void GraphicsDX::TurnOnAlphaBlending()
 	{
 		float blendFactor[4];
-
-
-		// Setup the blend factor.
 		blendFactor[0] = 0.0f;
 		blendFactor[1] = 0.0f;
 		blendFactor[2] = 0.0f;
 		blendFactor[3] = 0.0f;
 
-		// Turn on the alpha blending.
 		_instance->_deviceContext->OMSetBlendState(_instance->_alphaEnableBlendingState, blendFactor, 0xffffffff);
 	}
 
 	void GraphicsDX::TurnOffAlphaBlending()
 	{
 		float blendFactor[4];
-
-
-		// Setup the blend factor.
 		blendFactor[0] = 0.0f;
 		blendFactor[1] = 0.0f;
 		blendFactor[2] = 0.0f;
 		blendFactor[3] = 0.0f;
 
-		// Turn off the alpha blending.
 		_instance->_deviceContext->OMSetBlendState(_instance->_alphaDisableBlendingState, blendFactor, 0xffffffff);
 	}
 
@@ -615,7 +609,7 @@ namespace Engine
 		return _instance->_device;
 	}
 
-	ID3D11DeviceContext * GraphicsDX::GetDeviceContext()
+	ID3D11DeviceContext* GraphicsDX::GetDeviceContext()
 	{
 		return _instance->_deviceContext;
 	}

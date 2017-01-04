@@ -1,3 +1,6 @@
+Texture2D shaderTexture;
+SamplerState SampleType;
+
 cbuffer MatrixBuffer
 {
 	matrix worldMatrix;
@@ -13,44 +16,31 @@ cbuffer CameraBuffer
 
 struct VertexInputType
 {
-    float4 position : POSITION;
-    float3 normal : NORMAL;
+    float2 position : POSITION;
+    float2 tex : TEXCOORD;
 };
 
-struct PixelInputType
+struct VertexOutputType
 {
     float4 position : SV_POSITION;
-    float3 normal : NORMAL;
-    float3 viewDirection : TEXCOORD1;
+	float2 tex : TEXCOORD;
+    float3 fromCamera : TEXCOORD1;
 };
 
-PixelInputType WaterVertexShader(VertexInputType input)
+VertexOutputType WaterVertexShader(VertexInputType input)
 {
-    PixelInputType output;
+	VertexOutputType output;
     float4 worldPosition;
 
-    // Change the position vector to be 4 units for proper matrix calculations.
-    input.position.w = 1.0f;
+	float4 height = shaderTexture[input.tex*1024];
+	float4 pos = float4(input.position.x + height.x, height.z, input.position.y + height.y, 1.0);
 
-    // Calculate the position of the vertex against the world, view, and projection matrices.
-    output.position = mul(input.position, worldMatrix);
+    output.position = mul(pos, worldMatrix);
+	output.fromCamera = normalize(output.position.xyz - cameraPosition.xyz);
+
     output.position = mul(output.position, viewMatrix);
     output.position = mul(output.position, projectionMatrix);
-    
-	// Calculate the normal vector against the world matrix only.
-    output.normal = mul(input.normal, (float3x3)worldMatrix);
-	
-    // Normalize the normal vector.
-    output.normal = normalize(output.normal);
-
-	// Calculate the position of the vertex in the world.
-    worldPosition = mul(input.position, worldMatrix);
-
-    // Determine the viewing direction based on the position of the camera and the position of the vertex in the world.
-    output.viewDirection = cameraPosition.xyz - worldPosition.xyz;
-	
-    // Normalize the viewing direction vector.
-    output.viewDirection = normalize(output.viewDirection);
+    output.tex = input.tex;
 	
     return output;
 }

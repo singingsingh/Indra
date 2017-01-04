@@ -10,16 +10,23 @@
 //#include <Engine\Graphics\DiffuseShader.h>
 //#include <Engine\Graphics\DiffuseModel.h>
 //#include <Engine\Graphics\DiffuseLight.h>
-//#include <Engine\Graphics\SpecularShader.h>
-//#include <Engine\Graphics\SpecularModel.h>
+#include <Engine\Graphics\SpecularShader.h>
+#include <Engine\Graphics\SpecularModel.h>
 #include <Engine\Graphics\WaterModel.h>
 #include <Engine\Graphics\WaterShader.h>
 #include <Engine\Graphics\SpecularLight.h>
 #include <Engine\Graphics\Bitmap.h>
 #include <Engine\Graphics\Text.h>
-
+#include <Engine\Graphics\RenderTexture.h>
 #include <Engine\System\CPU.h>
 #include <Engine\System\FPS.h>
+#include <Engine\Graphics\DebugWindow.h>
+#include <Engine\Graphics\WaveParticlesRTTModel.h>
+#include <Engine\Graphics\WaveParticlesRTTShader.h>
+#include <Engine\Graphics\BuildWave.h>
+#include <Engine\Graphics\BuildWaveShader.h>
+#include <Engine\Graphics\CubeMap.h>
+#include <Engine\Graphics\CubeMapShader.h>
 
 //#include <Engine\Graphics\TessellationShader.h>
 
@@ -58,6 +65,10 @@ namespace Engine
 			WaterShader* _waterShader;
 			SpecularLight* _specularLight;
 			//Bitmap* _bitmap;
+			//WaveParticlesRTTModel* _waveParticlesRTTModel;
+			//WaveParticlesRTTShader* _waveParticlesRTTShader;
+			//BuildWave* _buildWaveModel;
+			//BuildWaveShader* _buildWaveShader;
 
 			//TessellationShader* _tessellationShader;
 
@@ -66,6 +77,10 @@ namespace Engine
 			System::FPS* _fps;
 			System::CPU* _cpuUsage;
 			int _tessellationAmount;
+			RenderTexture* _renderTexture;
+			//DebugWindow* _debugWindow;
+			CubeMap* _cubeMap;
+			CubeMapShader* _cubeMapShader;
 
 			static Graphics* _instance;
 		};
