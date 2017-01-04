@@ -81,8 +81,8 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 	
 	Engine::Graphics::Camera* camera = new Engine::Graphics::Camera(0.1f, 100.0f, Engine::MathUtils::DegToRad * 60.0f, float (Game::WINDOW_WIDTH)/ Game::WINDOW_HEIGHT);
 	Engine::Graphics::Graphics::SetCamera(camera);
-	camera->setPosition(0.0f, 12.0f, -12.0f);
-	camera->setRotation(52.0f, 0.0f, 0.0f);
+	camera->setPosition(0.0f, 3.0f, -12.0f);
+	camera->setRotation(15.0f, 0.0f, 0.0f);
 
 	do
 	{
