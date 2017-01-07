@@ -1,0 +1,38 @@
+ply
+format ascii 1.0
+comment converted from OBJ by obj2ply
+comment modified by boundply
+comment modified by normalsply
+comment modified by flipply
+element vertex 8
+property float32 x
+property float32 y
+property float32 z
+property float32 nx
+property float32 ny
+property float32 nz
+property float 32 tx
+property float 32 ty
+element face 12
+property list uint8 int32 vertex_indices
+end_header
+0.970058 -0.982007 -0.986165 0.333324 -0.668212 -0.665123 0.0 0.0
+0.965439 -0.981665 0.97929 0.663743 -0.343245 0.66455 0.0 1.0
+-0.98292 -0.983018 0.984021 -0.668358 -0.663289 0.336668 1.0 0.0
+-1 -0.981754 -0.98704 -0.58243 -0.57155 -0.578018 1.0 1.0
+1 0.982423 -0.978415 0.820757 0.399412 -0.408446 0.0 0.0
+0.995378 0.982765 0.98704 0.410627 0.813628 0.411576 0.0 1.0
+-0.974677 0.983018 0.986155 -0.407929 0.408453 0.816554 1.0 0.0
+-0.970057 0.982676 -0.979297 -0.575041 0.583267 -0.573696 1.0 1.0 
+3 4 0 7 
+3 0 3 7 
+3 2 6 7 
+3 2 7 3 
+3 1 5 6 
+3 1 6 2 
+3 0 4 1 
+3 4 5 1 
+3 4 7 5 
+3 7 6 5 
+3 0 1 2 
+3 0 2 3 

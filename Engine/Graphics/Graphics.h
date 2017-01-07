@@ -4,11 +4,16 @@
 #include <Engine\Graphics\GraphicsDX.h>
 #include <Engine\Graphics\Camera.h>
 #include <Engine\Graphics\Text.h>
-#include <Engine\Graphics\RenderTexture.h>
+//#include <Engine\Graphics\RenderTexture.h>
 #include <Engine\System\CPU.h>
 #include <Engine\System\FPS.h>
 #include <Engine\Graphics\CubeMap.h>
 #include <Engine\Graphics\CubeMapShader.h>
+#include <Engine\Graphics\ViewPoint.h>
+#include <Engine\Graphics\ProjectiveTextureShader.h>
+#include <Engine\Graphics\DiffuseLight.h>
+#include <Engine\Graphics\SpecularModel.h>
+#include <Engine\Graphics\Texture.h>
 
 //#include <Engine\Graphics\TessellationShader.h>
 
@@ -39,10 +44,16 @@ namespace Engine
 			System::FPS* _fps;
 			System::CPU* _cpuUsage;
 			int _tessellationAmount;
-			RenderTexture* _renderTexture;
+			//RenderTexture* _renderTexture;
 			//DebugWindow* _debugWindow;
 			CubeMap* _cubeMap;
 			CubeMapShader* _cubeMapShader;
+			
+			SpecularModel *_faceModel, *_boxModel;
+			DiffuseLight* _diffuseLight;
+			ProjectiveTextureShader* _projectionShader;
+			Texture* _projectionTexture;
+			ViewPoint* _viewPoint;
 
 			static Graphics* _instance;
 		};

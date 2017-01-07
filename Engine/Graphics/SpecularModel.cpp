@@ -256,8 +256,18 @@ namespace Engine
 			{
 				memcpy(&_assimpData[i].x, &scene->mMeshes[0]->mVertices[i], sizeof(float) * 3);
 				memcpy(&_assimpData[i].nx, &scene->mMeshes[0]->mNormals[i], sizeof(float) * 3);
-				_assimpData[i].tu = _assimpData[i].x;
-				_assimpData[i].tv = _assimpData[i].y;
+
+				if (!scene->mMeshes[0]->HasTextureCoords(0))
+				{
+					_assimpData[i].tu = _assimpData[i].x;
+					_assimpData[i].tv = _assimpData[i].y;
+				}
+				else
+				{
+					const aiVector3D* pTexCoord = &(scene->mMeshes[0]->mTextureCoords[0][i]);
+					_assimpData[i].tu = pTexCoord->x;
+					_assimpData[i].tv = pTexCoord->y;
+				}
 			}
 
 			return true;

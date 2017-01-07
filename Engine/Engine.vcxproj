@@ -61,6 +61,7 @@
     <ClCompile Include="Graphics\Graphics.cpp" />
     <ClCompile Include="Graphics\GraphicsDX.cpp" />
     <ClCompile Include="Graphics\Model.cpp" />
+    <ClCompile Include="Graphics\ProjectiveTextureShader.cpp" />
     <ClCompile Include="Graphics\RenderTexture.cpp" />
     <ClCompile Include="Graphics\SpecularLight.cpp" />
     <ClCompile Include="Graphics\SpecularModel.cpp" />
@@ -70,6 +71,7 @@
     <ClCompile Include="Graphics\Texture.cpp" />
     <ClCompile Include="Graphics\TextureModel.cpp" />
     <ClCompile Include="Graphics\TextureShader.cpp" />
+    <ClCompile Include="Graphics\ViewPoint.cpp" />
     <ClCompile Include="Graphics\WaterModel.cpp" />
     <ClCompile Include="Graphics\WaterShader.cpp" />
     <ClCompile Include="Graphics\WaveParticlesRTTModel.cpp" />
@@ -140,6 +142,7 @@
     <ClInclude Include="Graphics\Graphics.h" />
     <ClInclude Include="Graphics\GraphicsDX.h" />
     <ClInclude Include="Graphics\Model.h" />
+    <ClInclude Include="Graphics\ProjectiveTextureShader.h" />
     <ClInclude Include="Graphics\RenderTexture.h" />
     <ClInclude Include="Graphics\SpecularLight.h" />
     <ClInclude Include="Graphics\SpecularModel.h" />
@@ -149,6 +152,7 @@
     <ClInclude Include="Graphics\Texture.h" />
     <ClInclude Include="Graphics\TextureModel.h" />
     <ClInclude Include="Graphics\TextureShader.h" />
+    <ClInclude Include="Graphics\ViewPoint.h" />
     <ClInclude Include="Graphics\WaterModel.h" />
     <ClInclude Include="Graphics\WaterShader.h" />
     <ClInclude Include="Graphics\WaveParticlesRTTModel.h" />
@@ -261,8 +265,12 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Graphics\Shaders\ProjectiveTexturePS.hlsl" />
-    <FxCompile Include="Graphics\Shaders\ProjectiveTextureVS.hlsl" />
+    <None Include="Graphics\Shaders\ProjectiveTexturePS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Graphics\Shaders\ProjectiveTextureVS.hlsl">
+      <FileType>Document</FileType>
+    </None>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{BA598A12-D560-4E96-816C-2D443D6ED6FD}</ProjectGuid>
