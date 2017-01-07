@@ -217,6 +217,9 @@
     <ClCompile Include="Graphics\CubeMapShader.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\ProjectiveTextureShader.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\BitArray.h">
@@ -457,6 +460,9 @@
       <Filter>Source Files\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\CubeMap.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\ProjectiveTextureShader.h">
       <Filter>Source Files\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
