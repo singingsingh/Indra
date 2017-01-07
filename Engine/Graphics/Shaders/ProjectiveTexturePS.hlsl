@@ -19,7 +19,7 @@ struct PixelInputType
 	float4 viewPosition : TEXCOORD1;
 };
 
-float4 ProjectionPixelShader(PixelInputType input) : SV_TARGET
+float4 ProjectiveTexturePS(PixelInputType input) : SV_TARGET
 {
 	float4 color;
 	float3 lightDir;
@@ -45,7 +45,7 @@ float4 ProjectionPixelShader(PixelInputType input) : SV_TARGET
 	// Calculate the projected texture coordinates.
 	projectTexCoord.x = input.viewPosition.x / input.viewPosition.w / 2.0f + 0.5f;
 	projectTexCoord.y = -input.viewPosition.y / input.viewPosition.w / 2.0f + 0.5f;
-
+	projectTexCoord *= 2.0;
 	if ((saturate(projectTexCoord.x) == projectTexCoord.x) && (saturate(projectTexCoord.y) == projectTexCoord.y))
 	{
 		projectionColor = projectionTexture.Sample(SampleType, projectTexCoord);

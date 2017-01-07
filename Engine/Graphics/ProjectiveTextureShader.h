@@ -36,17 +36,17 @@ namespace Engine
 
 			bool Initialize();
 			void Shutdown();
-			bool Render(ID3D11DeviceContext*, int, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX, ID3D11ShaderResourceView*, D3DXVECTOR4, D3DXVECTOR4, D3DXVECTOR3,
+			bool Render(int, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX, ID3D11ShaderResourceView*, D3DXVECTOR4, D3DXVECTOR4, D3DXVECTOR3,
 				D3DXMATRIX, D3DXMATRIX, ID3D11ShaderResourceView*);
 
 		private:
-			bool InitializeShader(ID3D11Device*, HWND, WCHAR*, WCHAR*);
+			bool InitializeShader(const char *, const char *);
 			void ShutdownShader();
-			void OutputShaderErrorMessage(ID3D10Blob*, HWND, WCHAR*);
+			void OutputShaderErrorMessage(ID3D10Blob* i_errorMessage, const char* i_shaderFileName);
 
-			bool SetShaderParameters(ID3D11DeviceContext*, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX, ID3D11ShaderResourceView*, D3DXVECTOR4, D3DXVECTOR4, D3DXVECTOR3,
+			bool SetShaderParameters(D3DXMATRIX, D3DXMATRIX, D3DXMATRIX, ID3D11ShaderResourceView*, D3DXVECTOR4, D3DXVECTOR4, D3DXVECTOR3,
 				D3DXMATRIX, D3DXMATRIX, ID3D11ShaderResourceView*);
-			void RenderShader(ID3D11DeviceContext*, int);
+			void RenderShader(int indexCount);
 
 		private:
 			ID3D11VertexShader* m_vertexShader;

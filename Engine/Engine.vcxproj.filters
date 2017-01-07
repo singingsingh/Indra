@@ -220,6 +220,9 @@
     <ClCompile Include="Graphics\ProjectiveTextureShader.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\ViewPoint.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\BitArray.h">
@@ -463,6 +466,9 @@
       <Filter>Source Files\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\ProjectiveTextureShader.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\ViewPoint.h">
       <Filter>Source Files\Graphics</Filter>
     </ClInclude>
   </ItemGroup>

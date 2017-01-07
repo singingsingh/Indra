@@ -12,6 +12,11 @@ namespace Engine
 		{
 		}
 
+		void DiffuseLight::setAmbientColor(float r, float g, float b, float a)
+		{
+			_ambientColor = D3DXVECTOR4(r, g, b, a);
+		}
+
 		void DiffuseLight::setDiffuseColor(float i_r, float i_g, float i_b, float i_a)
 		{
 			_diffuseColor = D3DXVECTOR4(i_r, i_g, i_b, i_a);
@@ -25,6 +30,11 @@ namespace Engine
 		D3DXVECTOR4 DiffuseLight::getDiffuseColor()
 		{
 			return _diffuseColor;
+		}
+
+		D3DXVECTOR4 DiffuseLight::getAmbientColor()
+		{
+			return _ambientColor;
 		}
 
 		D3DXVECTOR3 DiffuseLight::getDirection()

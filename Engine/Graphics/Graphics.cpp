@@ -21,9 +21,16 @@ namespace Engine
 			_text = nullptr;
 			_cpuUsage = nullptr;
 			_fps = nullptr;
-			_renderTexture = nullptr;
+			//_renderTexture = nullptr;
 			_cubeMap = nullptr;
 			_cubeMapShader = nullptr;
+
+			_faceModel = nullptr;
+			_boxModel = nullptr;
+			_diffuseLight = nullptr;
+			_projectionShader = nullptr;
+			_projectionTexture = nullptr;
+			_viewPoint = nullptr;
 		}
 
 		bool Graphics::Initialize(HINSTANCE i_hInstance, const char * i_windowName, unsigned int i_windowWidth, unsigned int i_windowHeight, const WORD* i_icon)
@@ -77,10 +84,83 @@ namespace Engine
 			_cpuUsage = new System::CPU();
 			_cpuUsage->initialize();
 
-			_renderTexture = new RenderTexture(256, 256);
+			//_renderTexture = new RenderTexture(256, 256);
 
 			_cubeMap = new CubeMap("Assets/Textures/sunsetcube1024.dds");
 			_cubeMapShader = new CubeMapShader();
+
+			_faceModel = new SpecularModel;
+			result = _faceModel->initialize("Assets/Meshes/plane.ply", "Assets/Textures/161.dds");
+			if (!result)
+			{
+				MessageBox(System::Window::GetWindwsHandle(), "Could not load the assmip the model object.", "Error", MB_OK);
+				return false;
+			}
+
+			_boxModel = new SpecularModel;
+			result = _boxModel->initialize("Assets/Meshes/cube.ply", "Assets/Textures/161.dds");
+			if (!result)
+			{
+				MessageBox(System::Window::GetWindwsHandle(), "Could not load the assmip the model object.", "Error", MB_OK);
+				return false;
+			}
+
+			// Create the light object.
+			_diffuseLight = new DiffuseLight;
+			if (!_diffuseLight)
+			{
+				return false;
+			}
+
+			// Initialize the light object.
+			_diffuseLight->setDiffuseColor(1.0f, 1.0f, 0.7f, 1.0f);
+			_diffuseLight->setDirection(0.0f, 0.0f, 1.0f);
+			_diffuseLight->setAmbientColor(0.15f, 0.15f, 0.15f, 1.0f);
+
+
+			// Create the projection shader object.
+			_projectionShader = new ProjectiveTextureShader;
+			if (!_projectionShader)
+			{
+				return false;
+			}
+
+			// Initialize the projection shader object.
+			result = _projectionShader->Initialize();
+			if (!result)
+			{
+				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the projection shader object.", "Error", MB_OK);
+				return false;
+			}
+
+			// Create the projection texture object.
+			_projectionTexture = new Texture;
+			if (!_projectionTexture)
+			{
+				return false;
+			}
+
+			// Initialize the projection texture object.
+			result = _projectionTexture->initialize("Assets/Textures/checks.dds");
+			if (!result)
+			{
+				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the projection texture object.", "Error", MB_OK);
+				return false;
+			}
+
+			// Create the view point object.
+			_viewPoint = new ViewPoint;
+			if (!_viewPoint)
+			{
+				return false;
+			}
+
+			// Initialize the view point object.
+			_viewPoint->SetPosition(1.0f, -1.0f, 0.0f);
+			_viewPoint->SetLookAt(0.0f, 0.0f, 0.0f);
+			_viewPoint->SetProjectionParameters((float)(D3DX_PI / 2.0f), 1.0f, 0.1f, 100.0f);
+			_viewPoint->GenerateViewMatrix();
+			_viewPoint->GenerateProjectionMatrix();
 
 			return true;
 		}
@@ -94,8 +174,48 @@ namespace Engine
 
 		void Graphics::_shutdown()
 		{
-			delete _renderTexture;
-			_renderTexture = nullptr;
+			//delete _renderTexture;
+			//_renderTexture = nullptr;
+
+			if (_viewPoint)
+			{
+				delete _viewPoint;
+				_viewPoint = nullptr;
+			}
+
+			if (_projectionShader)
+			{
+				_projectionShader->Shutdown();
+				delete _projectionShader;
+				_projectionShader = nullptr;
+			}
+
+			if (_projectionTexture)
+			{
+				_projectionTexture->shutdown();
+				delete _projectionTexture;
+				_projectionTexture = nullptr;
+			}
+
+			if (_diffuseLight)
+			{
+				delete _diffuseLight;
+				_diffuseLight = nullptr;
+			}
+
+			if (_faceModel)
+			{
+				_faceModel->shutdown();
+				delete _faceModel;
+				_faceModel = nullptr;
+			}
+
+			if (_boxModel)
+			{
+				_boxModel->shutdown();
+				delete _boxModel;
+				_boxModel = nullptr;
+			}
 
 			if (_cpuUsage)
 			{
@@ -153,6 +273,7 @@ namespace Engine
 		bool Graphics::_render( float i_rotation )
 		{
 			D3DXMATRIX viewMatrix, orthoViewMatrix, projectionMatrix, worldMatrix, orthoProjMatrix;
+			D3DXMATRIX viewMatrix2, projectionMatrix2;
 			bool result;
 
 			_currentCamera->update();
@@ -160,6 +281,8 @@ namespace Engine
 			viewMatrix = _currentCamera->getViewMatrix();
 			projectionMatrix = _currentCamera->getProjMatrix();
 			worldMatrix = GraphicsDX::GetWorldMatrix();
+			_viewPoint->GetViewMatrix(viewMatrix2);
+			_viewPoint->GetProjectionMatrix(projectionMatrix2);
 
 			// render to texture
 			{
@@ -179,6 +302,31 @@ namespace Engine
 
 			// render 3D stuff
 			{
+				// Setup the translation for the ground model.
+				D3DXMATRIX scale, rotation;
+				D3DXMatrixScaling(&scale, 15.0f, 15.0f, 1.0f);
+				D3DXMatrixRotationX(&rotation, 90.0f * MathUtils::DegToRad);
+
+				D3DXMatrixMultiply(&worldMatrix, &worldMatrix, &scale);
+				D3DXMatrixMultiply(&worldMatrix, &worldMatrix, &rotation);
+				//D3DXMatrixMultiply(&worldMatrix, &worldMatrix, &translate);
+
+				// Render the ground model using the projection shader.
+				_faceModel->render();
+				result = _projectionShader->Render(_faceModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+					_faceModel->getTexture(), _diffuseLight->getAmbientColor(), _diffuseLight->getDiffuseColor(), _diffuseLight->getDirection(),
+					viewMatrix2, projectionMatrix2, _projectionTexture->getTexture());
+
+				worldMatrix = GraphicsDX::GetWorldMatrix();
+				_boxModel->render();
+				result = _projectionShader->Render(_boxModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+					_boxModel->getTexture(), _diffuseLight->getAmbientColor(), _diffuseLight->getDiffuseColor(), _diffuseLight->getDirection(),
+					viewMatrix2, projectionMatrix2, _projectionTexture->getTexture());
+
+				if (!result)
+				{
+					return false;
+				}
 			}
 
 			// render 2D stuff
