@@ -537,4 +537,12 @@
       <Filter>Source Files\Graphics\shaders</Filter>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Graphics\Shaders\ProjectiveTexturePS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Graphics\Shaders\ProjectiveTextureVS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </FxCompile>
+  </ItemGroup>
 </Project>

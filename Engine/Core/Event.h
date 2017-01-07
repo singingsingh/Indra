@@ -7,7 +7,6 @@
 
 namespace Engine
 {
-
 	class ManualResetEvent : public WaitableObject
 	{
 		public:

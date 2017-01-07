@@ -262,6 +262,10 @@
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Graphics\Shaders\ProjectiveTexturePS.hlsl" />
+    <FxCompile Include="Graphics\Shaders\ProjectiveTextureVS.hlsl" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{BA598A12-D560-4E96-816C-2D443D6ED6FD}</ProjectGuid>
     <RootNamespace>Engine</RootNamespace>
