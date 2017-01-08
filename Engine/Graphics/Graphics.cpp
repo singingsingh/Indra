@@ -298,13 +298,6 @@ namespace Engine
 
 			GraphicsDX::BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 
-			// cube map
-			{
-				GraphicsDX::TurnZBufferOff();
-				_cubeMapShader->render(_cubeMap);
-				GraphicsDX::TurnZBufferOn();
-			}
-
 			// render 3D stuff
 			{
 				D3DXMATRIX scale, translate;
@@ -327,6 +320,13 @@ namespace Engine
 				{
 					return false;
 				}
+			}
+
+			// cube map
+			{
+				GraphicsDX::ZBufferDepthNoWrite();
+				_cubeMapShader->render(_cubeMap);
+				GraphicsDX::TurnZBufferOn();
 			}
 
 			// render 2D stuff
@@ -354,6 +354,7 @@ namespace Engine
 
 				GraphicsDX::TurnZBufferOn();
 			}
+
 
 			GraphicsDX::EndScene();
 			return true;

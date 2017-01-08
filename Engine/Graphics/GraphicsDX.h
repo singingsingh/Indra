@@ -31,6 +31,7 @@ namespace Engine
 		static void GetVideoCardInfo(char*, int&);
 
 		static void TurnZBufferOn();
+		static void ZBufferDepthNoWrite();
 		static void TurnZBufferOff();
 
 		static void TurnOnAlphaBlending();
@@ -65,6 +66,7 @@ namespace Engine
 
 		ID3D11DepthStencilState* _depthEnableStencilState;
 		ID3D11DepthStencilState* _depthDisabledStencilState;
+		ID3D11DepthStencilState* _depthNoWriteStencilState;
 
 		ID3D11BlendState* _alphaEnableBlendingState;
 		ID3D11BlendState* _alphaDisableBlendingState;

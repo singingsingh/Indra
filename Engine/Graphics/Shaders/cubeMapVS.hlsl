@@ -24,6 +24,8 @@ VertexOutputType CubeMapVertexShader(VertexInputType input)
 	output.position = mul(output.position, worldMatrix);
     output.position = mul(output.position, viewMatrix);
     output.position = mul(output.position, projectionMatrix);
+
+	output.position.z = output.position.w - 0.00001;
     
 	output.tex = input.position;
     

@@ -15,6 +15,7 @@ namespace Engine
 		_renderTargetView = nullptr;
 		_depthStencilBuffer = nullptr;
 		_depthEnableStencilState = nullptr;
+		_depthNoWriteStencilState = nullptr;
 		_depthStencilView = nullptr;
 		_rasterStateFILL_MODE = nullptr;
 		_rasterStateWIRE_MODE = nullptr;
@@ -287,6 +288,13 @@ namespace Engine
 			return false;
 		}
 
+		depthStencilStateDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+		result = _device->CreateDepthStencilState(&depthStencilStateDesc, &_depthNoWriteStencilState);
+		if (FAILED(result))
+		{
+			return false;
+		}
+
 		// Set the depth stencil state.
 		_deviceContext->OMSetDepthStencilState(_depthEnableStencilState, 1);
 
@@ -483,6 +491,12 @@ namespace Engine
 			_depthEnableStencilState = nullptr;
 		}
 
+		if (_depthNoWriteStencilState)
+		{
+			_depthNoWriteStencilState->Release();
+			_depthNoWriteStencilState = nullptr;
+		}
+
 		if (_depthStencilBuffer)
 		{
 			_depthStencilBuffer->Release();
@@ -517,6 +531,11 @@ namespace Engine
 	void GraphicsDX::TurnZBufferOn()
 	{
 		_instance->_deviceContext->OMSetDepthStencilState(_instance->_depthEnableStencilState, 1);
+	}
+
+	void GraphicsDX::ZBufferDepthNoWrite()
+	{
+		_instance->_deviceContext->OMSetDepthStencilState(_instance->_depthNoWriteStencilState, 1);
 	}
 
 
