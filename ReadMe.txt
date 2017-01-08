@@ -1,3 +1,10 @@
+01/ 08/ 2017
+---------------
+Projective Textures
+Shadow mapping
+cube map rendering optimization
+
+
 01/04/2017
 -----------
 Render to texture
