@@ -223,6 +223,9 @@
     <ClCompile Include="Graphics\ViewPoint.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\ShadowMappingShader.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\BitArray.h">
@@ -471,6 +474,9 @@
     <ClInclude Include="Graphics\ViewPoint.h">
       <Filter>Source Files\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\ShadowMappingShader.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Graphics\Shaders\colorShaderPS.hlsl">
@@ -542,13 +548,17 @@
     <None Include="Graphics\Shaders\buildWavePS.hlsl">
       <Filter>Source Files\Graphics\shaders</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Graphics\Shaders\ProjectiveTexturePS.hlsl">
+    <None Include="Graphics\Shaders\ProjectiveTexturePS.hlsl">
       <Filter>Source Files\Graphics\shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Graphics\Shaders\ProjectiveTextureVS.hlsl">
+    </None>
+    <None Include="Graphics\Shaders\ProjectiveTextureVS.hlsl">
       <Filter>Source Files\Graphics\shaders</Filter>
-    </FxCompile>
+    </None>
+    <None Include="Graphics\Shaders\ShadowMappingPS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
+    <None Include="Graphics\Shaders\ShadowMappingVS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
