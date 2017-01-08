@@ -141,7 +141,7 @@ namespace Engine
 			}
 
 			// Initialize the projection texture object.
-			result = _projectionTexture->initialize("Assets/Textures/checks.dds");
+			result = _projectionTexture->initialize("Assets/Textures/dx11.dds");
 			if (!result)
 			{
 				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the projection texture object.", "Error", MB_OK);
