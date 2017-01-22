@@ -226,6 +226,9 @@
     <ClCompile Include="Graphics\ShadowMappingShader.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\AssimpMesh.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\BitArray.h">
@@ -475,6 +478,9 @@
       <Filter>Source Files\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\ShadowMappingShader.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\AssimpMesh.h">
       <Filter>Source Files\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
