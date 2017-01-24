@@ -12,6 +12,8 @@
 #include <Engine\Graphics\DiffuseShader.h>
 #include <Engine\Graphics\DiffuseLight.h>
 #include <Engine\Graphics\SpecularModel.h>
+#include <Engine\Graphics\AssimpShader.h>
+#include <Engine\Graphics\AssimpMesh.h>
 #include <Engine\Graphics\ShadowMappingShader.h>
 
 namespace Engine
@@ -26,7 +28,7 @@ namespace Engine
 			static void Shutdown();
 			static bool Render();
 			static void SetCamera(Camera* currentCamera);
-			static Camera* GetCamera();
+			static const Camera* GetCamera();
 
 		private:
 			Graphics();
@@ -46,10 +48,13 @@ namespace Engine
 			CubeMap* _cubeMap;
 			CubeMapShader* _cubeMapShader;
 			
-			SpecularModel *_faceModel, *_boxModel;
+			SpecularModel *_faceModel;
+			SpecularModel *_gaurdModel;
+			AssimpMesh *_houseMesh;
 			DiffuseLight* _diffuseLight;
 			DiffuseShader* _diffuseShader;
 			ShadowMappingShader* _shadowMappingShader;
+			AssimpShader* _assimpShader;
 
 			static Graphics* _instance;
 		};

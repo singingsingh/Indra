@@ -78,7 +78,7 @@ namespace Engine
 			_startRotation = _rotation;
 		}
 
-		D3DXVECTOR3 Camera::getPosition()
+		D3DXVECTOR3 Camera::getPosition() const
 		{
 			return _position;
 		}
@@ -151,22 +151,22 @@ namespace Engine
 			D3DXMatrixLookAtLH(&_viewMatrix, &_position, &lookAt, &up);
 		}
 
-		D3DXMATRIX Camera::getViewMatrix()
+		D3DXMATRIX Camera::getViewMatrix() const
 		{
 			return _viewMatrix;
 		}
 
-		D3DXMATRIX Camera::getOrthoViewMatrix()
+		D3DXMATRIX Camera::getOrthoViewMatrix() const
 		{
 			return _orthoViewMatrix;
 		}
 
-		D3DXMATRIX Camera::getProjMatrix()
+		D3DXMATRIX Camera::getProjMatrix() const
 		{
 			return _projectionMatrix;
 		}
 
-		D3DXMATRIX Camera::getOrthoProjMatrix()
+		D3DXMATRIX Camera::getOrthoProjMatrix() const
 		{
 			return _orthoProjMatrix;
 		}

@@ -3,8 +3,12 @@
 
 #include <Engine\Graphics\Texture.h>
 
+#include <External\Assimp\include\Importer.hpp>
+#include <External\Assimp\include\scene.h>
+
 #include <d3d11.h>
 #include <d3dx10math.h>
+#include <map>
 
 namespace Engine
 {
@@ -15,11 +19,12 @@ namespace Engine
 		public:
 			AssimpMesh();
 			~AssimpMesh();
-			bool initialize(char* modelFilename, const char* textureFilename);
+			void initialize(char* modelFilename);
 			void shutdown();
-			void render();
-			int getIndexCount();
-			ID3D11ShaderResourceView* getTexture();
+			void render(unsigned int meshIndex) const;
+			const aiScene* getScene() const;
+			unsigned int getIndexCountOfMesh(unsigned int i_meshIndex) const;
+			ID3D11ShaderResourceView* getTexture(unsigned int i_meshIndex) const;
 
 		private:
 			struct VertexType
@@ -29,26 +34,24 @@ namespace Engine
 				D3DXVECTOR3 normal;
 			};
 
-			struct AssimpData
+			struct Mesh
 			{
-				float x, y, z;
-				float tu, tv;
-				float nx, ny, nz;
+				ID3D11Buffer* vertexBuffer;
+				ID3D11Buffer* indexBuffer;
+				Texture* texture;
+				unsigned int indexCount;
 			};
 
-			bool initializeBuffers();
 			void shutdownBuffers();
-			void renderBuffers();
-			bool loadModel(const char* modelFileName);
-			void releaseModel();
-			bool loadTexture(const char* textureFileName);
+			void loadModel(const char* modelFileName);
+			void loadTexture();
 			void releaseTexture();
 
-			ID3D11Buffer *_vertexBuffer, *_indexBuffer;
-			int _vertexCount, _indexCount;
-			Texture* _texture;
-			unsigned long* _index;
-			AssimpData* _assimpData;
+			std::map<std::string, Texture*> _textureIdMap;
+			Mesh* _meshArray;
+			Texture* _defaultTexture;
+			const aiScene* _scene;
+			Assimp::Importer importer;
 		};
 	}
 }

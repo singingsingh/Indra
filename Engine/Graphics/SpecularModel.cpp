@@ -280,8 +280,6 @@ namespace Engine
 
 			delete[] _index;
 			_index = nullptr;
-
-			return;
 		}
 
 		bool SpecularModel::loadTexture(const char* i_textureFileName)

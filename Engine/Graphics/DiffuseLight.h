@@ -18,11 +18,15 @@ namespace Engine
 			void setDirection(float x, float y, float z);
 			void SetPosition(float, float, float);
 			void SetLookAt(float, float, float);
+			void setSpecularColor(float i_red, float i_green, float i_blue, float i_alpha);
+			void setSpecularPower(float i_specularPower);
 
-			D3DXVECTOR4 getDiffuseColor();
-			D3DXVECTOR4 getAmbientColor();
-			D3DXVECTOR3 getDirection();
+			D3DXVECTOR4 getDiffuseColor() const;
+			D3DXVECTOR4 getAmbientColor() const;
+			D3DXVECTOR3 getDirection() const;
 			D3DXVECTOR3 getPosition();
+			D3DXVECTOR4 getSpecularColor() const;
+			float getSpecularPower() const;
 
 			void GenerateViewMatrix();
 			void GenerateProjectionMatrix(float, float);
@@ -40,6 +44,8 @@ namespace Engine
 			D3DXVECTOR3 m_lookAt;
 			D3DXMATRIX m_viewMatrix;
 			D3DXMATRIX m_projectionMatrix;
+			D3DXVECTOR4 _specularColor;
+			float _specularPower;
 		};
 	}
 }

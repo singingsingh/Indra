@@ -39,17 +39,30 @@ namespace Engine
 			m_lookAt.z = z;
 		}
 
-		D3DXVECTOR4 DiffuseLight::getDiffuseColor()
+		void DiffuseLight::setSpecularColor(float i_red, float i_green, float i_blue, float i_alpha)
+		{
+			_specularColor.x = i_red;
+			_specularColor.y = i_green;
+			_specularColor.z = i_blue;
+			_specularColor.w = i_alpha;
+		}
+
+		void DiffuseLight::setSpecularPower(float i_specularPower)
+		{
+			_specularPower = i_specularPower;
+		}
+
+		D3DXVECTOR4 DiffuseLight::getDiffuseColor() const
 		{
 			return _diffuseColor;
 		}
 
-		D3DXVECTOR4 DiffuseLight::getAmbientColor()
+		D3DXVECTOR4 DiffuseLight::getAmbientColor() const
 		{
 			return _ambientColor;
 		}
 
-		D3DXVECTOR3 DiffuseLight::getDirection()
+		D3DXVECTOR3 DiffuseLight::getDirection() const
 		{
 			return _direction;
 		}
@@ -57,6 +70,16 @@ namespace Engine
 		D3DXVECTOR3 DiffuseLight::getPosition()
 		{
 			return m_position;
+		}
+
+		D3DXVECTOR4 DiffuseLight::getSpecularColor() const
+		{
+			return _specularColor;
+		}
+
+		float DiffuseLight::getSpecularPower() const
+		{
+			return _specularPower;
 		}
 
 		void DiffuseLight::GenerateViewMatrix()
@@ -89,6 +112,7 @@ namespace Engine
 		void DiffuseLight::generateDirection()
 		{
 			_direction = m_lookAt - m_position;
+			D3DXVec3Normalize(&_direction, &_direction);
 		}
 
 		void DiffuseLight::GetViewMatrix(D3DXMATRIX& viewMatrix)

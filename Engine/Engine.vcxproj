@@ -46,6 +46,7 @@
     <ClCompile Include="Engine\Serializer.cpp" />
     <ClCompile Include="Engine\World.cpp" />
     <ClCompile Include="Graphics\AssimpMesh.cpp" />
+    <ClCompile Include="Graphics\AssimpShader.cpp" />
     <ClCompile Include="Graphics\Bitmap.cpp" />
     <ClCompile Include="Graphics\BuildWave.cpp" />
     <ClCompile Include="Graphics\BuildWaveShader.cpp" />
@@ -129,6 +130,7 @@
     <ClInclude Include="Engine\Serializer.h" />
     <ClInclude Include="Engine\World.h" />
     <ClInclude Include="Graphics\AssimpMesh.h" />
+    <ClInclude Include="Graphics\AssimpShader.h" />
     <ClInclude Include="Graphics\Bitmap.h" />
     <ClInclude Include="Graphics\BuildWave.h" />
     <ClInclude Include="Graphics\BuildWaveShader.h" />

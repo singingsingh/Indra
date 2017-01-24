@@ -1,5 +1,6 @@
 #include <Engine\Graphics\Texture.h>
 #include <Engine\Graphics\GraphicsDX.h>
+#include <Engine\Util\Assert.h>
 
 namespace Engine
 {
@@ -7,7 +8,7 @@ namespace Engine
 	{
 		Texture::Texture()
 		{
-			_texture = 0;
+			_texture = nullptr;
 		}
 
 		Texture::~Texture()
@@ -22,6 +23,7 @@ namespace Engine
 			result = D3DX11CreateShaderResourceViewFromFile(GraphicsDX::GetDevice(), i_textureFileName, NULL, NULL, &_texture, NULL);
 			if (FAILED(result))
 			{
+				MessagedAssert(false, "failed to load the texture.");
 				return false;
 			}
 
