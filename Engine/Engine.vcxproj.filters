@@ -229,6 +229,9 @@
     <ClCompile Include="Graphics\AssimpMesh.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\Pseudo3DShader.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\BitArray.h">
@@ -483,6 +486,9 @@
     <ClInclude Include="Graphics\AssimpMesh.h">
       <Filter>Source Files\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\Pseudo3DShader.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Graphics\Shaders\colorShaderPS.hlsl">
@@ -566,5 +572,13 @@
     <None Include="Graphics\Shaders\ShadowMappingVS.hlsl">
       <Filter>Source Files\Graphics\shaders</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Graphics\Shaders\psuedo3DTexturePS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Graphics\Shaders\psuedo3DTextureVS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

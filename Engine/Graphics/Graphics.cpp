@@ -25,11 +25,10 @@ namespace Engine
 			_cubeMap = nullptr;
 			_cubeMapShader = nullptr;
 
-			_faceModel = nullptr;
 			_boxModel = nullptr;
 			_diffuseLight = nullptr;
 			_diffuseShader = nullptr;
-			_shadowMappingShader = nullptr;
+			_pseudo3DShader = nullptr;
 		}
 
 		bool Graphics::Initialize(HINSTANCE i_hInstance, const char * i_windowName, unsigned int i_windowWidth, unsigned int i_windowHeight, const WORD* i_icon)
@@ -86,16 +85,8 @@ namespace Engine
 			_cubeMap = new CubeMap("Assets/Textures/sunsetcube1024.dds");
 			_cubeMapShader = new CubeMapShader();
 
-			_faceModel = new SpecularModel;
-			result = _faceModel->initialize("Assets/Meshes/plane.obj", "Assets/Textures/brick.dds");
-			if (!result)
-			{
-				MessageBox(System::Window::GetWindwsHandle(), "Could not load the assmip the model object.", "Error", MB_OK);
-				return false;
-			}
-
 			_boxModel = new SpecularModel;
-			result = _boxModel->initialize("Assets/Meshes/cube.obj", "Assets/Textures/cloth.dds");
+			result = _boxModel->initialize("Assets/Meshes/cube.obj", "Assets/Textures/grid.dds");
 			if (!result)
 			{
 				MessageBox(System::Window::GetWindwsHandle(), "Could not load the assmip the model object.", "Error", MB_OK);
@@ -119,7 +110,6 @@ namespace Engine
 			_diffuseLight->GenerateProjectionMatrix(100.0f, 1.0f);
 			_diffuseLight->GenerateViewMatrix();
 
-			_renderTexture = new RenderTexture(ShadowMappingShader::SHADOWMAP_WIDTH, ShadowMappingShader::SHADOWMAP_HEIGHT);
 
 			// Create the projection shader object.
 			_diffuseShader = new DiffuseShader;
@@ -132,22 +122,22 @@ namespace Engine
 			result = _diffuseShader->initialize();
 			if (!result)
 			{
-				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the projection shader object.", "Error", MB_OK);
+				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the diffuse shader object.", "Error", MB_OK);
 				return false;
 			}
 
-			// Create the shadow shader object.
-			_shadowMappingShader = new ShadowMappingShader;
-			if (!_shadowMappingShader)
+			// Create the projection shader object.
+			_pseudo3DShader = new Pseudo3DShader;
+			if (!_pseudo3DShader)
 			{
 				return false;
 			}
 
-			// Initialize the shadow shader object.
-			result = _shadowMappingShader->Initialize();
+			// Initialize the projection shader object.
+			result = _pseudo3DShader->initialize();
 			if (!result)
 			{
-				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the shadow shader object.", "Error", MB_OK);
+				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the pseudo 3d shader object.", "Error", MB_OK);
 				return false;
 			}
 
@@ -166,13 +156,6 @@ namespace Engine
 			delete _renderTexture;
 			_renderTexture = nullptr;
 
-			if (_shadowMappingShader)
-			{
-				_shadowMappingShader->Shutdown();
-				delete _shadowMappingShader;
-				_shadowMappingShader = nullptr;
-			}
-
 			if (_diffuseShader)
 			{
 				_diffuseShader->shutdown();
@@ -180,17 +163,17 @@ namespace Engine
 				_diffuseShader = nullptr;
 			}
 
+			if (_pseudo3DShader)
+			{
+				_pseudo3DShader->shutdown();
+				delete _pseudo3DShader;
+				_pseudo3DShader = nullptr;
+			}
+
 			if (_diffuseLight)
 			{
 				delete _diffuseLight;
 				_diffuseLight = nullptr;
-			}
-
-			if (_faceModel)
-			{
-				_faceModel->shutdown();
-				delete _faceModel;
-				_faceModel = nullptr;
 			}
 
 			if (_boxModel)
@@ -259,42 +242,10 @@ namespace Engine
 
 			_currentCamera->update();
 
-			// render to texture
-			{
-				D3DXMATRIX worldMatrix, lightViewMatrix, lightProjectionMatrix;
-				_renderTexture->beginRenderToTexture();
-
-				_diffuseLight->GetViewMatrix(lightViewMatrix);
-				_diffuseLight->GetProjectionMatrix(lightProjectionMatrix);
-
-				{
-					D3DXMATRIX scale, translate;
-					D3DXMatrixScaling(&scale, 15.0f, 15.0f, 15.0f);
-					D3DXMatrixTranslation(&translate, 0.0f, -1.0f, 0.0f);
-
-					worldMatrix = GraphicsDX::GetWorldMatrix();
-					D3DXMatrixMultiply(&worldMatrix, &worldMatrix, &scale);
-					D3DXMatrixMultiply(&worldMatrix, &worldMatrix, &translate);
-
-					_faceModel->render();
-					result = _diffuseShader->render(_faceModel->getIndexCount(), worldMatrix, lightViewMatrix, lightProjectionMatrix,
-						_faceModel->getTexture(), _diffuseLight->getDirection(), _diffuseLight->getDiffuseColor());
-
-					worldMatrix = GraphicsDX::GetWorldMatrix();
-					_boxModel->render();
-					result = _diffuseShader->render(_boxModel->getIndexCount(), worldMatrix, lightViewMatrix, lightProjectionMatrix,
-						_boxModel->getTexture(), _diffuseLight->getDirection(), _diffuseLight->getDiffuseColor());
-				}
-
-				_renderTexture->endRenderToTexture();
-			}
-
-			D3DXMATRIX viewMatrix, projectionMatrix, worldMatrix, lightViewMatrix, lightProjectionMatrix;
+			D3DXMATRIX viewMatrix, projectionMatrix, worldMatrix;
 			viewMatrix = _currentCamera->getViewMatrix();
 			projectionMatrix = _currentCamera->getProjMatrix();
 			worldMatrix = GraphicsDX::GetWorldMatrix();
-			_diffuseLight->GetViewMatrix(lightViewMatrix);
-			_diffuseLight->GetProjectionMatrix(lightProjectionMatrix);
 
 			GraphicsDX::BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -304,22 +255,14 @@ namespace Engine
 				D3DXMatrixScaling(&scale, 15.0f, 15.0f, 15.0f);
 				D3DXMatrixTranslation(&translate, 0.0f, -1.0f, 0.0f);
 
+				worldMatrix = GraphicsDX::GetWorldMatrix();
 				D3DXMatrixMultiply(&worldMatrix, &worldMatrix, &scale);
 				D3DXMatrixMultiply(&worldMatrix, &worldMatrix, &translate);
 
-				_faceModel->render();
-				result = _shadowMappingShader->Render(_faceModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix, lightViewMatrix, lightProjectionMatrix,
-					_faceModel->getTexture(), _renderTexture->getDepthTexture(), _diffuseLight->getPosition(), _diffuseLight->getAmbientColor(), _diffuseLight->getDiffuseColor());
-
 				worldMatrix = GraphicsDX::GetWorldMatrix();
 				_boxModel->render();
-				result = _shadowMappingShader->Render(_boxModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix, lightViewMatrix, lightProjectionMatrix,
-					_boxModel->getTexture(), _renderTexture->getDepthTexture(), _diffuseLight->getPosition(), _diffuseLight->getAmbientColor(),_diffuseLight->getDiffuseColor());
-
-				if (!result)
-				{
-					return false;
-				}
+				result = _pseudo3DShader->render(_boxModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+					_boxModel->getTexture(), _diffuseLight->getDirection(), _diffuseLight->getDiffuseColor());
 			}
 
 			// cube map
@@ -364,6 +307,7 @@ namespace Engine
 		{
 			_instance->_currentCamera = i_currentCamera;
 		}
+
 		Camera * Graphics::GetCamera()
 		{
 			return _instance->_currentCamera;

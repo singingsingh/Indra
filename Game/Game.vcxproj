@@ -160,8 +160,9 @@
       <AdditionalLibraryDirectories>$(SolutionDir)Engine/Binaries/$(PlatformTarget)/$(Configuration)/;$(SolutionDir)External\Lua;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <CustomBuildStep>
-      <Command>copy $(SolutionDir)External\Assimp\bin\$(PlatformTarget)\Assimp64.dll $(ProjectDir)Binaries\$(PlatformTarget)\$(Configuration)\</Command>
-      <Outputs>_ALWAYS_RUN_</Outputs>
+      <Command>copy $(SolutionDir)External\Assimp\bin\$(PlatformTarget)\Assimp64.dll $(ProjectDir)Binaries\$(PlatformTarget)\$(Configuration)\  /y</Command>
+      <Outputs>$(ProjectDir)Binaries\$(PlatformTarget)\$(Configuration)\ </Outputs>
+      <Inputs>$(SolutionDir)External\Assimp\bin\$(PlatformTarget)\Assimp64.dll</Inputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -213,8 +214,9 @@
       <AdditionalLibraryDirectories>$(SolutionDir)Engine/Binaries/$(PlatformTarget)/$(Configuration)/;$(SolutionDir)External\Lua;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <CustomBuildStep>
-      <Command>copy $(SolutionDir)External\Assimp\bin\$(PlatformTarget)\Assimp64.dll $(ProjectDir)Binaries\$(PlatformTarget)\$(Configuration)\</Command>
-      <Outputs>_ALWAYS_RUN_</Outputs>
+      <Command>copy $(SolutionDir)External\Assimp\bin\$(PlatformTarget)\Assimp64.dll $(ProjectDir)Binaries\$(PlatformTarget)\$(Configuration)\  /y</Command>
+      <Outputs>$(ProjectDir)Binaries\$(PlatformTarget)\$(Configuration)\ </Outputs>
+      <Inputs>$(SolutionDir)External\Assimp\bin\$(PlatformTarget)\Assimp64.dll</Inputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

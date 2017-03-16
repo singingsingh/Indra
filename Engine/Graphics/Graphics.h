@@ -12,7 +12,7 @@
 #include <Engine\Graphics\DiffuseShader.h>
 #include <Engine\Graphics\DiffuseLight.h>
 #include <Engine\Graphics\SpecularModel.h>
-#include <Engine\Graphics\ShadowMappingShader.h>
+#include <Engine\Graphics\Pseudo3DShader.h>
 
 namespace Engine
 {
@@ -46,10 +46,10 @@ namespace Engine
 			CubeMap* _cubeMap;
 			CubeMapShader* _cubeMapShader;
 			
-			SpecularModel *_faceModel, *_boxModel;
+			SpecularModel* _boxModel;
 			DiffuseLight* _diffuseLight;
 			DiffuseShader* _diffuseShader;
-			ShadowMappingShader* _shadowMappingShader;
+			Pseudo3DShader* _pseudo3DShader;
 
 			static Graphics* _instance;
 		};

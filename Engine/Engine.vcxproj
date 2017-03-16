@@ -63,6 +63,7 @@
     <ClCompile Include="Graphics\GraphicsDX.cpp" />
     <ClCompile Include="Graphics\Model.cpp" />
     <ClCompile Include="Graphics\ProjectiveTextureShader.cpp" />
+    <ClCompile Include="Graphics\Pseudo3DShader.cpp" />
     <ClCompile Include="Graphics\RenderTexture.cpp" />
     <ClCompile Include="Graphics\ShadowMappingShader.cpp" />
     <ClCompile Include="Graphics\SpecularLight.cpp" />
@@ -146,6 +147,7 @@
     <ClInclude Include="Graphics\GraphicsDX.h" />
     <ClInclude Include="Graphics\Model.h" />
     <ClInclude Include="Graphics\ProjectiveTextureShader.h" />
+    <ClInclude Include="Graphics\Pseudo3DShader.h" />
     <ClInclude Include="Graphics\RenderTexture.h" />
     <ClInclude Include="Graphics\ShadowMappingShader.h" />
     <ClInclude Include="Graphics\SpecularLight.h" />
@@ -281,6 +283,14 @@
       <FileType>Document</FileType>
     </None>
     <None Include="Graphics\Shaders\ShadowMappingVS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphics\Shaders\psuedo3DTexturePS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Graphics\Shaders\psuedo3DTextureVS.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

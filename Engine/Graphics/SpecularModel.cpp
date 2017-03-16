@@ -200,7 +200,6 @@ namespace Engine
 			Assimp::Importer importer;
 			const aiScene* scene = NULL;
 
-
 			//check if file exists
 			std::ifstream fileIn(i_modelFileName);
 			if (!fileIn.fail())
