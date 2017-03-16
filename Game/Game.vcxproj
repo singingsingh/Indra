@@ -138,7 +138,7 @@
     </Link>
     <CustomBuildStep>
       <Command>copy $(SolutionDir)External\Assimp\bin\$(PlatformTarget)\Assimp32.dll $(ProjectDir)Binaries\$(PlatformTarget)\$(Configuration)\  /y</Command>
-      <Outputs>$(ProjectDir)Binaries\$(PlatformTarget)\$(Configuration)\ </Outputs>
+      <Outputs>$(ProjectDir)Binaries\$(PlatformTarget)\$(Configuration)\Assimp32.dll</Outputs>
       <Inputs>$(SolutionDir)External\Assimp\bin\$(PlatformTarget)\Assimp32.dll</Inputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
@@ -161,7 +161,7 @@
     </Link>
     <CustomBuildStep>
       <Command>copy $(SolutionDir)External\Assimp\bin\$(PlatformTarget)\Assimp64.dll $(ProjectDir)Binaries\$(PlatformTarget)\$(Configuration)\  /y</Command>
-      <Outputs>$(ProjectDir)Binaries\$(PlatformTarget)\$(Configuration)\ </Outputs>
+      <Outputs>$(ProjectDir)Binaries\$(PlatformTarget)\$(Configuration)\Assimp64.dll</Outputs>
       <Inputs>$(SolutionDir)External\Assimp\bin\$(PlatformTarget)\Assimp64.dll</Inputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
@@ -188,7 +188,7 @@
     </Link>
     <CustomBuildStep>
       <Command>copy $(SolutionDir)External\Assimp\bin\$(PlatformTarget)\Assimp32.dll $(ProjectDir)Binaries\$(PlatformTarget)\$(Configuration)\  /y</Command>
-      <Outputs>$(ProjectDir)Binaries\$(PlatformTarget)\$(Configuration)\ </Outputs>
+      <Outputs>$(ProjectDir)Binaries\$(PlatformTarget)\$(Configuration)\Assimp32.dll</Outputs>
       <Inputs>$(SolutionDir)External\Assimp\bin\$(PlatformTarget)\Assimp32.dll</Inputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
@@ -215,7 +215,7 @@
     </Link>
     <CustomBuildStep>
       <Command>copy $(SolutionDir)External\Assimp\bin\$(PlatformTarget)\Assimp64.dll $(ProjectDir)Binaries\$(PlatformTarget)\$(Configuration)\  /y</Command>
-      <Outputs>$(ProjectDir)Binaries\$(PlatformTarget)\$(Configuration)\ </Outputs>
+      <Outputs>$(ProjectDir)Binaries\$(PlatformTarget)\$(Configuration)\Assimp64.dll</Outputs>
       <Inputs>$(SolutionDir)External\Assimp\bin\$(PlatformTarget)\Assimp64.dll</Inputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
