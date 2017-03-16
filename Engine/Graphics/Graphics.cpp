@@ -126,19 +126,10 @@ namespace Engine
 				return false;
 			}
 
-			// Create the projection shader object.
-			_pseudo3DShader = new Pseudo3DShader;
+			_pseudo3DShader = Pseudo3DTexShader::createPseudo3DTexShader();
 			if (!_pseudo3DShader)
 			{
-				return false;
-			}
-
-			// Initialize the projection shader object.
-			result = _pseudo3DShader->initialize();
-			if (!result)
-			{
 				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the pseudo 3d shader object.", "Error", MB_OK);
-				return false;
 			}
 
 			return true;
@@ -163,12 +154,8 @@ namespace Engine
 				_diffuseShader = nullptr;
 			}
 
-			if (_pseudo3DShader)
-			{
-				_pseudo3DShader->shutdown();
-				delete _pseudo3DShader;
-				_pseudo3DShader = nullptr;
-			}
+			delete _pseudo3DShader;
+			_pseudo3DShader = nullptr;
 
 			if (_diffuseLight)
 			{
@@ -242,27 +229,11 @@ namespace Engine
 
 			_currentCamera->update();
 
-			D3DXMATRIX viewMatrix, projectionMatrix, worldMatrix;
-			viewMatrix = _currentCamera->getViewMatrix();
-			projectionMatrix = _currentCamera->getProjMatrix();
-			worldMatrix = GraphicsDX::GetWorldMatrix();
-
 			GraphicsDX::BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 
 			// render 3D stuff
 			{
-				D3DXMATRIX scale, translate;
-				D3DXMatrixScaling(&scale, 15.0f, 15.0f, 15.0f);
-				D3DXMatrixTranslation(&translate, 0.0f, -1.0f, 0.0f);
-
-				worldMatrix = GraphicsDX::GetWorldMatrix();
-				D3DXMatrixMultiply(&worldMatrix, &worldMatrix, &scale);
-				D3DXMatrixMultiply(&worldMatrix, &worldMatrix, &translate);
-
-				worldMatrix = GraphicsDX::GetWorldMatrix();
-				_boxModel->render();
-				result = _pseudo3DShader->render(_boxModel->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
-					_boxModel->getTexture(), _diffuseLight->getDirection(), _diffuseLight->getDiffuseColor());
+				_pseudo3DShader->render(_boxModel);
 			}
 
 			// cube map

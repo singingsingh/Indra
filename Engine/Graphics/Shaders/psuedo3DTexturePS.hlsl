@@ -37,7 +37,7 @@ float4 tex3D(float3 tex)
 	return retColor;
 }
 
-float4 LightPixelShader(PixelInputType input) : SV_TARGET
+float4 Pseudo3DTexPS(PixelInputType input) : SV_TARGET
 {
     return tex3D(float3(input.tex, layer));
 }

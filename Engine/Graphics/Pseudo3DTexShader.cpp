@@ -1,7 +1,10 @@
-#include <Engine\Graphics\Pseudo3DShader.h>
+#include <Engine\Graphics\Pseudo3DTexShader.h>
 
+#include <Engine\Graphics\Camera.h>
+#include <Engine\Graphics\Graphics.h>
 #include <Engine\System\Window.h>
 #include <Engine\Graphics\GraphicsDX.h>
+#include <Engine\Util\Assert.h>
 
 #include <fstream>
 
@@ -14,26 +17,44 @@ namespace Engine
 {
 	namespace Graphics
 	{
-		Pseudo3DShader::Pseudo3DShader()
+		Pseudo3DTexShader::Pseudo3DTexShader()
 		{
-			_vertexShader = 0;
-			_pixelShader = 0;
-			_layout = 0;
-			_sampleState = 0;
-			_matrixBuffer = 0;
-			_lightBuffer = 0;
+			_vertexShader = nullptr;
+			_pixelShader = nullptr;
+			_layout = nullptr;
+			_sampleState = nullptr;
+			_matrixBuffer = nullptr;
+			_lightBuffer = nullptr;
 			_zValue = 0.0f;
 			_zValueStep = 0.01f;
 
 			Engine::KeyboardNotifier::RegisterKeyboardUpdate(this);
 		}
 
-		Pseudo3DShader::~Pseudo3DShader()
+		Pseudo3DTexShader* Pseudo3DTexShader::createPseudo3DTexShader()
 		{
-			Engine::KeyboardNotifier::DeRegisterKeyboardUpdate(this);
+			Pseudo3DTexShader* pseudo3DTexShader = new Pseudo3DTexShader();
+			bool result = pseudo3DTexShader->initialize();
+
+			if (!result)
+			{
+				delete pseudo3DTexShader;
+				pseudo3DTexShader = nullptr;
+				return nullptr;
+			}
+			else
+			{
+				return pseudo3DTexShader;
+			}
 		}
 
-		bool Pseudo3DShader::initialize()
+		Pseudo3DTexShader::~Pseudo3DTexShader()
+		{
+			Engine::KeyboardNotifier::DeRegisterKeyboardUpdate(this);
+			shutdownShader();
+		}
+
+		bool Pseudo3DTexShader::initialize()
 		{
 			bool result;
 
@@ -46,31 +67,14 @@ namespace Engine
 			return true;
 		}
 
-		void Pseudo3DShader::shutdown()
+		void Pseudo3DTexShader::render(SpecularModel* i_specularModel)
 		{
-			shutdownShader();
+			i_specularModel->render();
+			setShaderParameters(i_specularModel);
+			renderShader(i_specularModel->getIndexCount());
 		}
 
-		bool Pseudo3DShader::render(int i_indexCount, D3DXMATRIX i_worldMatrix, D3DXMATRIX i_viewMatrix,
-			D3DXMATRIX i_projectionMatrix, ID3D11ShaderResourceView * i_texture, D3DXVECTOR3 i_lightDirection, D3DXVECTOR4 i_diffuseColor)
-		{
-			bool result;
-
-
-			// Set the shader parameters that it will use for rendering.
-			result = setShaderParameters(i_worldMatrix, i_viewMatrix, i_projectionMatrix, i_texture, i_lightDirection, i_diffuseColor);
-			if (!result)
-			{
-				return false;
-			}
-
-			// Now render the prepared buffers with the shader.
-			renderShader(i_indexCount);
-
-			return true;
-		}
-
-		bool Pseudo3DShader::initializeShader(const char * i_vsFilename, const char * i_psFilename)
+		bool Pseudo3DTexShader::initializeShader(const char * i_vsFilename, const char * i_psFilename)
 		{
 			HRESULT result;
 			ID3D10Blob* errorMessage;
@@ -82,23 +86,18 @@ namespace Engine
 			D3D11_BUFFER_DESC matrixBufferDesc;
 			D3D11_BUFFER_DESC lightBufferDesc;
 
-
-			// Initialize the pointers this function will use to null.
 			errorMessage = 0;
 			vertexShaderBuffer = 0;
 			pixelShaderBuffer = 0;
 
-			// Compile the vertex shader code.
-			result = D3DX11CompileFromFile(i_vsFilename, NULL, NULL, "LightVertexShader", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL,
+			result = D3DX11CompileFromFile(i_vsFilename, NULL, NULL, "Pseudo3DTexVS", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL,
 				&vertexShaderBuffer, &errorMessage, NULL);
 			if (FAILED(result))
 			{
-				// If the shader failed to compile it should have writen something to the error message.
 				if (errorMessage)
 				{
 					outputShaderErrorMessage(errorMessage, i_vsFilename);
 				}
-				// If there was nothing in the error message then it simply could not find the shader file itself.
 				else
 				{
 					MessageBox(System::Window::GetWindwsHandle(), i_vsFilename, "Missing Shader File", MB_OK);
@@ -107,17 +106,14 @@ namespace Engine
 				return false;
 			}
 
-			// Compile the pixel shader code.
-			result = D3DX11CompileFromFile(i_psFilename, NULL, NULL, "LightPixelShader", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL,
+			result = D3DX11CompileFromFile(i_psFilename, NULL, NULL, "Pseudo3DTexPS", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL,
 				&pixelShaderBuffer, &errorMessage, NULL);
 			if (FAILED(result))
 			{
-				// If the shader failed to compile it should have writen something to the error message.
 				if (errorMessage)
 				{
 					outputShaderErrorMessage(errorMessage, i_psFilename);
 				}
-				// If there was nothing in the error message then it simply could not find the file itself.
 				else
 				{
 					MessageBox(System::Window::GetWindwsHandle(), i_psFilename, "Missing Shader File", MB_OK);
@@ -128,22 +124,12 @@ namespace Engine
 
 			ID3D11Device * device = GraphicsDX::GetDevice();
 
-			// Create the vertex shader from the buffer.
 			result = device->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), NULL, &_vertexShader);
-			if (FAILED(result))
-			{
-				return false;
-			}
+			MessagedAssert(SUCCEEDED(result), "Failed to create vertex shader in Pseudo3Dshader class.");
 
-			// Create the pixel shader from the buffer.
 			result = device->CreatePixelShader(pixelShaderBuffer->GetBufferPointer(), pixelShaderBuffer->GetBufferSize(), NULL, &_pixelShader);
-			if (FAILED(result))
-			{
-				return false;
-			}
+			MessagedAssert(SUCCEEDED(result), "Failed to create pixel shader in Pseudo3Dshader class.");
 
-			// Create the vertex input layout description.
-			// This setup needs to match the VertexType stucture in the ModelClass and in the shader.
 			polygonLayout[0].SemanticName = "POSITION";
 			polygonLayout[0].SemanticIndex = 0;
 			polygonLayout[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
@@ -168,25 +154,18 @@ namespace Engine
 			polygonLayout[2].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 			polygonLayout[2].InstanceDataStepRate = 0;
 
-			// Get a count of the elements in the layout.
 			numElements = sizeof(polygonLayout) / sizeof(polygonLayout[0]);
 
-			// Create the vertex input layout.
 			result = device->CreateInputLayout(polygonLayout, numElements, vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(),
 				&_layout);
-			if (FAILED(result))
-			{
-				return false;
-			}
+			MessagedAssert(SUCCEEDED(result), "Failed to create input layout in Pseudo3Dshader class.");
 
-			// Release the vertex shader buffer and pixel shader buffer since they are no longer needed.
 			vertexShaderBuffer->Release();
 			vertexShaderBuffer = 0;
 
 			pixelShaderBuffer->Release();
 			pixelShaderBuffer = 0;
 
-			// Create a texture sampler state description.
 			samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 			samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 			samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -200,128 +179,93 @@ namespace Engine
 			samplerDesc.BorderColor[3] = 0;
 			samplerDesc.MinLOD = 0;
 			samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
-
-			// Create the texture sampler state.
 			result = device->CreateSamplerState(&samplerDesc, &_sampleState);
-			if (FAILED(result))
-			{
-				return false;
-			}
+			MessagedAssert(SUCCEEDED(result), "Failed to create sampler state in Pseudo3Dshader class.");
 
-			// Setup the description of the dynamic matrix constant buffer that is in the vertex shader.
 			matrixBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 			matrixBufferDesc.ByteWidth = sizeof(MatrixBufferType);
 			matrixBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 			matrixBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 			matrixBufferDesc.MiscFlags = 0;
 			matrixBufferDesc.StructureByteStride = 0;
-
-			// Create the constant buffer pointer so we can access the vertex shader constant buffer from within this class.
 			result = device->CreateBuffer(&matrixBufferDesc, NULL, &_matrixBuffer);
-			if (FAILED(result))
-			{
-				return false;
-			}
+			MessagedAssert(SUCCEEDED(result), "Failed to create buffer in Pseudo3Dshader class.");
 
-			// Setup the description of the light dynamic constant buffer that is in the pixel shader.
-			// Note that ByteWidth always needs to be a multiple of 16 if using D3D11_BIND_CONSTANT_BUFFER or CreateBuffer will fail.
 			lightBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 			lightBufferDesc.ByteWidth = sizeof(TextureBufferType);
 			lightBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 			lightBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 			lightBufferDesc.MiscFlags = 0;
 			lightBufferDesc.StructureByteStride = 0;
-
-			// Create the constant buffer pointer so we can access the vertex shader constant buffer from within this class.
 			result = device->CreateBuffer(&lightBufferDesc, NULL, &_lightBuffer);
-			if (FAILED(result))
-			{
-				return false;
-			}
+			MessagedAssert(SUCCEEDED(result), "Failed to create buffer in Pseudo3Dshader class.");
 
 			return true;
 		}
 
-		void Pseudo3DShader::shutdownShader()
+		void Pseudo3DTexShader::shutdownShader()
 		{
-			// Release the light constant buffer.
 			if (_lightBuffer)
 			{
 				_lightBuffer->Release();
-				_lightBuffer = 0;
+				_lightBuffer = nullptr;
 			}
 
-			// Release the matrix constant buffer.
 			if (_matrixBuffer)
 			{
 				_matrixBuffer->Release();
-				_matrixBuffer = 0;
+				_matrixBuffer = nullptr;
 			}
 
-			// Release the sampler state.
 			if (_sampleState)
 			{
 				_sampleState->Release();
-				_sampleState = 0;
+				_sampleState = nullptr;
 			}
 
-			// Release the layout.
 			if (_layout)
 			{
 				_layout->Release();
-				_layout = 0;
+				_layout = nullptr;
 			}
 
-			// Release the pixel shader.
 			if (_pixelShader)
 			{
 				_pixelShader->Release();
-				_pixelShader = 0;
+				_pixelShader = nullptr;
 			}
 
-			// Release the vertex shader.
 			if (_vertexShader)
 			{
 				_vertexShader->Release();
-				_vertexShader = 0;
+				_vertexShader = nullptr;
 			}
 		}
 
-		void Pseudo3DShader::outputShaderErrorMessage(ID3D10Blob * i_errorMessage, const char * i_shaderFilename)
+		void Pseudo3DTexShader::outputShaderErrorMessage(ID3D10Blob * i_errorMessage, const char * i_shaderFilename)
 		{
 			char* compileErrors;
 			size_t bufferSize, i;
 			std::ofstream fout;
 
-
-			// Get a pointer to the error message text buffer.
 			compileErrors = (char*)(i_errorMessage->GetBufferPointer());
-
-			// Get the length of the message.
 			bufferSize = i_errorMessage->GetBufferSize();
-
-			// Open a file to write the error message to.
 			fout.open("shader-error.txt");
 
-			// Write out the error message.
-			for (i = 0; i<bufferSize; i++)
+			for (i = 0; i < bufferSize; i++)
 			{
 				fout << compileErrors[i];
 			}
 
-			// Close the file.
 			fout.close();
 
-			// Release the error message.
 			i_errorMessage->Release();
 			i_errorMessage = 0;
 
-			// Pop a message up on the screen to notify the user to check the text file for compile errors.
 			MessageBox(System::Window::GetWindwsHandle(), "Error compiling shader.  Check shader-error.txt for message.", i_shaderFilename, MB_OK);
 		}
 
-		bool Pseudo3DShader::setShaderParameters(D3DXMATRIX i_worldMatrix, D3DXMATRIX i_viewMatrix,
-			D3DXMATRIX i_projectionMatrix, ID3D11ShaderResourceView * i_texture, D3DXVECTOR3 i_lightDirection, D3DXVECTOR4 i_diffuseColor)
+		void Pseudo3DTexShader::setShaderParameters(SpecularModel* i_specularModel)
 		{
 			HRESULT result;
 			D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -329,67 +273,43 @@ namespace Engine
 			MatrixBufferType* dataPtr;
 			TextureBufferType* dataPtr2;
 
-			// Transpose the matrices to prepare them for the shader.
-			D3DXMatrixTranspose(&i_worldMatrix, &i_worldMatrix);
-			D3DXMatrixTranspose(&i_viewMatrix, &i_viewMatrix);
-			D3DXMatrixTranspose(&i_projectionMatrix, &i_projectionMatrix);
+			Camera* currentCamera = Graphics::GetCamera();
+
+			D3DXMATRIX viewMatrix = currentCamera->getViewMatrix();
+			D3DXMATRIX projectionMatrix = currentCamera->getProjMatrix();
+			D3DXMATRIX worldMatrix = GraphicsDX::GetWorldMatrix();
+
+			D3DXMatrixTranspose(&worldMatrix, &worldMatrix);
+			D3DXMatrixTranspose(&viewMatrix, &viewMatrix);
+			D3DXMatrixTranspose(&projectionMatrix, &projectionMatrix);
 
 			ID3D11DeviceContext * deviceContext = GraphicsDX::GetDeviceContext();
 
-			// Lock the constant buffer so it can be written to.
 			result = deviceContext->Map(_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-			if (FAILED(result))
-			{
-				return false;
-			}
-
-			// Get a pointer to the data in the constant buffer.
+			MessagedAssert(SUCCEEDED(result), "Failed to map into cbuffer in Pseudo3Dshader class.");
 			dataPtr = (MatrixBufferType*)mappedResource.pData;
-
-			// Copy the matrices into the constant buffer.
-			dataPtr->world = i_worldMatrix;
-			dataPtr->view = i_viewMatrix;
-			dataPtr->projection = i_projectionMatrix;
-
-			// Unlock the constant buffer.
+			dataPtr->world = worldMatrix;
+			dataPtr->view = viewMatrix;
+			dataPtr->projection = projectionMatrix;
 			deviceContext->Unmap(_matrixBuffer, 0);
 
-			// Set the position of the constant buffer in the vertex shader.
 			bufferNumber = 0;
-
-			// Now set the constant buffer in the vertex shader with the updated values.
 			deviceContext->VSSetConstantBuffers(bufferNumber, 1, &_matrixBuffer);
+			ID3D11ShaderResourceView* texture = i_specularModel->getTexture();
+			deviceContext->PSSetShaderResources(0, 1, &texture);
 
-			// Set shader texture resource in the pixel shader.
-			deviceContext->PSSetShaderResources(0, 1, &i_texture);
-
-			// Lock the light constant buffer so it can be written to.
 			result = deviceContext->Map(_lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-			if (FAILED(result))
-			{
-				return false;
-			}
-
-			// Get a pointer to the data in the constant buffer.
+			MessagedAssert(SUCCEEDED(result), "Failed to map into cbuffer in Pseudo3Dshader class.");
 			dataPtr2 = (TextureBufferType*)mappedResource.pData;
-
-			// Copy the lighting variables into the constant buffer.
 			dataPtr2->layer = _zValue;
 			dataPtr2->padding = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-
-			// Unlock the constant buffer.
 			deviceContext->Unmap(_lightBuffer, 0);
 
-			// Set the position of the light constant buffer in the pixel shader.
 			bufferNumber = 0;
-
-			// Finally set the light constant buffer in the pixel shader with the updated values.
 			deviceContext->PSSetConstantBuffers(bufferNumber, 1, &_lightBuffer);
-
-			return true;
 		}
 
-		void Pseudo3DShader::renderShader(int i_indexCount)
+		void Pseudo3DTexShader::renderShader(int i_indexCount)
 		{
 			ID3D11DeviceContext * deviceContext = GraphicsDX::GetDeviceContext();
 
@@ -400,7 +320,7 @@ namespace Engine
 			deviceContext->DrawIndexed(i_indexCount, 0, 0);
 		}
 
-		void Pseudo3DShader::keyboardUpdate(uint8_t i_key, bool i_down, uint16_t i_x, uint16_t i_y)
+		void Pseudo3DTexShader::keyboardUpdate(uint8_t i_key, bool i_down, uint16_t i_x, uint16_t i_y)
 		{
 			//DEBUG_PRINT("Key %d state = %d, Mouse Location x = %d, y = %d\n", i_key, i_down, i_x, i_y);
 			switch (i_key)
@@ -435,22 +355,22 @@ namespace Engine
 			}
 		}
 
-		void Pseudo3DShader::mouseClickUpdate(uint8_t i_button, bool i_down, uint16_t i_x, uint16_t i_y)
+		void Pseudo3DTexShader::mouseClickUpdate(uint8_t i_button, bool i_down, uint16_t i_x, uint16_t i_y)
 		{
 			//DEBUG_PRINT("Button %d state = %d, Mouse Location x = %d, y = %d\n", i_button, i_down, i_x, i_y);
 		}
 
-		void Pseudo3DShader::mouseMoveUpdate(bool i_leftBt, bool i_rightBt, bool i_middleBt, uint16_t i_x, uint16_t i_y)
+		void Pseudo3DTexShader::mouseMoveUpdate(bool i_leftBt, bool i_rightBt, bool i_middleBt, uint16_t i_x, uint16_t i_y)
 		{
 			//DEBUG_PRINT("%d %d %d Mouse Location x = %d, y = %d\n", i_leftBt, i_rightBt, i_middleBt, i_x, i_y);
 		}
 
-		void Pseudo3DShader::mousePassiveMoveUpdate(uint16_t i_x, uint16_t i_y)
+		void Pseudo3DTexShader::mousePassiveMoveUpdate(uint16_t i_x, uint16_t i_y)
 		{
 			//DEBUG_PRINT("Mouse Location x = %d, y = %d\n",i_x, i_y);
 		}
 
-		void Pseudo3DShader::mouseWheelUpdate(bool i_direction, uint16_t i_x, uint16_t i_y)
+		void Pseudo3DTexShader::mouseWheelUpdate(bool i_direction, uint16_t i_x, uint16_t i_y)
 		{
 			//DEBUG_PRINT("Roll %d Mouse Location x = %d, y = %d\n", i_direction, i_x, i_y);
 		}

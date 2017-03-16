@@ -18,7 +18,7 @@ struct PixelInputType
     float2 tex : TEXCOORD0;
 };
 
-PixelInputType LightVertexShader(VertexInputType input)
+PixelInputType Pseudo3DTexVS(VertexInputType input)
 {
     PixelInputType output;
     input.position.w = 1.0f;

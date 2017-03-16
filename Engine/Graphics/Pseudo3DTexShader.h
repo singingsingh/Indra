@@ -1,6 +1,7 @@
-#ifndef __PSUE_SHADER_H__
-#define __DIFFUSE_SHADER_H__
+#ifndef __PSEUDO_3D_SHADER_H__
+#define __PSEUDO_3D_SHADER_H__
 
+#include <Engine\Graphics\SpecularModel.h>
 #include <Engine\Engine\KeyboardNotifier.h>
 
 #include <d3d11.h>
@@ -11,16 +12,12 @@ namespace Engine
 {
 	namespace Graphics
 	{
-		class Pseudo3DShader : public Engine::IKeyboardListener
+		class Pseudo3DTexShader : public Engine::IKeyboardListener
 		{
 			public:
-				Pseudo3DShader();
-				~Pseudo3DShader();
-
-				bool initialize();
-				void shutdown();
-				bool render(int indexCount, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix,
-					D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, D3DXVECTOR3 lightDirection, D3DXVECTOR4 diffuseColor);
+				static Pseudo3DTexShader* createPseudo3DTexShader();
+				~Pseudo3DTexShader();
+				void render(SpecularModel* i_meshModel);
 
 				virtual void keyboardUpdate(uint8_t key, bool down, uint16_t x, uint16_t y);
 				virtual void mouseClickUpdate(uint8_t button, bool down, uint16_t x, uint16_t y);
@@ -43,12 +40,14 @@ namespace Engine
 					D3DXVECTOR3 padding;  // Added extra padding so structure is a multiple of 16 for CreateBuffer function requirements.
 				};
 
+				Pseudo3DTexShader();
+				bool initialize();
+
 				bool initializeShader(const char * vsFilename, const char *psFilename);
 				void shutdownShader();
 				void outputShaderErrorMessage(ID3D10Blob* errorMessage, const char * shaderFilename);
 
-				bool setShaderParameters(D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix,
-					D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, D3DXVECTOR3 lightDirection, D3DXVECTOR4 diffuseColor);
+				void setShaderParameters(SpecularModel* i_specularModel);
 				void renderShader(int indexCount);
 
 				ID3D11VertexShader* _vertexShader;
@@ -64,4 +63,4 @@ namespace Engine
 	}	// namespace Graphics
 }	// namespace Engine
 
-#endif	//__DIFFUSE_SHADER_H__
+#endif	//__PSEUDO_3D_SHADER_H__

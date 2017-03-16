@@ -229,7 +229,7 @@
     <ClCompile Include="Graphics\AssimpMesh.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\Pseudo3DShader.cpp">
+    <ClCompile Include="Graphics\Pseudo3DTexShader.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
@@ -486,7 +486,7 @@
     <ClInclude Include="Graphics\AssimpMesh.h">
       <Filter>Source Files\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\Pseudo3DShader.h">
+    <ClInclude Include="Graphics\Pseudo3DTexShader.h">
       <Filter>Source Files\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
