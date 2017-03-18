@@ -16,7 +16,7 @@ namespace Engine
 			public:
 				SpecularModel();
 				~SpecularModel();
-				bool initialize(char* modelFilename, const char* textureFilename);
+				bool initialize(char* modelFilename, const char* textureFilename = nullptr);
 				void shutdown();
 				void render();
 				int getIndexCount();

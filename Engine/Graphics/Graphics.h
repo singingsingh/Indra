@@ -13,6 +13,8 @@
 #include <Engine\Graphics\DiffuseLight.h>
 #include <Engine\Graphics\SpecularModel.h>
 #include <Engine\Graphics\Pseudo3DTexShader.h>
+#include <Engine\Graphics\Real3DTexShader.h>
+#include <Engine\Graphics\Texture3D.h>
 
 namespace Engine
 {
@@ -46,10 +48,12 @@ namespace Engine
 			CubeMap* _cubeMap;
 			CubeMapShader* _cubeMapShader;
 			
-			SpecularModel* _boxModel;
+			SpecularModel *_boxModelPseudoTex, *_boxModelRealTex;
 			DiffuseLight* _diffuseLight;
 			DiffuseShader* _diffuseShader;
-			Pseudo3DTexShader* _pseudo3DShader;
+			Pseudo3DTexShader* _pseudo3DTexShader;
+			Real3DTexShader* _real3DTexShader;
+			Texture3D* _tex3D;
 
 			static Graphics* _instance;
 		};

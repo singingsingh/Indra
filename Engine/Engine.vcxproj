@@ -45,6 +45,7 @@
     <ClCompile Include="Engine\PhysicsTickNotifier.cpp" />
     <ClCompile Include="Engine\Serializer.cpp" />
     <ClCompile Include="Engine\World.cpp" />
+    <ClCompile Include="Graphics\Real3DTexShader.cpp" />
     <ClCompile Include="Graphics\AssimpMesh.cpp" />
     <ClCompile Include="Graphics\Bitmap.cpp" />
     <ClCompile Include="Graphics\BuildWave.cpp" />
@@ -72,6 +73,7 @@
     <ClCompile Include="Graphics\TessellationShader.cpp" />
     <ClCompile Include="Graphics\Text.cpp" />
     <ClCompile Include="Graphics\Texture.cpp" />
+    <ClCompile Include="Graphics\Texture3D.cpp" />
     <ClCompile Include="Graphics\TextureModel.cpp" />
     <ClCompile Include="Graphics\TextureShader.cpp" />
     <ClCompile Include="Graphics\ViewPoint.cpp" />
@@ -129,6 +131,7 @@
     <ClInclude Include="Engine\PhysicsTickNotifier.h" />
     <ClInclude Include="Engine\Serializer.h" />
     <ClInclude Include="Engine\World.h" />
+    <ClInclude Include="Graphics\Real3DTexShader.h" />
     <ClInclude Include="Graphics\AssimpMesh.h" />
     <ClInclude Include="Graphics\Bitmap.h" />
     <ClInclude Include="Graphics\BuildWave.h" />
@@ -156,6 +159,7 @@
     <ClInclude Include="Graphics\TessellationShader.h" />
     <ClInclude Include="Graphics\Text.h" />
     <ClInclude Include="Graphics\Texture.h" />
+    <ClInclude Include="Graphics\Texture3D.h" />
     <ClInclude Include="Graphics\TextureModel.h" />
     <ClInclude Include="Graphics\TextureShader.h" />
     <ClInclude Include="Graphics\ViewPoint.h" />
@@ -294,6 +298,14 @@
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphics\Shaders\real3DTexturePS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Graphics\Shaders\real3DTextureVS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{BA598A12-D560-4E96-816C-2D443D6ED6FD}</ProjectGuid>
     <RootNamespace>Engine</RootNamespace>
@@ -367,7 +379,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)External\devil\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -377,16 +389,21 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>assimp.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)External\Assimp\lib\$(PlatformTarget)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp.lib;devil.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)External\Assimp\lib\$(PlatformTarget)\;$(SolutionDir)External\devil\lib</AdditionalLibraryDirectories>
     </Lib>
+    <CustomBuildStep>
+      <Command>copy $(SolutionDir)External\devil\bin\DevIL.dll $(SolutionDir)Game\Binaries\$(PlatformTarget)\$(Configuration)\  /y</Command>
+      <Outputs>$(ProjectDir)Binaries\$(PlatformTarget)\$(Configuration)\DevIL.dll</Outputs>
+      <Inputs>$(SolutionDir)External\devil\bin\DevIL.dll</Inputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)External\devil\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -396,9 +413,14 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>assimp.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)External\Assimp\lib\$(PlatformTarget)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp.lib;devil.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)External\Assimp\lib\$(PlatformTarget)\;$(SolutionDir)External\devil\lib</AdditionalLibraryDirectories>
     </Lib>
+    <CustomBuildStep>
+      <Command>copy $(SolutionDir)External\devil\bin\DevIL.dll $(SolutionDir)Game\Binaries\$(PlatformTarget)\$(Configuration)\  /y</Command>
+      <Outputs>$(ProjectDir)Binaries\$(PlatformTarget)\$(Configuration)\DevIL.dll</Outputs>
+      <Inputs>$(SolutionDir)External\devil\bin\DevIL.dll</Inputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -407,7 +429,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)External\devil\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWarningAsError>true</TreatWarningAsError>
@@ -418,9 +440,14 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>assimp.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)External\Assimp\lib\$(PlatformTarget)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp.lib;devil.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)External\Assimp\lib\$(PlatformTarget)\;$(SolutionDir)External\devil\lib</AdditionalLibraryDirectories>
     </Lib>
+    <CustomBuildStep>
+      <Command>copy $(SolutionDir)External\devil\bin\DevIL.dll $(SolutionDir)Game\Binaries\$(PlatformTarget)\$(Configuration)\  /y</Command>
+      <Outputs>$(ProjectDir)Binaries\$(PlatformTarget)\$(Configuration)\DevIL.dll</Outputs>
+      <Inputs>$(SolutionDir)External\devil\bin\DevIL.dll</Inputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -429,7 +456,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)External\devil\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWarningAsError>true</TreatWarningAsError>
@@ -440,9 +467,14 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>assimp.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)External\Assimp\lib\$(PlatformTarget)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp.lib;devil.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)External\Assimp\lib\$(PlatformTarget)\;$(SolutionDir)External\devil\lib</AdditionalLibraryDirectories>
     </Lib>
+    <CustomBuildStep>
+      <Command>copy $(SolutionDir)External\devil\bin\DevIL.dll $(SolutionDir)Game\Binaries\$(PlatformTarget)\$(Configuration)\  /y</Command>
+      <Outputs>$(ProjectDir)Binaries\$(PlatformTarget)\$(Configuration)\DevIL.dll</Outputs>
+      <Inputs>$(SolutionDir)External\devil\bin\DevIL.dll</Inputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

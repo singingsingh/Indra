@@ -223,7 +223,7 @@ namespace Engine
 			}
 
 			// Now we can access the file's contents.
-			DEBUG_PRINT("Import of scene %s succeeded.", i_modelFileName);
+			DEBUG_PRINT("Import of scene %s succeeded.\n", i_modelFileName);
 
 			_vertexCount = scene->mMeshes[0]->mNumVertices;
 			_indexCount = scene->mMeshes[0]->mNumFaces * 3;
@@ -285,6 +285,12 @@ namespace Engine
 
 		bool SpecularModel::loadTexture(const char* i_textureFileName)
 		{
+			if (i_textureFileName == nullptr)
+			{
+				_texture = nullptr;
+				return true;
+			}
+
 			bool result;
 
 			// Create the texture object.

@@ -44,6 +44,7 @@ namespace Engine
 		D3D_FEATURE_LEVEL featureLevel;
 		ID3D11Texture2D* backBufferPtr;
 		D3D11_TEXTURE2D_DESC depthStencilBufferDesc;
+		//D3D11_TEXTURE3D_DESC
 		D3D11_DEPTH_STENCIL_DESC depthStencilStateDesc;
 		D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 		D3D11_RASTERIZER_DESC rasterDesc;

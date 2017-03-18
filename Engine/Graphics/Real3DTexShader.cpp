@@ -1,4 +1,4 @@
-#include <Engine\Graphics\Pseudo3DTexShader.h>
+#include <Engine\Graphics\Real3DTexShader.h>
 
 #include <Engine\Graphics\Camera.h>
 #include <Engine\Graphics\Graphics.h>
@@ -17,7 +17,7 @@ namespace Engine
 {
 	namespace Graphics
 	{
-		Pseudo3DTexShader::Pseudo3DTexShader()
+		Real3DTexShader::Real3DTexShader()
 		{
 			_vertexShader = nullptr;
 			_pixelShader = nullptr;
@@ -25,16 +25,15 @@ namespace Engine
 			_sampleState = nullptr;
 			_matrixBuffer = nullptr;
 			_lightBuffer = nullptr;
-			_tex3D = nullptr;
 			_zValue = 0.0f;
 			_zValueStep = 0.01f;
 
 			Engine::KeyboardNotifier::RegisterKeyboardUpdate(this);
 		}
 
-		Pseudo3DTexShader* Pseudo3DTexShader::createPseudo3DTexShader()
+		Real3DTexShader* Real3DTexShader::createReal3DTexShader()
 		{
-			Pseudo3DTexShader* pseudo3DTexShader = new Pseudo3DTexShader();
+			Real3DTexShader* pseudo3DTexShader = new Real3DTexShader();
 			bool result = pseudo3DTexShader->initialize();
 
 			if (!result)
@@ -49,35 +48,33 @@ namespace Engine
 			}
 		}
 
-		Pseudo3DTexShader::~Pseudo3DTexShader()
+		Real3DTexShader::~Real3DTexShader()
 		{
 			Engine::KeyboardNotifier::DeRegisterKeyboardUpdate(this);
 			shutdownShader();
-			delete _tex3D;
-			_tex3D = nullptr;
 		}
 
-		bool Pseudo3DTexShader::initialize()
+		bool Real3DTexShader::initialize()
 		{
 			bool result;
 
-			result = initializeShader("../Engine/Graphics/Shaders/psuedo3DTextureVS.hlsl", "../Engine/Graphics/Shaders/psuedo3DTexturePS.hlsl");
+			result = initializeShader("../Engine/Graphics/Shaders/real3DTextureVS.hlsl", "../Engine/Graphics/Shaders/real3DTexturePS.hlsl");
 			if (!result)
 			{
 				return false;
 			}
-			_tex3D = new Texture3D("D:/GitHub/Indra/Game/Assets/Textures/grid.png", 64, 64, 1);
+
 			return true;
 		}
 
-		void Pseudo3DTexShader::render(SpecularModel* i_specularModel)
+		void Real3DTexShader::render(SpecularModel* i_specularModel)
 		{
 			i_specularModel->render();
 			setShaderParameters(i_specularModel);
 			renderShader(i_specularModel->getIndexCount());
 		}
 
-		bool Pseudo3DTexShader::initializeShader(const char * i_vsFilename, const char * i_psFilename)
+		bool Real3DTexShader::initializeShader(const char * i_vsFilename, const char * i_psFilename)
 		{
 			HRESULT result;
 			ID3D10Blob* errorMessage;
@@ -206,7 +203,7 @@ namespace Engine
 			return true;
 		}
 
-		void Pseudo3DTexShader::shutdownShader()
+		void Real3DTexShader::shutdownShader()
 		{
 			if (_lightBuffer)
 			{
@@ -245,7 +242,7 @@ namespace Engine
 			}
 		}
 
-		void Pseudo3DTexShader::outputShaderErrorMessage(ID3D10Blob * i_errorMessage, const char * i_shaderFilename)
+		void Real3DTexShader::outputShaderErrorMessage(ID3D10Blob * i_errorMessage, const char * i_shaderFilename)
 		{
 			char* compileErrors;
 			size_t bufferSize, i;
@@ -268,7 +265,7 @@ namespace Engine
 			MessageBox(System::Window::GetWindwsHandle(), "Error compiling shader.  Check shader-error.txt for message.", i_shaderFilename, MB_OK);
 		}
 
-		void Pseudo3DTexShader::setShaderParameters(SpecularModel* i_specularModel)
+		void Real3DTexShader::setShaderParameters(SpecularModel* i_specularModel)
 		{
 			HRESULT result;
 			D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -298,7 +295,7 @@ namespace Engine
 
 			bufferNumber = 0;
 			deviceContext->VSSetConstantBuffers(bufferNumber, 1, &_matrixBuffer);
-			ID3D11ShaderResourceView* texture = _tex3D->getTexture();
+			ID3D11ShaderResourceView* texture = i_specularModel->getTexture();
 			deviceContext->PSSetShaderResources(0, 1, &texture);
 
 			result = deviceContext->Map(_lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
@@ -312,7 +309,7 @@ namespace Engine
 			deviceContext->PSSetConstantBuffers(bufferNumber, 1, &_lightBuffer);
 		}
 
-		void Pseudo3DTexShader::renderShader(int i_indexCount)
+		void Real3DTexShader::renderShader(int i_indexCount)
 		{
 			ID3D11DeviceContext * deviceContext = GraphicsDX::GetDeviceContext();
 
@@ -323,7 +320,7 @@ namespace Engine
 			deviceContext->DrawIndexed(i_indexCount, 0, 0);
 		}
 
-		void Pseudo3DTexShader::keyboardUpdate(uint8_t i_key, bool i_down, uint16_t i_x, uint16_t i_y)
+		void Real3DTexShader::keyboardUpdate(uint8_t i_key, bool i_down, uint16_t i_x, uint16_t i_y)
 		{
 			//DEBUG_PRINT("Key %d state = %d, Mouse Location x = %d, y = %d\n", i_key, i_down, i_x, i_y);
 			switch (i_key)
@@ -358,22 +355,22 @@ namespace Engine
 			}
 		}
 
-		void Pseudo3DTexShader::mouseClickUpdate(uint8_t i_button, bool i_down, uint16_t i_x, uint16_t i_y)
+		void Real3DTexShader::mouseClickUpdate(uint8_t i_button, bool i_down, uint16_t i_x, uint16_t i_y)
 		{
 			//DEBUG_PRINT("Button %d state = %d, Mouse Location x = %d, y = %d\n", i_button, i_down, i_x, i_y);
 		}
 
-		void Pseudo3DTexShader::mouseMoveUpdate(bool i_leftBt, bool i_rightBt, bool i_middleBt, uint16_t i_x, uint16_t i_y)
+		void Real3DTexShader::mouseMoveUpdate(bool i_leftBt, bool i_rightBt, bool i_middleBt, uint16_t i_x, uint16_t i_y)
 		{
 			//DEBUG_PRINT("%d %d %d Mouse Location x = %d, y = %d\n", i_leftBt, i_rightBt, i_middleBt, i_x, i_y);
 		}
 
-		void Pseudo3DTexShader::mousePassiveMoveUpdate(uint16_t i_x, uint16_t i_y)
+		void Real3DTexShader::mousePassiveMoveUpdate(uint16_t i_x, uint16_t i_y)
 		{
 			//DEBUG_PRINT("Mouse Location x = %d, y = %d\n",i_x, i_y);
 		}
 
-		void Pseudo3DTexShader::mouseWheelUpdate(bool i_direction, uint16_t i_x, uint16_t i_y)
+		void Real3DTexShader::mouseWheelUpdate(bool i_direction, uint16_t i_x, uint16_t i_y)
 		{
 			//DEBUG_PRINT("Roll %d Mouse Location x = %d, y = %d\n", i_direction, i_x, i_y);
 		}

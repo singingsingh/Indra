@@ -224,7 +224,7 @@ namespace Engine
 			}
 
 			// Now we can access the file's contents.
-			DEBUG_PRINT("Import of scene %s succeeded.", i_modelFileName);
+			DEBUG_PRINT("Import of scene %s succeeded.\n", i_modelFileName);
 
 			_vertexCount = scene->mMeshes[0]->mNumVertices;
 			_indexCount = scene->mMeshes[0]->mNumFaces * 3;

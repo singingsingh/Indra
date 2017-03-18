@@ -232,6 +232,12 @@
     <ClCompile Include="Graphics\Pseudo3DTexShader.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\Real3DTexShader.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Texture3D.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\BitArray.h">
@@ -489,6 +495,12 @@
     <ClInclude Include="Graphics\Pseudo3DTexShader.h">
       <Filter>Source Files\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\Real3DTexShader.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Texture3D.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Graphics\Shaders\colorShaderPS.hlsl">
@@ -578,5 +590,7 @@
     <None Include="Graphics\Shaders\psuedo3DTextureVS.hlsl">
       <Filter>Source Files\Graphics\shaders</Filter>
     </None>
+    <None Include="Graphics\Shaders\real3DTexturePS.hlsl" />
+    <None Include="Graphics\Shaders\real3DTextureVS.hlsl" />
   </ItemGroup>
 </Project>

@@ -1,9 +1,8 @@
-#ifndef __PSEUDO_3D_TEX_SHADER_H__
-#define __PSEUDO_3D_TEX_SHADER_H__
+#ifndef __REAL_3D_TEX_SHADER_H__
+#define __REAL_3D_TEX_SHADER_H__
 
 #include <Engine\Graphics\SpecularModel.h>
 #include <Engine\Engine\KeyboardNotifier.h>
-#include <Engine\Graphics\Texture3D.h>
 
 #include <d3d11.h>
 #include <d3dx10math.h>
@@ -13,11 +12,11 @@ namespace Engine
 {
 	namespace Graphics
 	{
-		class Pseudo3DTexShader : public Engine::IKeyboardListener
+		class Real3DTexShader : public Engine::IKeyboardListener
 		{
 			public:
-				static Pseudo3DTexShader* createPseudo3DTexShader();
-				~Pseudo3DTexShader();
+				static Real3DTexShader* createReal3DTexShader();
+				~Real3DTexShader();
 				void render(SpecularModel* i_meshModel);
 
 				virtual void keyboardUpdate(uint8_t key, bool down, uint16_t x, uint16_t y);
@@ -41,7 +40,7 @@ namespace Engine
 					D3DXVECTOR3 padding;  // Added extra padding so structure is a multiple of 16 for CreateBuffer function requirements.
 				};
 
-				Pseudo3DTexShader();
+				Real3DTexShader();
 				bool initialize();
 
 				bool initializeShader(const char * vsFilename, const char *psFilename);
@@ -58,12 +57,10 @@ namespace Engine
 				ID3D11Buffer* _matrixBuffer;
 				ID3D11Buffer* _lightBuffer;
 
-				Texture3D* _tex3D;
-
 				float _zValue;
 				float _zValueStep;
 		};
 	}	// namespace Graphics
 }	// namespace Engine
 
-#endif	//__PSEUDO_3D_TEX_SHADER_H__
+#endif	//__REAL_3D_TEX_SHADER_H__

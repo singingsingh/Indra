@@ -25,10 +25,13 @@ namespace Engine
 			_cubeMap = nullptr;
 			_cubeMapShader = nullptr;
 
-			_boxModel = nullptr;
+			_boxModelPseudoTex = nullptr;
+			_boxModelRealTex = nullptr;
 			_diffuseLight = nullptr;
 			_diffuseShader = nullptr;
-			_pseudo3DShader = nullptr;
+			_pseudo3DTexShader = nullptr;
+			_real3DTexShader = nullptr;
+			_tex3D = nullptr;
 		}
 
 		bool Graphics::Initialize(HINSTANCE i_hInstance, const char * i_windowName, unsigned int i_windowWidth, unsigned int i_windowHeight, const WORD* i_icon)
@@ -85,8 +88,16 @@ namespace Engine
 			_cubeMap = new CubeMap("Assets/Textures/sunsetcube1024.dds");
 			_cubeMapShader = new CubeMapShader();
 
-			_boxModel = new SpecularModel;
-			result = _boxModel->initialize("Assets/Meshes/cube.obj", "Assets/Textures/grid.dds");
+			_boxModelPseudoTex = new SpecularModel;
+			result = _boxModelPseudoTex->initialize("Assets/Meshes/cube.obj", "Assets/Textures/grid.dds");
+			if (!result)
+			{
+				MessageBox(System::Window::GetWindwsHandle(), "Could not load the assmip the model object.", "Error", MB_OK);
+				return false;
+			}
+
+			_boxModelRealTex = new SpecularModel;
+			result = _boxModelRealTex->initialize("Assets/Meshes/cube.obj");
 			if (!result)
 			{
 				MessageBox(System::Window::GetWindwsHandle(), "Could not load the assmip the model object.", "Error", MB_OK);
@@ -126,11 +137,19 @@ namespace Engine
 				return false;
 			}
 
-			_pseudo3DShader = Pseudo3DTexShader::createPseudo3DTexShader();
-			if (!_pseudo3DShader)
+			_pseudo3DTexShader = Pseudo3DTexShader::createPseudo3DTexShader();
+			if (!_pseudo3DTexShader)
 			{
 				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the pseudo 3d shader object.", "Error", MB_OK);
 			}
+
+			_real3DTexShader = Real3DTexShader::createReal3DTexShader();
+			if (!_real3DTexShader)
+			{
+				MessageBox(System::Window::GetWindwsHandle(), "Could not initialize the real 3d shader object.", "Error", MB_OK);
+			}
+
+			//_tex3D = new Texture3D("Assets/Textures/grid.dds", 64, 64, 1);
 
 			return true;
 		}
@@ -144,6 +163,9 @@ namespace Engine
 
 		void Graphics::_shutdown()
 		{
+			//delete _tex3D;
+			_tex3D = nullptr;
+
 			delete _renderTexture;
 			_renderTexture = nullptr;
 
@@ -154,8 +176,11 @@ namespace Engine
 				_diffuseShader = nullptr;
 			}
 
-			delete _pseudo3DShader;
-			_pseudo3DShader = nullptr;
+			delete _pseudo3DTexShader;
+			_pseudo3DTexShader = nullptr;
+
+			delete _real3DTexShader;
+			_real3DTexShader = nullptr;
 
 			if (_diffuseLight)
 			{
@@ -163,11 +188,18 @@ namespace Engine
 				_diffuseLight = nullptr;
 			}
 
-			if (_boxModel)
+			if (_boxModelPseudoTex)
 			{
-				_boxModel->shutdown();
-				delete _boxModel;
-				_boxModel = nullptr;
+				_boxModelPseudoTex->shutdown();
+				delete _boxModelPseudoTex;
+				_boxModelPseudoTex = nullptr;
+			}
+
+			if (_boxModelRealTex)
+			{
+				_boxModelRealTex->shutdown();
+				delete _boxModelRealTex;
+				_boxModelRealTex = nullptr;
 			}
 
 			if (_cpuUsage)
@@ -233,7 +265,8 @@ namespace Engine
 
 			// render 3D stuff
 			{
-				_pseudo3DShader->render(_boxModel);
+				_pseudo3DTexShader->render(_boxModelPseudoTex);
+				//_real3DTexShader->render(_boxModelRealTex);
 			}
 
 			// cube map

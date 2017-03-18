@@ -19,7 +19,6 @@ x64/
 x86/
 build/
 bld/
-[Bb]in/
 [Oo]bj/
 
 # Visual Studio 2015 cache/options directory
@@ -68,6 +67,9 @@ artifacts/
 *.scc
 
 !/Game/Assets/Meshes/*.obj
+!/External/devil/bin/*.dll
+!/External/devil/lib/*.lib
+
 
 # Chutzpah Test files
 _Chutzpah*
