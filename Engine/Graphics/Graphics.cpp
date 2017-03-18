@@ -266,7 +266,7 @@ namespace Engine
 			// render 3D stuff
 			{
 				_pseudo3DTexShader->render(_boxModelPseudoTex);
-				//_real3DTexShader->render(_boxModelRealTex);
+				_real3DTexShader->render(_boxModelRealTex);
 			}
 
 			// cube map

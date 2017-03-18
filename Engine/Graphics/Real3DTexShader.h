@@ -3,6 +3,7 @@
 
 #include <Engine\Graphics\SpecularModel.h>
 #include <Engine\Engine\KeyboardNotifier.h>
+#include <Engine\Graphics\Texture3D.h>
 
 #include <d3d11.h>
 #include <d3dx10math.h>
@@ -56,6 +57,7 @@ namespace Engine
 				ID3D11SamplerState* _sampleState;
 				ID3D11Buffer* _matrixBuffer;
 				ID3D11Buffer* _lightBuffer;
+				Texture3D* _tex3D;
 
 				float _zValue;
 				float _zValueStep;

@@ -5,7 +5,7 @@
 #include <Engine\System\Window.h>
 #include <Engine\Graphics\GraphicsDX.h>
 #include <Engine\Util\Assert.h>
-
+#include <Engine\Util\ConsolePrint.h>
 #include <fstream>
 
 namespace
@@ -24,6 +24,7 @@ namespace Engine
 			_layout = nullptr;
 			_sampleState = nullptr;
 			_matrixBuffer = nullptr;
+			_tex3D = nullptr;
 			_lightBuffer = nullptr;
 			_zValue = 0.0f;
 			_zValueStep = 0.01f;
@@ -52,6 +53,8 @@ namespace Engine
 		{
 			Engine::KeyboardNotifier::DeRegisterKeyboardUpdate(this);
 			shutdownShader();
+			delete _tex3D;
+			_tex3D = nullptr;
 		}
 
 		bool Real3DTexShader::initialize()
@@ -63,7 +66,7 @@ namespace Engine
 			{
 				return false;
 			}
-
+			_tex3D = new Texture3D("D:/GitHub/Indra/Game/Assets/Textures/grid.dds", 64, 64, 64);
 			return true;
 		}
 
@@ -278,6 +281,9 @@ namespace Engine
 			D3DXMATRIX viewMatrix = currentCamera->getViewMatrix();
 			D3DXMATRIX projectionMatrix = currentCamera->getProjMatrix();
 			D3DXMATRIX worldMatrix = GraphicsDX::GetWorldMatrix();
+			D3DXMATRIX translate;
+			D3DXMatrixTranslation(&translate, 2.1f, 0.0f, 0.0f);
+			D3DXMatrixMultiply(&worldMatrix, &worldMatrix, &translate);
 
 			D3DXMatrixTranspose(&worldMatrix, &worldMatrix);
 			D3DXMatrixTranspose(&viewMatrix, &viewMatrix);
@@ -295,7 +301,7 @@ namespace Engine
 
 			bufferNumber = 0;
 			deviceContext->VSSetConstantBuffers(bufferNumber, 1, &_matrixBuffer);
-			ID3D11ShaderResourceView* texture = i_specularModel->getTexture();
+			ID3D11ShaderResourceView* texture = _tex3D->getTexture();
 			deviceContext->PSSetShaderResources(0, 1, &texture);
 
 			result = deviceContext->Map(_lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
@@ -342,17 +348,18 @@ namespace Engine
 			case 40:	// down arrow
 				if (i_down)
 				{
-					if (_zValue - _zValueStep > 0.0f)
+					if (_zValue - _zValueStep > -1.0f)
 					{
 						_zValue -= _zValueStep;
 					}
 					else
 					{
-						_zValue = 0.0f;
+						_zValue = -1.0f;
 					}
 				}
 				break;
 			}
+			DEBUG_PRINT("real value = %f\n", _zValue);
 		}
 
 		void Real3DTexShader::mouseClickUpdate(uint8_t i_button, bool i_down, uint16_t i_x, uint16_t i_y)

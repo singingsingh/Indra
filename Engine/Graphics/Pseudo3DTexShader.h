@@ -58,8 +58,6 @@ namespace Engine
 				ID3D11Buffer* _matrixBuffer;
 				ID3D11Buffer* _lightBuffer;
 
-				Texture3D* _tex3D;
-
 				float _zValue;
 				float _zValueStep;
 		};

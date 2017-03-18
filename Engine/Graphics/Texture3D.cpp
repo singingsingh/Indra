@@ -42,15 +42,15 @@ namespace Engine
 
 				for (unsigned int row = 0; row < 8; row++)
 				{
-					for (unsigned int col = 1; col < 8; col++)
+					for (unsigned int col = 0; col < 8; col++)
 					{
 						ilCopyPixels(col*64, row*64, 0, 64, 64, 1, IL_RGBA, IL_UNSIGNED_BYTE, slicePtr);
 						memcpy(currPos, slicePtr, 64*64*4);
 						currPos += 64 * 64 * 4;
-						break;
 					}
-					break;
 				}
+
+				free(slicePtr);
 			}
 
 			D3D11_SUBRESOURCE_DATA initData;

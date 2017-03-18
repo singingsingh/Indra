@@ -590,7 +590,11 @@
     <None Include="Graphics\Shaders\psuedo3DTextureVS.hlsl">
       <Filter>Source Files\Graphics\shaders</Filter>
     </None>
-    <None Include="Graphics\Shaders\real3DTexturePS.hlsl" />
-    <None Include="Graphics\Shaders\real3DTextureVS.hlsl" />
+    <None Include="Graphics\Shaders\real3DTexturePS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
+    <None Include="Graphics\Shaders\real3DTextureVS.hlsl">
+      <Filter>Source Files\Graphics\shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

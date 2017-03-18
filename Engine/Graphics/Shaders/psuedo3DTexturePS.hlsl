@@ -1,4 +1,4 @@
-Texture3D shaderTexture;
+Texture2D shaderTexture;
 SamplerState SampleType;
 
 cbuffer TextureBuffer
@@ -15,30 +15,32 @@ struct PixelInputType
 
 float4 tex3D(float3 tex)
 {
-	//float4 retColor;
-	//float oneByEight = 0.125;
+	float4 retColor;
+	float oneByEight = 0.125;
 
-	//float layer = saturate(tex.z);	// clamp
-	//// or to use wrap
-	//// value = fract(value);
-
+	////clamp
+	//float layer = saturate(tex.z);
 	//layer *= 63;
 
-	//float first = floor(layer);
-	//float second = first + 1.0;
-	//float weight = frac(layer);
+	// wrap
+	float layer = frac(tex.z);
+	layer *= 63;
+	layer -= 0.5;
 
-	//tex *= oneByEight;
+	float first = floor(layer);
+	float second = first + 1.0;
+	float weight = frac(layer);
 
-	//float4 color1 = shaderTexture.Sample(SampleType, tex + float2((first % 8)*oneByEight, (floor(first*oneByEight))*oneByEight));
-	//float4 color2 = shaderTexture.Sample(SampleType, tex + float2((second % 8)*oneByEight, (floor(second*oneByEight))*oneByEight));
+	tex *= oneByEight;
 
-	//retColor = lerp(color1, color2, weight);
-	//return retColor;
+	float4 color1 = shaderTexture.Sample(SampleType, tex + float2((first % 8)*oneByEight, (floor(first*oneByEight))*oneByEight));
+	float4 color2 = shaderTexture.Sample(SampleType, tex + float2((second % 8)*oneByEight, (floor(second*oneByEight))*oneByEight));
+
+	retColor = lerp(color1, color2, weight);
+	return retColor;
 }
 
 float4 Pseudo3DTexPS(PixelInputType input) : SV_TARGET
 {
-    //return tex3D(float3(input.tex, layer));
-	return shaderTexture.Sample(SampleType, float3(input.tex,0));
+    return tex3D(float3(input.tex, layer));
 }
